@@ -1,0 +1,12 @@
+### Intellij+iml ###
+.idea/
+*.iml
+
+out/
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
