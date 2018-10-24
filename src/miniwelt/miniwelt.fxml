@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miniwelt.MainController">
+    <center>
+        <BorderPane xmlns:fx="http://javafx.com/fxml">
+         <center>
+            <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <items>
+                  <TextArea prefHeight="200.0" prefWidth="200.0" />
+                  <Pane prefHeight="200.0" prefWidth="200.0" />
+              </items>
+            </SplitPane>
+         </center>
+         <top>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <items>
+                <Button mnemonicParsing="false" text="Button" />
+              </items>
+            </ToolBar>
+         </top>
+         <bottom>
+            <Label text="Statusbar: " BorderPane.alignment="CENTER" />
+         </bottom>
+        </BorderPane>
+    </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Editor">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Neu" />
+                  <MenuItem mnemonicParsing="false" text="Öffnen" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Komplilieren" />
+                  <MenuItem mnemonicParsing="false" text="Drucken" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Beenden" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Territorium">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Laden" />
+                  <MenuItem mnemonicParsing="false" text="Speichern" />
+                  <Menu mnemonicParsing="false" text="Exportieren als...">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="PNG" />
+                      <MenuItem mnemonicParsing="false" text="XML" />
+                    </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Größe ändern" />
+                  <Menu mnemonicParsing="false" text="Objekt platzieren...">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Karl" />
+                        <MenuItem mnemonicParsing="false" text="Wand" />
+                      <MenuItem mnemonicParsing="false" text="Tisch" />
+                        <MenuItem mnemonicParsing="false" text="Gegenstand" />
+                    </items>
+                  </Menu>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Karl">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Taschengröße ändern" />
+                  <MenuItem mnemonicParsing="false" text="Tascheninhalt" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Bewegen...">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="schrittVor()" />
+                      <MenuItem mnemonicParsing="false" text="rechtsRum()" />
+                        <MenuItem mnemonicParsing="false" text="zumBuero()" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Kontrollieren...">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="vornFrei()" />
+                        <MenuItem mnemonicParsing="false" text="tascheLeer()" />
+                        <MenuItem mnemonicParsing="false" text="sucheGefahr()" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Aktion...">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="hebAuf()" />
+                        <MenuItem mnemonicParsing="false" text="legAb()" />
+                    </items>
+                  </Menu>
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Simulation">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Start / Fortsetzen" />
+                  <MenuItem mnemonicParsing="false" text="Pause" />
+                  <MenuItem mnemonicParsing="false" text="Stop" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
