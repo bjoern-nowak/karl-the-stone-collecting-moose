@@ -1,0 +1,92 @@
+.root-pane {
+    -fx-pref-height: 600px;
+    -fx-pref-width: 800px;
+}
+
+.box-status {
+    -fx-max-height: 18px;
+    -fx-min-height: 18px;
+    -fx-pref-height: 18px;
+}
+
+.label-status{
+    -fx-padding: 0 0 0 10px;
+    -fx-alignment: center-left;
+    -fx-content-display: text-only;
+}
+
+.label-status-text {
+    -fx-padding: 0 0 0 5px;
+    -fx-alignment: center-left;
+    -fx-content-display: text-only;
+    -fx-text-fill: red;
+}
+
+.toolbar-separator {
+    -fx-pref-height: 20px;
+}
+
+.toolbar-btn {
+    -fx-content-display: graphic-only;
+    -fx-background-size: 18 18;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+
+}
+
+.btn-new {
+    -fx-background-image: url("../resources/gui/win8metro/if_add_file_71698.png");
+}
+
+.btn-open {
+    -fx-background-image: url("../resources/gui/win8metro/if_folder_71843.png");
+}
+
+.btn-compile {
+    -fx-background-image: url("../resources/gui/win8metro/if_console_71788.png");
+}
+
+.btn-save {
+    -fx-background-image: url("../resources/gui/win8metro/if_save_as_72000.png");
+}
+
+.btn-grid {
+    -fx-content-display: text-only;
+}
+
+.btn-wall {
+    -fx-content-display: text-only;
+}
+
+.btn-karl {
+    -fx-background-image: url("../resources/Boss/BossWalking/BossWalking_01.png");
+    -fx-background-size: 22 22;
+}
+
+.btn-object {
+    -fx-content-display: text-only;
+}
+
+.btn-table {
+    -fx-content-display: text-only;
+}
+
+.btn-pocket {
+    -fx-content-display: text-only;
+}
+
+.btn-start {
+    -fx-background-image: url("../resources/gui/win8metro/if_play_71959.png");
+}
+
+.btn-pause {
+    -fx-background-image: url("../resources/gui/win8metro/if_pause_71948.png");
+}
+
+.btn-stop {
+    -fx-background-image: url("../resources/gui/win8metro/if_stop_72039.png");
+}
+
+.code-area {
+    -fx-font-family: Consolas;
+}
