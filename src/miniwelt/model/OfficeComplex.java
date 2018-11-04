@@ -39,12 +39,13 @@ public class OfficeComplex {
 
     public void placeWall(int x, int y) throws ArrayIndexOutOfBoundsException {
         checkBoundaries(x, y);
+        // TODO check override of karl or office
         grid[x][y] = Field.WALL;
-        checkOverrideOfKarlOrOffice(x, y);
     }
 
     public void placeDanger(int x, int y) throws ArrayIndexOutOfBoundsException {
         checkBoundaries(x, y);
+        // TODO check override of karl or office
         if (isOccupiedBy(x, y, Field.KARL)) {
             grid[x][y] = Field.KARL_ON_DANGER;
         } else {
@@ -54,6 +55,14 @@ public class OfficeComplex {
 
     public void placeKarl(int x, int y) throws ArrayIndexOutOfBoundsException {
         checkBoundaries(x, y);
+
+        // remove old position
+        Field fieldToSet = Field.EMPTY;
+        if (isOccupiedBy(karl.pos.x, karl.pos.y, Field.KARL_AT_OFFICE)) fieldToSet = Field.OFFICE;
+        if (isOccupiedBy(karl.pos.x, karl.pos.y, Field.KARL_ON_DANGER)) fieldToSet = Field.DANGER;
+        grid[karl.pos.x][karl.pos.y] = fieldToSet;
+
+        // move karl
         setPos(karl.pos, x, y);
         if (isOccupiedBy(x, y, Field.OFFICE)) {
             grid[x][y] = Field.KARL_AT_OFFICE;
@@ -92,10 +101,6 @@ public class OfficeComplex {
         if (x >= max_X || y >= max_Y) throw new ArrayIndexOutOfBoundsException("Position X or Y exceeds grid size.");
     }
 
-    
-    public void checkOverrideOfKarlOrOffice(int x, int y) {
-        
-    }
 
     public boolean isOccupiedBy(int x, int y, Field field) {
         return grid[x][y].equals(field);
