@@ -16,146 +16,145 @@ public class RootController {
 
     @FXML
     public Label status;
+    
+    private final String ACTION_PREFIX = "Aktion: ";
 
     @FXML
     public void onNew(ActionEvent actionEvent) {
-        status.setText("Aktion: onNew.");
+        status.setText(ACTION_PREFIX + "onNew.");
     }
 
     @FXML
     public void onOpen(ActionEvent actionEvent) {
-        status.setText("Aktion: onOpen.");
+        status.setText(ACTION_PREFIX + "onOpen.");
     }
 
     @FXML
     public void onCompile(ActionEvent actionEvent) {
-        status.setText("Aktion: onCompile.");
+        status.setText(ACTION_PREFIX + "onCompile.");
     }
 
     @FXML
     public void onPrint(ActionEvent actionEvent) {
-        status.setText("Aktion: onPrint.");
+        status.setText(ACTION_PREFIX + "onPrint.");
     }
 
     @FXML
     public void onExit(ActionEvent actionEvent) {
-        status.setText("Aktion: onExit.");
+        status.setText(ACTION_PREFIX + "onExit.");
     }
 
     @FXML
     public void onLoad(ActionEvent actionEvent) {
-        status.setText("Aktion: onLoad.");
+        status.setText(ACTION_PREFIX + "onLoad.");
     }
 
     @FXML
     public void onSave(ActionEvent actionEvent) {
-        status.setText("Aktion: onSave.");
+        status.setText(ACTION_PREFIX + "onSave.");
     }
 
     public void onExport(ActionEvent actionEvent) {
-        status.setText("Aktion: onExport.");
+        status.setText(ACTION_PREFIX + "onExport.");
     }
 
     @FXML
     public void onChangeSize(ActionEvent actionEvent) {
-        status.setText("Aktion: onChangeSize.");
+        status.setText(ACTION_PREFIX + "onChangeSize.");
     }
 
     @FXML
     public void onPlaceKarl(ActionEvent actionEvent) {
-        status.setText("Aktion: onPlaceKarl.");
+        status.setText(ACTION_PREFIX + "onPlaceKarl.");
     }
 
     @FXML
     public void onPlaceWall(ActionEvent actionEvent) {
-        status.setText("Aktion: onPlaceWall.");
+        status.setText(ACTION_PREFIX + "onPlaceWall.");
     }
 
     @FXML
     public void onPlaceTable(ActionEvent actionEvent) {
-        status.setText("Aktion: onPlaceTable.");
+        status.setText(ACTION_PREFIX + "onPlaceTable.");
     }
 
     @FXML
     public void onPlaceObject(ActionEvent actionEvent) {
-        status.setText("Aktion: onPlaceObject.");
+        status.setText(ACTION_PREFIX + "onPlaceObject.");
     }
 
     @FXML
     public void onChangePocketSize(ActionEvent actionEvent) {
-        status.setText("Aktion: onChangePocketSize.");
+        status.setText(ACTION_PREFIX + "onChangePocketSize.");
     }
 
     @FXML
     public void onSetPocketContent(ActionEvent actionEvent) {
-        status.setText("Aktion: onSetPocketContent.");
+        status.setText(ACTION_PREFIX + "onSetPocketContent.");
     }
 
     @FXML
     public void onStepAhead(ActionEvent actionEvent) {
-        status.setText("Aktion: onStepAhead.");
+        status.setText(ACTION_PREFIX + "onStepAhead.");
     }
 
     @FXML
     public void onTurnRIght(ActionEvent actionEvent) {
-        status.setText("Aktion: onTurnRIght.");
+        status.setText(ACTION_PREFIX + "onTurnRIght.");
     }
 
     @FXML
     public void onBackHome(ActionEvent actionEvent) {
-        status.setText("Aktion: onBackHome.");
+        status.setText(ACTION_PREFIX + "onBackHome.");
     }
 
     @FXML
     public void onIsAheadClear(ActionEvent actionEvent) {
-        status.setText("Aktion: onIsAheadClear.");
+        status.setText(ACTION_PREFIX + "onIsAheadClear.");
     }
 
     @FXML
     public void onIsPocketEmpty(ActionEvent actionEvent) {
-        status.setText("Aktion: onIsPocketEmpty.");
+        status.setText(ACTION_PREFIX + "onIsPocketEmpty.");
     }
 
     @FXML
     public void onSearchObject(ActionEvent actionEvent) {
-        status.setText("Aktion: onSearchObject.");
+        status.setText(ACTION_PREFIX + "onSearchObject.");
     }
 
     @FXML
     public void onPickUp(ActionEvent actionEvent) {
-        status.setText("Aktion: onPickUp.");
+        status.setText(ACTION_PREFIX + "onPickUp.");
     }
 
     @FXML
     public void onDropDown(ActionEvent actionEvent) {
-        status.setText("Aktion: onDropDown.");
+        status.setText(ACTION_PREFIX + "onDropDown.");
     }
 
     @FXML
     public void onStartOrContinue(ActionEvent actionEvent) {
-        status.setText("Aktion: onStartOrContinue.");
+        status.setText(ACTION_PREFIX + "onStartOrContinue.");
     }
 
     @FXML
     public void onPause(ActionEvent actionEvent) {
-        status.setText("Aktion: onPause.");
+        status.setText(ACTION_PREFIX + "onPause.");
     }
 
     @FXML
     public void onStop(ActionEvent actionEvent) {
-        status.setText("Aktion: onStop.");
+        status.setText(ACTION_PREFIX + "onStop.");
     }
 
     @FXML
-    public void a(MouseEvent dragEvent) {
-        status.setText("Aktion: " + dragEvent + ".");
+    public void onSpeedClick(MouseEvent mouseEvent) {
+        status.setText(ACTION_PREFIX + "Speed changed to " + sliderSpeed.getValue());
     }
+
     @FXML
-    public void m(MouseEvent dragEvent) {
-        status.setText("Aktion: " + dragEvent + ".");
-    }
-    @FXML
-    public void s(ScrollEvent dragEvent) {
-        status.setText("Aktion: " + sliderSpeed.getValue() + ".");
+    public void onSpeedDrag(MouseEvent mouseEvent) {
+        status.setText(ACTION_PREFIX + "Speed is changing...");
     }
 }

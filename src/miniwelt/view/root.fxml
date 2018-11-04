@@ -100,7 +100,7 @@
                         <String fx:value="btn-stop" />
                         <String fx:value="toolbar-btn" />
                      </styleClass></Button>
-                  <Slider fx:id="sliderSpeed" majorTickUnit="50.0" minorTickCount="4" onDragDetected="#a" onMouseDragged="#m" onScroll="#s" showTickMarks="true" snapToTicks="true" value="50.0" />
+                  <Slider fx:id="sliderSpeed" majorTickUnit="50.0" minorTickCount="4" onMouseClicked="#onSpeedClick" onMouseDragged="#onSpeedDrag" showTickMarks="true" snapToTicks="true" value="50.0" />
               </items>
             </ToolBar>
          </top>
