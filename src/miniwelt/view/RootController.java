@@ -1,4 +1,4 @@
-package miniwelt;
+package miniwelt.view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.*;
 
-public class MainController {
+public class RootController {
 
 
     public enum EXPORT {PNG, XML}

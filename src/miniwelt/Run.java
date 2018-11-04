@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Run extends Application {
 
 
     public static void main(String[] args) {
@@ -25,7 +25,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         System.out.println("start -> Thread: " + Thread.currentThread().getName());
 
-        Parent root = FXMLLoader.load(getClass().getResource("miniwelt.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("view/root.fxml"));
         primaryStage.setTitle("Karl der Brandschutzbeauftragte");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

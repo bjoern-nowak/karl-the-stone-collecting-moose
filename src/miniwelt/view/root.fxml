@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane prefWidth="800.0" styleClass="root-pane" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miniwelt.MainController">
+<BorderPane prefWidth="800.0" styleClass="root-pane" stylesheets="@root.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miniwelt.view.RootController">
     <center>
         <BorderPane xmlns:fx="http://javafx.com/fxml">
          <center>

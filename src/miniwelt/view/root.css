@@ -35,19 +35,19 @@
 }
 
 .btn-new {
-    -fx-background-image: url("../resources/gui/win8metro/if_add_file_71698.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_add_file_71698.png");
 }
 
 .btn-open {
-    -fx-background-image: url("../resources/gui/win8metro/if_folder_71843.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_folder_71843.png");
 }
 
 .btn-compile {
-    -fx-background-image: url("../resources/gui/win8metro/if_console_71788.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_console_71788.png");
 }
 
 .btn-save {
-    -fx-background-image: url("../resources/gui/win8metro/if_save_as_72000.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_save_as_72000.png");
 }
 
 .btn-grid {
@@ -59,7 +59,7 @@
 }
 
 .btn-karl {
-    -fx-background-image: url("../resources/Boss/BossWalking/BossWalking_01.png");
+    -fx-background-image: url("../../../resources/Boss/BossWalking/BossWalking_01.png");
     -fx-background-size: 22 22;
 }
 
@@ -76,15 +76,15 @@
 }
 
 .btn-start {
-    -fx-background-image: url("../resources/gui/win8metro/if_play_71959.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_play_71959.png");
 }
 
 .btn-pause {
-    -fx-background-image: url("../resources/gui/win8metro/if_pause_71948.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_pause_71948.png");
 }
 
 .btn-stop {
-    -fx-background-image: url("../resources/gui/win8metro/if_stop_72039.png");
+    -fx-background-image: url("../../../resources/gui/win8metro/if_stop_72039.png");
 }
 
 .code-area {
