@@ -1,6 +1,6 @@
 package miniwelt.model;
 
-public enum Direction {
+public enum ActorDirection {
     UP(0, 1),
     DOWN(0, -1),
     LEFT(-1, 0),
@@ -8,7 +8,7 @@ public enum Direction {
 
     public int x, y;
 
-    Direction(int x, int y) {
+    ActorDirection(int x, int y) {
         this.x = x;
         this.y = y;
     }

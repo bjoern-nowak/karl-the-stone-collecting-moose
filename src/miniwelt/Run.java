@@ -25,7 +25,7 @@ public class Run extends Application {
     public void start(Stage primaryStage) throws Exception{
         System.out.println("start -> Thread: " + Thread.currentThread().getName());
 
-        Parent root = FXMLLoader.load(getClass().getResource("view/root.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("view/view.fxml"));
         primaryStage.setTitle("Karl der Brandschutzbeauftragte");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

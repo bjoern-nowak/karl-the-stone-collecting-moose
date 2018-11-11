@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane prefWidth="800.0" styleClass="root-pane" stylesheets="@root.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miniwelt.view.RootController">
+<BorderPane prefWidth="800.0" styleClass="root-pane" stylesheets="@view.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miniwelt.controller.ViewController">
     <center>
         <BorderPane xmlns:fx="http://javafx.com/fxml">
          <center>
@@ -53,33 +53,33 @@
                         <String fx:value="toolbar-btn" />
                      </styleClass></Button>
                   <Separator orientation="VERTICAL" prefHeight="20.0" />
-                  <Button mnemonicParsing="false" onAction="#onChangeSize" text="Grid">
-                     <styleClass>
-                        <String fx:value="btn-grid" />
-                        <String fx:value="toolbar-btn" />
-                     </styleClass></Button>
-                  <Button mnemonicParsing="false" onAction="#onPlaceWall" text="Wand">
+                  <Button mnemonicParsing="false" onAction="#onPlaceWall" text="Wall">
                      <styleClass>
                         <String fx:value="btn-wall" />
                         <String fx:value="toolbar-btn" />
                      </styleClass></Button>
-                  <Button mnemonicParsing="false" onAction="#onPlaceKarl" text="Karl">
-                     <styleClass>
-                        <String fx:value="btn-karl" />
-                        <String fx:value="toolbar-btn" />
-                     </styleClass></Button>
-                  <Button mnemonicParsing="false" onAction="#onPlaceObject" text="Obj">
+                  <Button mnemonicParsing="false" onAction="#onPlaceItem" text="Danger">
                      <styleClass>
                         <String fx:value="btn-object" />
                         <String fx:value="toolbar-btn" />
                      </styleClass></Button>
-                  <Button mnemonicParsing="false" onAction="#onPlaceTable" text="Table">
+                  <Button mnemonicParsing="false" onAction="#onPlaceActor" text="Karl">
+                     <styleClass>
+                        <String fx:value="btn-karl" />
+                        <String fx:value="toolbar-btn" />
+                     </styleClass></Button>
+                  <Button mnemonicParsing="false" onAction="#onPlaceStart" text="Startpoint">
+                     <styleClass>
+                        <String fx:value="btn-grid" />
+                        <String fx:value="toolbar-btn" />
+                     </styleClass></Button>
+                  <Button mnemonicParsing="false" onAction="#onRemove" text="Remove">
                      <styleClass>
                         <String fx:value="btn-table" />
                         <String fx:value="toolbar-btn" />
                      </styleClass></Button>
                   <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="toolbar-separator" />
-                  <Button mnemonicParsing="false" onAction="#onChangePocketSize" text="Pocket">
+                  <Button mnemonicParsing="false" onAction="#onSetBagSize" text="BagContent">
                      <styleClass>
                         <String fx:value="btn-pocket" />
                         <String fx:value="toolbar-btn" />
@@ -119,44 +119,49 @@
         <menus>
           <Menu text="_Editor">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#onNew" text="Neu">
+              <MenuItem mnemonicParsing="false" onAction="#onNew" text="New">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Öffnen">
+                  <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onCompile" text="Komplilieren">
+                  <MenuItem mnemonicParsing="false" onAction="#onCompile" text="Compile">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#onPrint" text="Drucken">
+                  <MenuItem mnemonicParsing="false" onAction="#onPrint" text="Print">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onExit" text="Beenden">
+                  <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
             </items>
                <accelerator>
                   <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                </accelerator>
           </Menu>
-          <Menu text="_Territorium">
+          <Menu text="_Office-Complex">
             <items>
-              <MenuItem onAction="#onLoad" text="_Laden">
+                  <MenuItem onAction="#onNew" text="_Reset">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+              <MenuItem onAction="#onLoad" text="_Load">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem onAction="#onSave" text="_Speichern">
+                  <MenuItem onAction="#onSave" text="_Save">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <Menu text="E_xportieren als...">
+                  <Menu text="E_xport as...">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#onExport" text="PNG" />
                       <MenuItem mnemonicParsing="false" onAction="#onExport" text="XML" />
@@ -166,62 +171,63 @@
                      </accelerator>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem onAction="#onChangeSize" text="_Größe ändern">
+                  <MenuItem onAction="#onChangeWorldSize" text="Change _world size">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <Menu text="Objekt _platzieren...">
+                  <Menu text="Set _Mouse Mode to...">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#onPlaceKarl" text="Karl" />
-                        <MenuItem mnemonicParsing="false" onAction="#onPlaceWall" text="Wand" />
-                      <MenuItem mnemonicParsing="false" onAction="#onPlaceTable" text="Tisch" />
-                        <MenuItem mnemonicParsing="false" onAction="#onPlaceObject" text="Gegenstand" />
+                        <MenuItem mnemonicParsing="false" onAction="#onPlaceWall" text="Place Wall" />
+                        <MenuItem mnemonicParsing="false" onAction="#onPlaceItem" text="Place Danger" />
+                        <MenuItem mnemonicParsing="false" onAction="#onPlaceActor" text="Place Karl" />
+                        <MenuItem mnemonicParsing="false" onAction="#onPlaceStart" text="Place Startpoint" />
+                        <MenuItem mnemonicParsing="false" onAction="#onRemove" text="Remove" />
                     </items>
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="M" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </Menu>
             </items>
                <accelerator>
-                  <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                  <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                </accelerator>
           </Menu>
           <Menu text="_Karl">
             <items>
-                  <Menu mnemonicParsing="false" text="Tasche...">
+                  <Menu mnemonicParsing="false" text="Bag...">
                     <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onChangePocketSize" text="Größe ändern" />
-                        <MenuItem mnemonicParsing="false" onAction="#onSetPocketContent" text="Inhalt festlegen" />
+                    <MenuItem mnemonicParsing="false" onAction="#onSetBagSize" text="Change max. Size" />
+                        <MenuItem mnemonicParsing="false" onAction="#onSetBagContent" text="Set content" />
                     </items>
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <Menu mnemonicParsing="false" text="Bewegen...">
+                  <Menu mnemonicParsing="false" text="Move...">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onStepAhead" text="schrittVor()" />
-                      <MenuItem mnemonicParsing="false" onAction="#onTurnRIght" text="rechtsRum()" />
-                        <MenuItem mnemonicParsing="false" onAction="#onBackHome" text="zumBuero()" />
+                        <MenuItem mnemonicParsing="false" onAction="#onStepAhead" text="stepAhead()" />
+                      <MenuItem mnemonicParsing="false" onAction="#onTurnRight" text="turnRight()" />
+                        <MenuItem mnemonicParsing="false" onAction="#onBackToStart" text="backToStart()" />
                     </items>
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="B" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="M" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </Menu>
-                  <Menu mnemonicParsing="false" text="Kontrollieren...">
+                  <Menu mnemonicParsing="false" text="Test...">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#onIsAheadClear" text="vornFrei()" />
-                        <MenuItem mnemonicParsing="false" onAction="#onIsPocketEmpty" text="tascheLeer()" />
-                        <MenuItem mnemonicParsing="false" onAction="#onSearchObject" text="sucheGefahr()" />
+                      <MenuItem mnemonicParsing="false" onAction="#onAheadClear" text="aheadClear()" />
+                        <MenuItem mnemonicParsing="false" onAction="#onBagEmpty" text="bagEmpty()" />
+                        <MenuItem mnemonicParsing="false" onAction="#onFoundItem" text="foundDanger()" />
                     </items>
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </Menu>
-                  <Menu mnemonicParsing="false" text="Aktion...">
+                  <Menu mnemonicParsing="false" text="Action...">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#onPickUp" text="hebAuf()" />
-                        <MenuItem mnemonicParsing="false" onAction="#onDropDown" text="legAb()" />
+                      <MenuItem mnemonicParsing="false" onAction="#onPickUp" text="pickUp()" />
+                        <MenuItem mnemonicParsing="false" onAction="#onDropDown" text="dropDown()" />
                     </items>
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -234,7 +240,7 @@
           </Menu>
             <Menu text="_Simulation">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#onStartOrContinue" text="Start / Fortsetzen">
+                <MenuItem mnemonicParsing="false" onAction="#onStartOrContinue" text="Start / Continue">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
