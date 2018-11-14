@@ -18,7 +18,7 @@
 }
 
 .btn-new {
-    -fx-background-image: url("/images/icons/new.png");
+    -fx-background-image: url("images/icons/new.png");
 }
 .btn-open {
     -fx-background-image: url("/images/icons/open.png");

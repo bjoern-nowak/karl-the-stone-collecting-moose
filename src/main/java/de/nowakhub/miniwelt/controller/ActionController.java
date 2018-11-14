@@ -1,60 +1,51 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.model.MouseMode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
-import de.nowakhub.miniwelt.model.Actor;
-import de.nowakhub.miniwelt.model.World;
-import de.nowakhub.miniwelt.service.MouseMode;
 
 
-public class ActionController {
+public class ActionController extends SubController {
     public static final String PREFIX_EVENT = "Event: ";
     public static final String PREFIX_MOUSE_MODE = "Mouse mode: ";
     public static enum EXPORT {PNG, XML}
 
-    private World world;
-    private Actor actor;
-
-    private MouseMode mouseMode;
-
     @FXML
     public Slider sliderSpeed;
 
-    @FXML
-    public Label status;
 
-
-    public ActionController(World world, Actor actor) {
-        this.world = world;
-        this.actor = actor;
+    public void initialize() {
+        if (sliderSpeed != null) {
+            sliderSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
+                statusText.setValue(PREFIX_EVENT + "Speed changed to " + newValue.intValue());
+            });
+        }
     }
 
     @FXML
     public void onNew(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onNew.");
+        statusText.setValue(PREFIX_EVENT + "onNew.");
     }
 
     @FXML
     public void onOpen(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onOpen.");
+        statusText.setValue(PREFIX_EVENT + "onOpen.");
     }
 
     @FXML
     public void onCompile(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onCompile.");
+        statusText.setValue(PREFIX_EVENT + "onCompile.");
     }
 
     @FXML
     public void onPrint(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onPrint.");
+        statusText.setValue(PREFIX_EVENT + "onPrint.");
     }
 
     @FXML
     public void onExit(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onExit.");
+        statusText.setValue(PREFIX_EVENT + "onExit.");
     }
 
 
@@ -62,56 +53,56 @@ public class ActionController {
 
     @FXML
     public void onReset(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onReset.");
+        statusText.setValue(PREFIX_EVENT + "onReset.");
     }
 
     @FXML
     public void onLoad(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onLoad.");
+        statusText.setValue(PREFIX_EVENT + "onLoad.");
     }
 
     @FXML
     public void onSave(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onSave.");
+        statusText.setValue(PREFIX_EVENT + "onSave.");
     }
 
     public void onExport(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onExport.");
+        statusText.setValue(PREFIX_EVENT + "onExport.");
     }
 
     @FXML
     public void onChangeWorldSize(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onChangeSize.");
+        statusText.setValue(PREFIX_EVENT + "onChangeSize.");
     }
 
     @FXML
     public void onPlaceActor(ActionEvent actionEvent) {
-        mouseMode = MouseMode.PLACE_KARL;
-        status.setText(PREFIX_MOUSE_MODE + mouseMode);
+        mouseMode.setValue(MouseMode.PLACE_KARL);
+        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onPlaceWall(ActionEvent actionEvent) {
-        mouseMode = MouseMode.PLACE_WALL;
-        status.setText(PREFIX_MOUSE_MODE + mouseMode);
+        mouseMode.setValue(MouseMode.PLACE_WALL);
+        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onPlaceItem(ActionEvent actionEvent) {
-        mouseMode = MouseMode.PLACE_ITEM;
-        status.setText(PREFIX_MOUSE_MODE + mouseMode);
+        mouseMode.setValue(MouseMode.PLACE_ITEM);
+        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onPlaceStart(ActionEvent actionEvent) {
-        mouseMode = MouseMode.PLACE_START;
-        status.setText(PREFIX_MOUSE_MODE + mouseMode);
+        mouseMode.setValue(MouseMode.PLACE_START);
+        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onRemove(ActionEvent actionEvent) {
-        mouseMode = MouseMode.PLACE_FREE;
-        status.setText(PREFIX_MOUSE_MODE + mouseMode);
+        mouseMode.setValue(MouseMode.PLACE_FREE);
+        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
 
@@ -119,57 +110,57 @@ public class ActionController {
 
     @FXML
     public void onSetBagSize(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onSetBagSize.");
+        statusText.setValue(PREFIX_EVENT + "onSetBagSize.");
     }
 
     @FXML
     public void onSetBagContent(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onSetBagContent.");
+        statusText.setValue(PREFIX_EVENT + "onSetBagContent.");
     }
 
     @FXML
     public void onStepAhead(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onStepAhead.");
-        actor.stepAhead();
+        statusText.setValue(PREFIX_EVENT + "onStepAhead.");
+        actor.get().stepAhead();
     }
 
     @FXML
     public void onTurnRight(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onTurnRight.");
-        actor.turnRight();
+        statusText.setValue(PREFIX_EVENT + "onTurnRight.");
+        actor.get().turnRight();
     }
 
     @FXML
     public void onBackToStart(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onBackToStart.");
-        actor.backToStart();
+        statusText.setValue(PREFIX_EVENT + "onBackToStart.");
+        actor.get().backToStart();
     }
 
     @FXML
     public void onAheadClear(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "aheadClear: " + actor.aheadClear());
+        statusText.setValue(PREFIX_EVENT + "aheadClear: " + actor.get().aheadClear());
     }
 
     @FXML
     public void onBagEmpty(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "bagEmpty: " + actor.bagEmpty());
+        statusText.setValue(PREFIX_EVENT + "bagEmpty: " + actor.get().bagEmpty());
     }
 
     @FXML
     public void onFoundItem(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "foundItem: " + actor.foundItem());
+        statusText.setValue(PREFIX_EVENT + "foundItem: " + actor.get().foundItem());
     }
 
     @FXML
     public void onPickUp(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onPickUp.");
-        actor.pickUp();
+        statusText.setValue(PREFIX_EVENT + "onPickUp.");
+        actor.get().pickUp();
     }
 
     @FXML
     public void onDropDown(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onDropDown.");
-        actor.dropDown();
+        statusText.setValue(PREFIX_EVENT + "onDropDown.");
+        actor.get().dropDown();
     }
 
 
@@ -177,27 +168,18 @@ public class ActionController {
 
     @FXML
     public void onStartOrContinue(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onStartOrContinue.");
+        statusText.setValue(PREFIX_EVENT + "onStartOrContinue.");
     }
 
     @FXML
     public void onPause(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onPause.");
+        statusText.setValue(PREFIX_EVENT + "onPause.");
     }
 
     @FXML
     public void onStop(ActionEvent actionEvent) {
-        status.setText(PREFIX_EVENT + "onStop.");
+        statusText.setValue(PREFIX_EVENT + "onStop.");
     }
 
-    @FXML
-    public void onSpeedClick(MouseEvent mouseEvent) {
-        status.setText(PREFIX_EVENT + "Speed changed to " + sliderSpeed.getValue());
-    }
-
-    @FXML
-    public void onSpeedDrag(MouseEvent mouseEvent) {
-        status.setText(PREFIX_EVENT + "Speed is changing...");
-    }
 }
 

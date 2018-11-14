@@ -9,14 +9,13 @@
 }
 
 .label-status{
-    -fx-padding: 0 0 0 10px;
-    -fx-alignment: center-left;
     -fx-content-display: text-only;
+    -fx-alignment: center-left;
+    -fx-padding: 4 0 0 10px;
 }
 
 .status-text {
-    -fx-padding: 0 0 0 5px;
-    -fx-alignment: center-left;
     -fx-content-display: text-only;
-    -fx-text-fill: red;
+    -fx-alignment: center-left;
+    -fx-padding: 4 0 0 5px;
 }

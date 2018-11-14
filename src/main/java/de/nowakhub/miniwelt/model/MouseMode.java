@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.service;
+package de.nowakhub.miniwelt.model;
 
 public enum MouseMode {
     PLACE_FREE,

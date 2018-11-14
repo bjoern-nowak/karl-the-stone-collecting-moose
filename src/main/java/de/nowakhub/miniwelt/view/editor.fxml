@@ -4,7 +4,7 @@
 
 
 <TextArea xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="de.nowakhub.miniwelt.controller.WorldController"
+          fx:controller="de.nowakhub.miniwelt.controller.EditorController"
           stylesheets="@editor.css"
           styleClass="editor"
 

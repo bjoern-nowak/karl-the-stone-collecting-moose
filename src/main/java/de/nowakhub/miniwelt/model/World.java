@@ -4,36 +4,35 @@ import de.nowakhub.miniwelt.exceptions.NoClearPathException;
 import de.nowakhub.miniwelt.exceptions.PositionInvalidException;
 import de.nowakhub.miniwelt.exceptions.RequireActorException;
 import de.nowakhub.miniwelt.exceptions.RequireStartException;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class World implements ActorInteraction {
 
     // limits
-    private int max_X;
-    private int max_Y;
+    private IntegerProperty sizeX = new SimpleIntegerProperty();
+    private IntegerProperty sizeY = new SimpleIntegerProperty();
     
     // has
     private Field[][] field; // or use linked list (drawback: consumes more memory, may be a performance issue)
     private Position actor;
     private Position start;
 
-    public World(int max_X, int max_Y) {
-        resize(max_X, max_Y);
+    public World(int sizeX, int sizeY) {
+        resize(sizeX, sizeY);
     }
 
     //__________________________________________________________________________________________________________________
     //    commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public Field[][] state() {
-        return field.clone();
-    }
 
-    public void resize(int max_X, int max_Y) {
-        this.max_X = max_X;
-        this.max_Y = max_Y;
+    public void resize(int sizeX, int sizeY) {
+        this.sizeX.set(sizeX);
+        this.sizeY.set(sizeY);
 
         Field[][] oldGrid = field;
-        field = new Field[max_X][max_Y];
+        field = new Field[sizeX][sizeY];
         actor = new Position();
         start = new Position();
 
@@ -110,7 +109,7 @@ public class World implements ActorInteraction {
     //------------------------------------------------------------------------------------------------------------------
 
     private boolean isInBoundary(int x, int y){
-        return x < max_X || y < max_Y;
+        return x < sizeX.get() || y < sizeY.get();
     }
 
     private void checkIsInBoundary(int x, int y) throws PositionInvalidException {
@@ -118,7 +117,7 @@ public class World implements ActorInteraction {
     }
 
     // _________________________________________________________________________________________________________________
-    // utility methods
+    //     utility methods
     // -----------------------------------------------------------------------------------------------------------------
 
     private void preparePossibleOverride(int x, int y) {
@@ -131,7 +130,7 @@ public class World implements ActorInteraction {
     }
 
     // _________________________________________________________________________________________________________________
-    // Actor Interactions Implementation
+    //     Actor Interactions Implementation
     // -----------------------------------------------------------------------------------------------------------------
     
     @Override
@@ -159,5 +158,29 @@ public class World implements ActorInteraction {
     @Override
     public boolean inOffice() {
         return field[actor.x][actor.y].isOccupiedBy(Field.ACTOR_AT_START);
+    }
+
+    //__________________________________________________________________________________________________________________
+    //    getter setter
+    //------------------------------------------------------------------------------------------------------------------
+
+    public Field[][] state() {
+        return field.clone();
+    }
+
+    public int getSizeX() {
+        return sizeX.get();
+    }
+
+    public IntegerProperty sizeXProperty() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY.get();
+    }
+
+    public IntegerProperty sizeYProperty() {
+        return sizeY;
     }
 }

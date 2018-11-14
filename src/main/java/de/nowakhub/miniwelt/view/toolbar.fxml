@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 
+
 <ToolBar xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
          fx:controller="de.nowakhub.miniwelt.controller.ActionController"
          styleClass="toolbar"
@@ -103,5 +104,5 @@
             <String fx:value="btn" />
         </styleClass>
     </Button>
-    <Slider fx:id="sliderSpeed" majorTickUnit="50.0" minorTickCount="4" onMouseClicked="#onSpeedClick" onMouseDragged="#onSpeedDrag" showTickMarks="true" snapToTicks="true" value="50.0" />
+    <Slider fx:id="sliderSpeed" majorTickUnit="50.0" minorTickCount="4" showTickMarks="true" snapToTicks="true" value="50.0" />
 </ToolBar>
