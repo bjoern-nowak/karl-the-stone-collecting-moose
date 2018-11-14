@@ -1,0 +1,62 @@
+.toolbar {
+    -fx-pref-height: 60px;
+    -fx-pref-width: 800px;
+}
+
+.separator {
+    -fx-pref-height: 20px;
+}
+
+.btn {
+    -fx-pref-height: 40px;
+    -fx-pref-width: 40px;
+    -fx-content-display: graphic-only;
+    -fx-background-size: 32 32;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+
+}
+
+.btn-new {
+    -fx-background-image: url("/images/icons/new.png");
+}
+.btn-open {
+    -fx-background-image: url("/images/icons/open.png");
+}
+.btn-save {
+    -fx-background-image: url("/images/icons/save.png");
+}
+
+.btn-compile {
+    -fx-background-image: url("/images/icons/compile_pr0.png");
+}
+
+.btn-wall {
+    -fx-content-display: text-only;
+}
+.btn-karl {
+    -fx-background-image: url("/images/world/karl/walking/01.png");
+}
+.btn-start {
+    -fx-content-display: text-only;
+}
+.btn-object {
+    -fx-content-display: text-only;
+}
+.btn-remove {
+    -fx-content-display: text-only;
+}
+
+.btn-pocket {
+    -fx-content-display: text-only;
+}
+
+.btn-run {
+    -fx-background-image: url("/images/icons/run.png");
+}
+.btn-pause {
+    -fx-background-image: url("/images/icons/pause.png");
+}
+.btn-stop {
+    -fx-background-image: url("/images/icons/stop.png");
+}

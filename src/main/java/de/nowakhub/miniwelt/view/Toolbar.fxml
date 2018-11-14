@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+
+<ToolBar xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="de.nowakhub.miniwelt.controller.ActionController"
+         styleClass="toolbar"
+         stylesheets="@toolbar.css"
+         BorderPane.alignment="CENTER">
+
+    <Button mnemonicParsing="false" onAction="#onNew" prefHeight="40.0" prefWidth="40.0" text="Neu">
+        <styleClass>
+            <String fx:value="btn-new" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onOpen" text="Open">
+        <styleClass>
+            <String fx:value="btn-open" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onSave" text="Save">
+        <styleClass>
+            <String fx:value="btn-save" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+
+    <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator" />
+
+    <Button mnemonicParsing="false" onAction="#onCompile" text="Com">
+        <styleClass>
+            <String fx:value="btn-compile" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+
+    <Separator orientation="VERTICAL" prefHeight="25.0" />
+
+    <Button mnemonicParsing="false" onAction="#onPlaceWall" text="Wall">
+        <styleClass>
+            <String fx:value="btn-wall" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onPlaceItem" text="Danger">
+        <styleClass>
+            <String fx:value="btn-object" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onPlaceActor" text="Karl">
+        <styleClass>
+            <String fx:value="btn-karl" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onPlaceStart" text="Startpoint">
+        <styleClass>
+            <String fx:value="btn-start" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onRemove" text="Remove">
+        <styleClass>
+            <String fx:value="btn-remove" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+
+    <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator" />
+
+    <Button mnemonicParsing="false" onAction="#onSetBagContent" text="BagContent">
+        <styleClass>
+            <String fx:value="btn-pocket" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+
+    <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator" />
+
+    <Button mnemonicParsing="false" onAction="#onStartOrContinue" text="Start">
+        <styleClass>
+            <String fx:value="btn-run" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onPause" text="Pause">
+        <styleClass>
+            <String fx:value="btn-pause" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#onStop" text="Stop">
+        <styleClass>
+            <String fx:value="btn-stop" />
+            <String fx:value="btn" />
+        </styleClass>
+    </Button>
+    <Slider fx:id="sliderSpeed" majorTickUnit="50.0" minorTickCount="4" onMouseClicked="#onSpeedClick" onMouseDragged="#onSpeedDrag" showTickMarks="true" snapToTicks="true" value="50.0" />
+</ToolBar>

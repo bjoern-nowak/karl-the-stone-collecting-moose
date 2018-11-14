@@ -1,0 +1,5 @@
+.editor {
+    -fx-font-family: Consolas;
+    -fx-pref-height: 600px;
+    -fx-pref-width: 600px;
+}
