@@ -2,7 +2,10 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
 
-<ScrollPane styleClass="view" stylesheets="@view.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ViewController">
-    <Canvas fx:id="frame"/>
+<ScrollPane fx:id="scrollPane" styleClass="view" stylesheets="@view.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ViewController">
+    <StackPane fx:id="stackPane" styleClass="view">
+        <Canvas fx:id="frame" />
+    </StackPane>
 </ScrollPane>

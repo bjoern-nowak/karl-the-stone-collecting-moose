@@ -2,16 +2,25 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.exceptions.InternalUnkownFieldException;
 import de.nowakhub.miniwelt.model.Field;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 public class ViewController extends SubController {
 
-    private double SIZE = 1.0;
+    private double zoom = 1.0;
     private final int TILE_SIZE = 32;
+
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private StackPane stackPane;
 
     @FXML
     private Canvas frame;
@@ -31,14 +40,33 @@ public class ViewController extends SubController {
     public void initialize() {
         gc = frame.getGraphicsContext2D();
 
-        //frame.getParent().addEventHandler(MouseWheelEvent.MOUSE_WHEEL, event -> event.);
+        scrollPane.addEventHandler(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                if (event.isAltDown()) {
+                    if (0 > event.getDeltaY()) {
+                        zoom -= 0.1*zoom;
+                    } else {
+                        zoom += 0.1*zoom;
+                    }
+                    resize();
+                    draw();
+                }
+            }
+        });
     }
 
     public void postInitialize() {
-        frame.heightProperty().bind(world.get().sizeYProperty().multiply(tileSize()));
-        frame.widthProperty().bind(world.get().sizeXProperty().multiply(tileSize()));
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
 
+        resize();
         draw();
+    }
+
+    private void resize() {
+        frame.setHeight(tileSize(world.get().getSizeY()));
+        frame.setWidth(tileSize(world.get().getSizeX()));
     }
 
     private void draw() {
@@ -144,10 +172,10 @@ public class ViewController extends SubController {
     }
 
     private double tileSize() {
-        return SIZE * TILE_SIZE;
+        return zoom * TILE_SIZE;
     }
     private double tileSize(int value) {
-        return SIZE * TILE_SIZE * value;
+        return zoom * TILE_SIZE * value;
     }
 
 }
