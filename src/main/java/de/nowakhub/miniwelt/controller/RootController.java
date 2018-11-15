@@ -26,8 +26,6 @@ public class RootController {
     @FXML
     public ViewController viewController;
 
-    public RootController() {
-    }
 
     public void initialize() {
         world.bindBidirectional(actionController.world);
@@ -36,8 +34,6 @@ public class RootController {
         actor.bindBidirectional(actionController.actor);
         actor.bindBidirectional(editorController.actor);
         actor.bindBidirectional(viewController.actor);
-        world.set(new World(10, 10));
-        actor.set(new Actor(world.get()));
 
         actionController.mouseMode.bindBidirectional(editorController.mouseMode);
         actionController.mouseMode.bindBidirectional(viewController.mouseMode);
@@ -45,5 +41,19 @@ public class RootController {
         status.textProperty().bindBidirectional(actionController.statusText);
         status.textProperty().bindBidirectional(editorController.statusText);
         status.textProperty().bindBidirectional(viewController.statusText);
+
+        world.set(new World(10, 10));
+        actor.set(new Actor(world.get()));
+
+        for (int x = 0; x < world.get().getSizeX(); x++) {
+            for (int y = 0; y < world.get().getSizeY(); y++) {
+                world.get().placeWall(x,y);
+            }
+        }
+        world.get().placeDanger(1,1);
+        world.get().placeKarl(2,2);
+        world.get().placeOffice(3,3);
+
+        viewController.postInitialize();
     }
 }

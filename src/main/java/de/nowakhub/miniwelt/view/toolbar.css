@@ -11,31 +11,31 @@
     -fx-pref-height: 40px;
     -fx-pref-width: 40px;
     -fx-content-display: graphic-only;
-    -fx-background-size: 32 32;
+    -fx-background-size: 30 30;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 
 }
 
 .btn-new {
-    -fx-background-image: url("images/icons/new.png");
+    -fx-background-image: url("../../../../images/icons/new.png");
 }
 .btn-open {
-    -fx-background-image: url("/images/icons/open.png");
+    -fx-background-image: url("../../../../images/icons/open.png");
 }
 .btn-save {
-    -fx-background-image: url("/images/icons/save.png");
+    -fx-background-image: url("../../../../images/icons/save.png");
 }
 
 .btn-compile {
-    -fx-background-image: url("/images/icons/compile_pr0.png");
+    -fx-background-image: url("../../../../images/icons/compile_pr0.png");
 }
 
 .btn-wall {
     -fx-content-display: text-only;
 }
 .btn-karl {
-    -fx-background-image: url("/images/world/karl/walking/01.png");
+    -fx-background-image: url("../../../../images/world/debug/karl_right.png");
 }
 .btn-start {
     -fx-content-display: text-only;
@@ -52,11 +52,11 @@
 }
 
 .btn-run {
-    -fx-background-image: url("/images/icons/run.png");
+    -fx-background-image: url("../../../../images/icons/run.png");
 }
 .btn-pause {
-    -fx-background-image: url("/images/icons/pause.png");
+    -fx-background-image: url("../../../../images/icons/pause.png");
 }
 .btn-stop {
-    -fx-background-image: url("/images/icons/stop.png");
+    -fx-background-image: url("../../../../images/icons/stop.png");
 }
