@@ -1,7 +1,7 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Actor;
-import de.nowakhub.miniwelt.model.MouseMode;
+import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.World;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -13,7 +13,7 @@ public abstract class SubController {
     final ObjectProperty<World> world = new SimpleObjectProperty<>();
     final ObjectProperty<Actor> actor = new SimpleObjectProperty<>();
     final StringProperty statusText = new SimpleStringProperty();
-    final ObjectProperty<MouseMode> mouseMode = new SimpleObjectProperty<>();
+    final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
     public World getWorld() {
         return world.get();
@@ -51,15 +51,15 @@ public abstract class SubController {
         this.statusText.set(statusText);
     }
 
-    public MouseMode getMouseMode() {
+    public Field getMouseMode() {
         return mouseMode.get();
     }
 
-    public ObjectProperty<MouseMode> mouseModeProperty() {
+    public ObjectProperty<Field> mouseModeProperty() {
         return mouseMode;
     }
 
-    public void setMouseMode(MouseMode mouseMode) {
+    public void setMouseMode(Field mouseMode) {
         this.mouseMode.set(mouseMode);
     }
 }

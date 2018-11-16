@@ -29,22 +29,23 @@ public enum Field {
     public boolean isOccupiedBy(Field by) {
         switch (by) {
             case ACTOR:
-                return Field.AllOfActor.contains(this);
+                return Field.WithActor.contains(this);
             case START:
-                return Field.AllOfOffice.contains(this);
+                return Field.WithStart.contains(this);
             case ITEM:
-                return Field.AllOfActor.contains(this);
+                return Field.WithActor.contains(this);
             default:
                 return this.equals(by);
         }
     }
     
     public Field without(Field without) {
+        if (this.equals(without)) return FREE;
         if (StackedOnActor.contains(this)) {
             if (ACTOR.equals(without)) {
                 return byKey(this.getKey().substring(1));
             } else if (StackableOnActor.contains(without)) {
-                return byKey(this.getKey().substring(0, without.getKey().length() - 1));
+                return byKey(this.getKey().substring(0, 1));
             }
         }
         return this;
@@ -60,11 +61,17 @@ public enum Field {
         return with;
     }
 
+    public Field clear() {
+        if (this.equals(FREE)) return FREE;
+        return byKey(this.getKey().substring(0, this.getKey().length() - 1));
+    }
+
+    public static EnumSet<Field> NotRemovable = EnumSet.of(Field.ACTOR, Field.START);
     public static EnumSet<Field> StackableOnActor = EnumSet.of(Field.START, Field.ITEM);
     public static EnumSet<Field> StackedOnActor = EnumSet.of(Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);
-    public static EnumSet<Field> AllOfActor = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);
-    public static EnumSet<Field> AllOfOffice = EnumSet.of(Field.START, Field.ACTOR_AT_START);
-    public static EnumSet<Field> AllOfDanger = EnumSet.of(Field.ITEM, Field.ACTOR_ON_ITEM);
+    public static EnumSet<Field> WithActor = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);
+    public static EnumSet<Field> WithStart = EnumSet.of(Field.START, Field.ACTOR_AT_START);
+    public static EnumSet<Field> WithItems = EnumSet.of(Field.ITEM, Field.ACTOR_ON_ITEM);
     public static final Map<String, Field> lookup;
     
     static {

@@ -32,19 +32,19 @@
 }
 
 .btn-wall {
-    -fx-content-display: text-only;
+    -fx-background-image: url("../../../../images/world/debug/wall.png");
 }
 .btn-karl {
     -fx-background-image: url("../../../../images/world/debug/karl_right.png");
 }
 .btn-start {
-    -fx-content-display: text-only;
+    -fx-background-image: url("../../../../images/world/debug/office.png");
 }
 .btn-object {
-    -fx-content-display: text-only;
+    -fx-background-image: url("../../../../images/world/debug/item.png");
 }
 .btn-remove {
-    -fx-content-display: text-only;
+    -fx-background-image: url("../../../../images/world/debug/ground.png");
 }
 
 .btn-pocket {

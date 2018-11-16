@@ -63,23 +63,47 @@ public class World implements ActorInteraction {
     //------------------------------------------------------------------------------------------------------------------
 
     public void remove(int x, int y) {
-        field[x][y] = Field.FREE;
+        if (Field.NotRemovable.contains(field[x][y])) return;
+        field[x][y] = field[x][y].with(Field.FREE);
+    }
+
+    public void place(Field field, int x, int y) {
+        switch (field) {
+            case FREE:
+                remove(x, y);
+                break;
+            case ACTOR:
+                placeKarl(x, y);
+                break;
+            case ITEM:
+                placeDanger(x, y);
+                break;
+            case OBSTACLE:
+                placeWall(x, y);
+                break;
+            case START:
+                placeOffice(x, y);
+                break;
+
+
+        }
     }
 
     public void placeWall(int x, int y) throws PositionInvalidException {
         checkIsInBoundary(x, y);
-        preparePossibleOverride(x, y);
+        if (Field.OBSTACLE.equals(field[x][y]) || Field.NotRemovable.contains(field[x][y])) return;
         field[x][y] = field[x][y].with(Field.OBSTACLE);
     }
 
     public void placeDanger(int x, int y) throws PositionInvalidException {
         checkIsInBoundary(x, y);
-        preparePossibleOverride(x, y);
+        if (Field.WithItems.contains(field[x][y]) || field[x][y].equals(Field.START)) return;
         field[x][y] = field[x][y].with(Field.ITEM);
     }
 
     public void placeKarl(int x, int y) throws PositionInvalidException {
         checkIsInBoundary(x, y);
+        if (Field.WithActor.contains(field[x][y])) return;
 
         // remove old position with exists
         if (actor.exists()) field[actor.x][actor.y] = field[actor.x][actor.y].without(Field.ACTOR);
@@ -93,6 +117,7 @@ public class World implements ActorInteraction {
 
     public void placeOffice(int x, int y) throws PositionInvalidException {
         checkIsInBoundary(x, y);
+        if (Field.WithStart.contains(field[x][y])) return;
         
         // remove old position with exists
         if (start.exists()) field[start.x][start.y] = field[start.x][start.y].without(Field.START);
@@ -120,14 +145,7 @@ public class World implements ActorInteraction {
     //     utility methods
     // -----------------------------------------------------------------------------------------------------------------
 
-    private void preparePossibleOverride(int x, int y) {
-        if (Field.AllOfActor.contains(field[x][y])) {
-            actor.set(-1, -1);
-        }
-        if (Field.AllOfOffice.contains(field[x][y])) {
-            start.set(-1, -1);
-        }
-    }
+
 
     // _________________________________________________________________________________________________________________
     //     Actor Interactions Implementation

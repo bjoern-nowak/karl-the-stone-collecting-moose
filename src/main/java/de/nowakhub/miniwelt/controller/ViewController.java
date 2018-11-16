@@ -2,12 +2,12 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.exceptions.InternalUnkownFieldException;
 import de.nowakhub.miniwelt.model.Field;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -40,18 +40,24 @@ public class ViewController extends SubController {
     public void initialize() {
         gc = frame.getGraphicsContext2D();
 
-        scrollPane.addEventHandler(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent event) {
-                if (event.isAltDown()) {
-                    if (0 > event.getDeltaY()) {
-                        zoom -= 0.1*zoom;
-                    } else {
-                        zoom += 0.1*zoom;
-                    }
-                    resize();
-                    draw();
+        // add feature: changing fields
+        frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+            if (event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
+                world.get().place(mouseMode.get(), (int) (event.getX() / tileSize()), (int) (event.getY() / tileSize()));
+                draw();
+            }
+        });
+
+        // add feature: alt + mouse scroll can zomm in/out canvas
+        scrollPane.addEventHandler(ScrollEvent.SCROLL, event -> {
+            if (event.isAltDown()) {
+                if (0 > event.getDeltaY()) {
+                    zoom -= 0.1*zoom;
+                } else {
+                    zoom += 0.1*zoom;
                 }
+                resize();
+                draw();
             }
         });
     }
@@ -174,8 +180,8 @@ public class ViewController extends SubController {
     private double tileSize() {
         return zoom * TILE_SIZE;
     }
-    private double tileSize(int value) {
-        return zoom * TILE_SIZE * value;
+    private double tileSize(double multiplikator) {
+        return zoom * TILE_SIZE * multiplikator;
     }
 
 }

@@ -1,6 +1,6 @@
 package de.nowakhub.miniwelt.controller;
 
-import de.nowakhub.miniwelt.model.MouseMode;
+import de.nowakhub.miniwelt.model.Field;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
@@ -77,31 +77,31 @@ public class ActionController extends SubController {
 
     @FXML
     public void onPlaceActor(ActionEvent actionEvent) {
-        mouseMode.setValue(MouseMode.PLACE_KARL);
+        mouseMode.setValue(Field.ACTOR);
         statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onPlaceWall(ActionEvent actionEvent) {
-        mouseMode.setValue(MouseMode.PLACE_WALL);
+        mouseMode.setValue(Field.OBSTACLE);
         statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onPlaceItem(ActionEvent actionEvent) {
-        mouseMode.setValue(MouseMode.PLACE_ITEM);
+        mouseMode.setValue(Field.ITEM);
         statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onPlaceStart(ActionEvent actionEvent) {
-        mouseMode.setValue(MouseMode.PLACE_START);
+        mouseMode.setValue(Field.START);
         statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
     @FXML
     public void onRemove(ActionEvent actionEvent) {
-        mouseMode.setValue(MouseMode.PLACE_FREE);
+        mouseMode.setValue(Field.FREE);
         statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
     }
 
