@@ -66,7 +66,7 @@ public enum Field {
         return byKey(this.getKey().substring(0, this.getKey().length() - 1));
     }
 
-    public static EnumSet<Field> NotRemovable = EnumSet.of(Field.ACTOR, Field.START);
+    public static EnumSet<Field> NotRemovable = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM, Field.START, Field.ACTOR_AT_START);
     public static EnumSet<Field> StackableOnActor = EnumSet.of(Field.START, Field.ITEM);
     public static EnumSet<Field> StackedOnActor = EnumSet.of(Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);
     public static EnumSet<Field> WithActor = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);
