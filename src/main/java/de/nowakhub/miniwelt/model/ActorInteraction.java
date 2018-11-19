@@ -1,6 +1,6 @@
 package de.nowakhub.miniwelt.model;
 
-import de.nowakhub.miniwelt.exceptions.NoClearPathException;
+import de.nowakhub.miniwelt.model.exceptions.NoClearPathException;
 
 public interface ActorInteraction {
 

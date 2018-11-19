@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 
+import java.util.Random;
+
 public class RootController {
 
     final ObjectProperty<World> world = new SimpleObjectProperty<>();
@@ -28,6 +30,12 @@ public class RootController {
 
 
     public void initialize() {
+        initBinds();
+        initWorld();
+        viewController.postInitialize();
+    }
+
+    private void initBinds() {
         world.bindBidirectional(actionController.world);
         world.bindBidirectional(editorController.world);
         world.bindBidirectional(viewController.world);
@@ -41,19 +49,27 @@ public class RootController {
         status.textProperty().bindBidirectional(actionController.statusText);
         status.textProperty().bindBidirectional(editorController.statusText);
         status.textProperty().bindBidirectional(viewController.statusText);
+    }
 
+    private void initWorld() {
         world.set(new World(10, 10));
         actor.set(new Actor(world.get()));
 
         for (int x = 0; x < world.get().getSizeX(); x++) {
             for (int y = 0; y < world.get().getSizeY(); y++) {
-                world.get().placeWall(x,y);
+                if (world.get().isBorder(x, y)) {
+                    world.get().placeWall(x,y);
+                } else {
+                    double random = new Random().nextDouble();
+                    if (random < 0.2) {
+                        world.get().placeWall(x,y);
+                    } else if (random < 0.3) {
+                        world.get().placeDanger(x,y);
+                    }
+                }
             }
         }
-        world.get().placeDanger(1,1);
+        world.get().placeOffice(2,2);
         world.get().placeKarl(2,2);
-        world.get().placeOffice(3,3);
-
-        viewController.postInitialize();
     }
 }

@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.exceptions;
+package de.nowakhub.miniwelt.model.exceptions;
 
 public class PositionInvalidException extends RuntimeException {
 

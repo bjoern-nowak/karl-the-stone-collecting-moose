@@ -1,15 +1,13 @@
 package de.nowakhub.miniwelt.model;
 
-import de.nowakhub.miniwelt.exceptions.NoClearPathException;
-import de.nowakhub.miniwelt.exceptions.PositionInvalidException;
-import de.nowakhub.miniwelt.exceptions.RequireActorException;
-import de.nowakhub.miniwelt.exceptions.RequireStartException;
+import de.nowakhub.miniwelt.model.exceptions.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class World implements ActorInteraction {
 
     // limits
+    private final int minSize = 2;
     private IntegerProperty sizeX = new SimpleIntegerProperty();
     private IntegerProperty sizeY = new SimpleIntegerProperty();
     
@@ -18,7 +16,7 @@ public class World implements ActorInteraction {
     private Position actor;
     private Position start;
 
-    public World(int sizeX, int sizeY) {
+    public World(int sizeX, int sizeY) throws InvalidWorldSizeException {
         resize(sizeX, sizeY);
     }
 
@@ -27,7 +25,9 @@ public class World implements ActorInteraction {
     //------------------------------------------------------------------------------------------------------------------
 
 
-    public void resize(int sizeX, int sizeY) {
+    public void resize(int sizeX, int sizeY) throws InvalidWorldSizeException {
+        if (minSize > sizeX || minSize > sizeY) throw new InvalidWorldSizeException();
+
         this.sizeX.set(sizeX);
         this.sizeY.set(sizeY);
 
@@ -49,11 +49,14 @@ public class World implements ActorInteraction {
 
         }
     }
-    
+
+
+    // Should not happen, only if world file has been externally modified
     public void checkStartExists() throws RequireStartException {
         if (!start.exists()) throw new RequireStartException();
     }
 
+    // Should not happen, only if world file has been externally modified
     public void checkActorExists() throws RequireActorException {
         if (!actor.exists()) throw new RequireActorException();
     }
@@ -145,7 +148,17 @@ public class World implements ActorInteraction {
     //     utility methods
     // -----------------------------------------------------------------------------------------------------------------
 
+    public boolean hasActor(int x, int y) {
+        return Field.WithActor.contains(field[x][y]);
+    }
 
+    public boolean hasStart(int x, int y) {
+        return Field.WithStart.contains(field[x][y]);
+    }
+
+    public boolean isBorder(int x, int y) {
+        return x == 0 || y == 0 || x == sizeX.get() - 1  || y == sizeY.get() - 1;
+    }
 
     // _________________________________________________________________________________________________________________
     //     Actor Interactions Implementation

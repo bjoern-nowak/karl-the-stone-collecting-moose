@@ -1,7 +1,7 @@
 package de.nowakhub.miniwelt.controller;
 
-import de.nowakhub.miniwelt.exceptions.InternalUnkownFieldException;
 import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,10 +12,9 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class ViewController extends SubController {
+import java.util.Random;
 
-    private double zoom = 1.0;
-    private final int TILE_SIZE = 32;
+public class ViewController extends SubController {
 
     @FXML
     private ScrollPane scrollPane;
@@ -25,6 +24,10 @@ public class ViewController extends SubController {
     @FXML
     private Canvas frame;
     private GraphicsContext gc;
+
+    private final int TILE_SIZE = 32;
+    private double zoom = 1.0;
+    private Field dragging;
 
     private Image obstacle = new Image("/images/world/debug/wall.png");
     private Image ground = new Image("/images/world/debug/ground.png");
@@ -39,16 +42,45 @@ public class ViewController extends SubController {
 
     public void initialize() {
         gc = frame.getGraphicsContext2D();
+        addEventHandler();
+    }
 
-        // add feature: changing fields
+    private void addEventHandler() {
+        // feature: changing fields
         frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            if (event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
+            if (mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                 world.get().place(mouseMode.get(), (int) (event.getX() / tileSize()), (int) (event.getY() / tileSize()));
                 draw();
             }
         });
 
-        // add feature: alt + mouse scroll can zomm in/out canvas
+        // feature: placing by dragging (all fields allowed)
+        frame.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+            if (event.isPrimaryButtonDown()) {
+                int x = tileBy(event.getX());
+                int y = tileBy(event.getY());
+                if (world.get().hasActor(x, y)) {
+                    dragging = Field.ACTOR;
+                } else if (world.get().hasStart(x, y)) {
+                    dragging = Field.START;
+                } else {
+                    dragging = world.get().state()[x][y];
+                }
+            }
+        });
+        frame.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+            if (dragging != null) {
+                int x = tileBy(event.getX());
+                int y = tileBy(event.getY());
+                world.get().place(dragging, x, y);
+                draw();
+            }
+        });
+        frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+            dragging = null;
+        });
+
+        // feature: alt + mouse scroll can zomm in/out canvas
         scrollPane.addEventHandler(ScrollEvent.SCROLL, event -> {
             if (event.isAltDown()) {
                 if (0 > event.getDeltaY()) {
@@ -63,6 +95,7 @@ public class ViewController extends SubController {
     }
 
     public void postInitialize() {
+        // auto scrollbars for canvas
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
 
@@ -165,11 +198,9 @@ public class ViewController extends SubController {
 
     private void drawObstacle(int x, int y) {
         Image img = obstacle;
-        /*if (0.8 < new Random().nextDouble()) {
-            // TODO only on border [(0,i) (i,0) (maxX,i) (i,maxY)]
-            // TODO not in border corners [(0,0) (0,maxY) (maxX,0) (maxX,maxY)]
-            img = glass;
-        }*/
+        if (world.get().isBorder(x, y) && 0.8 < new Random().nextDouble()) {
+            //img = obstacle_random // TODO add random obstacle ; like glass
+        }
         gc.drawImage(img, tileSize(x), tileSize(y), tileSize(), tileSize());
     }
 
@@ -182,6 +213,9 @@ public class ViewController extends SubController {
     }
     private double tileSize(double multiplikator) {
         return zoom * TILE_SIZE * multiplikator;
+    }
+    private int tileBy(double i) {
+        return (int) (i / tileSize());
     }
 
 }
