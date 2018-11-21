@@ -1,6 +1,6 @@
 package de.nowakhub.miniwelt.model.exceptions;
 
-public class PositionInvalidException extends RuntimeException {
+public class PositionInvalidException extends PublicException {
 
     public PositionInvalidException() {
         super("Can not place there, position outside of world.");

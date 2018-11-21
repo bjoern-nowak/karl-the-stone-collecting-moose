@@ -1,6 +1,6 @@
 package de.nowakhub.miniwelt.model.exceptions;
 
-public class InvalidWorldSizeException extends RuntimeException {
+public class InvalidWorldSizeException extends PublicException {
 
     public InvalidWorldSizeException() {
         super("World cannot be smaller then 2x2.");

@@ -2,7 +2,6 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.Observer;
-import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -16,7 +15,7 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class ViewController extends SubController implements Observer<World> {
+public class ViewController extends SubController implements Observer {
 
     @FXML
     private ScrollPane scrollPane;

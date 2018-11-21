@@ -4,7 +4,7 @@ import de.nowakhub.miniwelt.model.exceptions.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class World extends Observable<Controllable> implements Controllable, Interactable {
+public class World extends Observable implements Controllable, Interactable {
 
     // limited by
     private static final int BAG_MAX = 3;
