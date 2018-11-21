@@ -1,8 +1,10 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextInputDialog;
 
 
 public abstract class ActionController extends SubController {
@@ -61,6 +63,15 @@ public abstract class ActionController extends SubController {
     @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
         statusText.setValue("onActorBagChangeContent");
+        TextInputDialog dialog = new TextInputDialog("" + world.get().getActorBag());
+        dialog.setTitle("Input Dialog");
+        dialog.setHeaderText("Change item count of actor bag.\nRequire format: [n | n e IN, n <= maximal bag size]");
+        dialog.setContentText("Please enter item count smaller then " + (world.get().getActorBagMax()+1) + ":");
+        dialog.showAndWait().ifPresent(input -> {
+            if (!input.matches("\\d+") || world.get().getActorBagMax() < Integer.valueOf(input))
+                throw new InvalidInputException("Invalid format for bag item count");
+            world.get().setActorBag(Integer.valueOf(input));
+        });
     }
 
 

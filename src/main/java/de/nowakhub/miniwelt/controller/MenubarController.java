@@ -1,7 +1,9 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 
 
@@ -50,6 +52,15 @@ public class MenubarController extends ActionController {
     @FXML
     public void onWorldChangeSize(ActionEvent actionEvent) {
         statusText.setValue("onWorldChangeSize");
+        TextInputDialog dialog = new TextInputDialog(world.get().sizeRow() + "x" + world.get().sizeCol());
+        dialog.setTitle("Input Dialog");
+        dialog.setHeaderText("Change dimension of the world (Rows x Cols).\nRequire format: [nxn | n e IN]");
+        dialog.setContentText("Please enter dimension:");
+        dialog.showAndWait().ifPresent(input -> {
+            String[] dimension = input.split("x");
+            if (!input.matches("\\d+x\\d+") || dimension.length != 2) throw new InvalidInputException("Invalid format for world dimension");
+            world.get().resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
+        });
     }
 
 
@@ -57,6 +68,14 @@ public class MenubarController extends ActionController {
     @FXML
     public void onActorBagChangeSize(ActionEvent actionEvent) {
         statusText.setValue("onActorBagChangeSize");
+        TextInputDialog dialog = new TextInputDialog("" + world.get().getActorBagMax());
+        dialog.setTitle("Input Dialog");
+        dialog.setHeaderText("Change maximal size of actor bag.\nRequire format: [n | n e IN]");
+        dialog.setContentText("Please enter maximal item count:");
+        dialog.showAndWait().ifPresent(input -> {
+            if (!input.matches("\\d+")) throw new InvalidInputException("Invalid format for maximal bag size");
+            world.get().setActorBagMax(Integer.valueOf(input));
+        });
     }
     @FXML
     public void onActorStepAhead(ActionEvent actionEvent) {

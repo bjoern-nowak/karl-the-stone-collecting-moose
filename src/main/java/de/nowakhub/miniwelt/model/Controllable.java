@@ -64,4 +64,12 @@ public interface Controllable {
     public IntegerProperty sizeColProperty();
 
     public Direction getActorDir();
+
+    public int getActorBag();
+
+    public void setActorBag(int actorBag);
+
+    int getActorBagMax();
+
+    void setActorBagMax(int actorBagMax);
 }

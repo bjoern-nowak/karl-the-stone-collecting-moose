@@ -1,6 +1,5 @@
 package de.nowakhub.miniwelt;
 
-import de.nowakhub.miniwelt.model.exceptions.PublicException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,7 +32,7 @@ public class Run extends Application {
         }
     }
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> dialogException(t, e)));
         Thread.currentThread().setUncaughtExceptionHandler(this::dialogException);
 
@@ -41,7 +42,7 @@ public class Run extends Application {
             primaryStage.setTitle("Karl the fire prevention officer");
             primaryStage.setScene(new Scene(rootLoader.load()));
             primaryStage.show();
-        } catch (PublicException e) {
+        } catch (Exception e) {
             dialogException(Thread.currentThread(), e);
         }
     }
@@ -54,6 +55,8 @@ public class Run extends Application {
     // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
     private void dialogException(Thread th, Throwable ex) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Exception Dialog");
         alert.setHeaderText("Oops, something has gone wrong.");
         alert.setContentText(ex.getCause().getCause().getMessage());

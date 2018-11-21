@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class World extends Observable implements Controllable, Interactable {
 
     // limited by
-    private static final int BAG_MAX = 3;
     private static final int MIN_SIZE = 2;
     private IntegerProperty sizeRow = new SimpleIntegerProperty();
     private IntegerProperty sizeCol = new SimpleIntegerProperty();
@@ -18,6 +17,7 @@ public class World extends Observable implements Controllable, Interactable {
     private Position actorPos = new Position();
     private Direction actorDir = Direction.UP;
     private int actorBag = 0;
+    private int actorBagMax = 3;
 
     public World(int sizeRow, int sizeY) throws InvalidWorldSizeException {
         resize(sizeRow, sizeY);
@@ -209,6 +209,26 @@ public class World extends Observable implements Controllable, Interactable {
         return actorDir;
     }
 
+    @Override
+    public int getActorBag() {
+        return actorBag;
+    }
+
+    @Override
+    public void setActorBag(int actorBag) {
+        this.actorBag = actorBag;
+    }
+
+    @Override
+    public int getActorBagMax() {
+        return actorBagMax;
+    }
+
+    @Override
+    public void setActorBagMax(int actorBagMax) {
+        this.actorBagMax = actorBagMax;
+    }
+
     // _________________________________________________________________________________________________________________
     //     Interactable - movement commands
     // -----------------------------------------------------------------------------------------------------------------
@@ -242,7 +262,7 @@ public class World extends Observable implements Controllable, Interactable {
     @Override
     public void pickUp() throws ItemNotFoundException, BagFullException {
         if (!foundItem()) throw new ItemNotFoundException();
-        if (actorBag == BAG_MAX) throw new BagFullException();
+        if (actorBag == actorBagMax) throw new BagFullException();
         field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ITEM);
         actorBag++;
         notifyObservers();
