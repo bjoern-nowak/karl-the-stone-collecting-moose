@@ -2,74 +2,40 @@ package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
 
-public class Actor  {
-
-    public Interactable interaction;
-
-    public Actor() {
-    }
-
-    public Actor(Interactable interaction) {
-        this.interaction = interaction;
-    }
-
-    public Interactable getInteraction() {
-        return interaction;
-    }
-
-    public void setInteraction(Interactable interaction) {
-        this.interaction = interaction;
-    }
+public interface Interactable {
 
     //__________________________________________________________________________________________________________________
     //    Interactable - movement commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public void stepAhead() throws NoClearPathException {
-        interaction.stepAhead();
-    }
+    public void stepAhead() throws NoClearPathException;
 
-    public void turnRight() {
-        interaction.turnRight();
-    }
+    public void turnRight();
 
     //__________________________________________________________________________________________________________________
     //    Interactable - complexity reducing commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public void backToStart() {
-        interaction.backToStart();
-    }
+    public void backToStart();
 
     //__________________________________________________________________________________________________________________
     //    Interactable - action commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public void pickUp() throws ItemNotFoundException, BagFullException {
-        interaction.pickUp();
-    }
+    public void pickUp() throws ItemNotFoundException, BagFullException;
 
-    public void dropDown() throws ItemDropNotAllowedException, BagEmptyException {
-        interaction.dropDown();
-    }
+    public void dropDown() throws ItemDropNotAllowedException, BagEmptyException;
 
     //__________________________________________________________________________________________________________________
     //    Interactable - test commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public boolean aheadClear() {
-        return interaction.aheadClear();
-    }
+    public boolean aheadClear();
 
-    public boolean bagEmpty() {
-        return interaction.bagEmpty();
-    }
+    public boolean bagEmpty();
 
-    public boolean foundItem() {
-        return interaction.foundItem();
-    }
+    public boolean foundItem();
 
-    public boolean atStart() {
-        return interaction.atStart();
-    }
+    public boolean atStart();
+
 }

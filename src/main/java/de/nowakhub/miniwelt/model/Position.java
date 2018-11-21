@@ -2,23 +2,28 @@ package de.nowakhub.miniwelt.model;
 
 public class Position {
 
-    public int x = -1;
-    public int y = -1;
+    public int row = -1;
+    public int col = -1;
 
     public Position() {
     }
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Position(int row, int col) {
+        this.row = row;
+        this.col = col;
     }
 
-    public void set(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void set(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+    public void reset() {
+        this.row = -1;
+        this.col = -1;
     }
 
     public boolean exists() {
-        return x > -1 && y > -1;
+        return row > -1 && col > -1;
     }
 }

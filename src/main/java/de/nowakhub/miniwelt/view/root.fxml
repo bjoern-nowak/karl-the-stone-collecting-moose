@@ -11,13 +11,13 @@
             styleClass="root"
             stylesheets="@root.css">
     <top>
-        <fx:include source="menubar.fxml" />
+        <fx:include source="menubar.fxml" fx:id="menubar"/>
     </top>
 
     <center>
         <BorderPane xmlns:fx="http://javafx.com/fxml">
             <top>
-                <fx:include source="toolbar.fxml" fx:id="action"/>
+                <fx:include source="toolbar.fxml" fx:id="toolbar"/>
             </top>
 
              <center>
@@ -30,8 +30,7 @@
              </center>
 
              <bottom>
-                 <HBox styleClass="statusbar" BorderPane.alignment="CENTER">
-                     <Label text="Status:" styleClass="label-status"/>
+                 <HBox styleClass="status-bar" BorderPane.alignment="CENTER">
                      <Label fx:id="status" styleClass="status-text"/>
                  </HBox>
              </bottom>

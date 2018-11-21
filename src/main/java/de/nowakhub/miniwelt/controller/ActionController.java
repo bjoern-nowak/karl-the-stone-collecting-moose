@@ -3,182 +3,162 @@ package de.nowakhub.miniwelt.controller;
 import de.nowakhub.miniwelt.model.Field;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Slider;
 
 
-public class ActionController extends SubController {
-    public static final String PREFIX_EVENT = "Event: ";
-    public static final String PREFIX_MOUSE_MODE = "Mouse mode: ";
+public abstract class ActionController extends SubController {
     public static enum EXPORT {PNG, XML}
 
+
+
     @FXML
-    public Slider sliderSpeed;
-
-
-    public void initialize() {
-        if (sliderSpeed != null) {
-            sliderSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
-                statusText.setValue(PREFIX_EVENT + "Speed changed to " + newValue.intValue());
-            });
-        }
+    public void onEditorNew(ActionEvent actionEvent) {
+        statusText.setValue("onEditorNew");
     }
-
     @FXML
-    public void onNew(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onNew.");
+    public void onEditorOpen(ActionEvent actionEvent) {
+        statusText.setValue("onEditorOpen");
     }
-
     @FXML
-    public void onOpen(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onOpen.");
+    public void onEditorSave(ActionEvent actionEvent) {
+        statusText.setValue("onEditorSave");
     }
-
     @FXML
-    public void onCompile(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onCompile.");
+    public void onEditorCompile(ActionEvent actionEvent) {
+        statusText.setValue("onEditorCompile");
     }
-
     @FXML
-    public void onPrint(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onPrint.");
+    public void onEditorPrint(ActionEvent actionEvent) {
+        statusText.setValue("onEditorPrint");
     }
-
     @FXML
-    public void onExit(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onExit.");
+    public void onEditorExit(ActionEvent actionEvent) {
+        statusText.setValue("onEditorExit");
     }
 
 
 
 
     @FXML
-    public void onReset(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onReset.");
+    public void onWorldReset(ActionEvent actionEvent) {
+        statusText.setValue("onWorldReset");
     }
+    @FXML
+    public void onWorldLoad(ActionEvent actionEvent) {
+        statusText.setValue("onWorldLoad");
+    }
+    @FXML
+    public void onWorldSave(ActionEvent actionEvent) {
+        statusText.setValue("onWorldSave");
+    }
+    @FXML
+    public void onWorldExportPNG(ActionEvent actionEvent) {
+        statusText.setValue("onWorldExportPNG");
+    }
+    @FXML
+    public void onWorldExportXML(ActionEvent actionEvent) {
+        statusText.setValue("onWorldExportXML");
+    }
+    @FXML
+    public void onWorldExportText(ActionEvent actionEvent) {
+        statusText.setValue("onWorldExportText");
+    }
+    @FXML
+    public void onWorldChangeSize(ActionEvent actionEvent) {
+        statusText.setValue("onWorldChangeSize");
+    }
+
+
+
 
     @FXML
-    public void onLoad(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onLoad.");
-    }
-
-    @FXML
-    public void onSave(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onSave.");
-    }
-
-    public void onExport(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onExport.");
-    }
-
-    @FXML
-    public void onChangeWorldSize(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onChangeSize.");
-    }
-
-    @FXML
-    public void onPlaceActor(ActionEvent actionEvent) {
-        mouseMode.setValue(Field.ACTOR);
-        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
-    }
-
-    @FXML
-    public void onPlaceWall(ActionEvent actionEvent) {
+    public void onMouseModePlaceObstacle(ActionEvent actionEvent) {
         mouseMode.setValue(Field.OBSTACLE);
-        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
+        statusText.setValue("onMouseModePlaceWall");
     }
-
     @FXML
-    public void onPlaceItem(ActionEvent actionEvent) {
+    public void onMouseModePlaceActor(ActionEvent actionEvent) {
+        mouseMode.setValue(Field.ACTOR);
+        statusText.setValue("onMouseModePlaceActor");
+    }
+    @FXML
+    public void onMouseModePlaceItem(ActionEvent actionEvent) {
         mouseMode.setValue(Field.ITEM);
-        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
+        statusText.setValue("onMouseModePlaceItem");
     }
-
     @FXML
-    public void onPlaceStart(ActionEvent actionEvent) {
+    public void onMouseModePlaceStart(ActionEvent actionEvent) {
         mouseMode.setValue(Field.START);
-        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
+        statusText.setValue("onMouseModePlaceStart");
     }
-
     @FXML
-    public void onRemove(ActionEvent actionEvent) {
+    public void onMouseModePlaceFree(ActionEvent actionEvent) {
         mouseMode.setValue(Field.FREE);
-        statusText.setValue(PREFIX_MOUSE_MODE + mouseMode);
+        statusText.setValue("onMouseModePlaceFree");
     }
 
 
 
 
     @FXML
-    public void onSetBagSize(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onSetBagSize.");
+    public void onActorBagChangeSize(ActionEvent actionEvent) {
+        statusText.setValue("onActorBagChangeSize");
     }
-
     @FXML
-    public void onSetBagContent(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onSetBagContent.");
+    public void onActorBagChangeContent(ActionEvent actionEvent) {
+        statusText.setValue("onActorBagChangeContent");
     }
-
     @FXML
-    public void onStepAhead(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onStepAhead.");
-        actor.get().stepAhead();
+    public void onActorStepAhead(ActionEvent actionEvent) {
+        world.get().stepAhead();
+        statusText.setValue("onActorStepAhead");
     }
-
     @FXML
-    public void onTurnRight(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onTurnRight.");
-        actor.get().turnRight();
+    public void onActorTurnRight(ActionEvent actionEvent) {
+        world.get().turnRight();
+        statusText.setValue("onActorTurnRight");
     }
-
     @FXML
-    public void onBackToStart(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onBackToStart.");
-        actor.get().backToStart();
+    public void onActorBackToStart(ActionEvent actionEvent) {
+        world.get().backToStart();
+        statusText.setValue("onActorBackToStart");
     }
-
     @FXML
-    public void onAheadClear(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "aheadClear: " + actor.get().aheadClear());
+    public void onActorAheadClear(ActionEvent actionEvent) {
+        statusText.setValue("onActorAheadClear");
     }
-
     @FXML
-    public void onBagEmpty(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "bagEmpty: " + actor.get().bagEmpty());
+    public void onActorBagEmpty(ActionEvent actionEvent) {
+        statusText.setValue("onActorBagEmpty");
     }
-
     @FXML
-    public void onFoundItem(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "foundItem: " + actor.get().foundItem());
+    public void onActorFoundItem(ActionEvent actionEvent) {
+        statusText.setValue("onActorFoundItem");
     }
-
     @FXML
-    public void onPickUp(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onPickUp.");
-        actor.get().pickUp();
+    public void onActorPickUp(ActionEvent actionEvent) {
+        world.get().pickUp();
+        statusText.setValue("onActorPickUp");
     }
-
     @FXML
-    public void onDropDown(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onDropDown.");
-        actor.get().dropDown();
+    public void onActorDropDown(ActionEvent actionEvent) {
+        world.get().dropDown();
+        statusText.setValue("onActorDropDown");
     }
 
 
 
 
     @FXML
-    public void onStartOrContinue(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onStartOrContinue.");
+    public void onSimStartOrContinue(ActionEvent actionEvent) {
+        statusText.setValue("onSimStartOrContinue");
     }
-
     @FXML
-    public void onPause(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onPause.");
+    public void onSimPause(ActionEvent actionEvent) {
+        statusText.setValue("onSimPause");
     }
-
     @FXML
-    public void onStop(ActionEvent actionEvent) {
-        statusText.setValue(PREFIX_EVENT + "onStop.");
+    public void onSimStop(ActionEvent actionEvent) {
+        statusText.setValue("onSimStop");
     }
 
 }

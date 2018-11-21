@@ -4,214 +4,281 @@ import de.nowakhub.miniwelt.model.exceptions.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class World implements ActorInteraction {
+public class World extends Observable<Controllable> implements Controllable, Interactable {
 
-    // limits
-    private final int minSize = 2;
-    private IntegerProperty sizeX = new SimpleIntegerProperty();
-    private IntegerProperty sizeY = new SimpleIntegerProperty();
-    
+    // limited by
+    private static final int BAG_MAX = 3;
+    private static final int MIN_SIZE = 2;
+    private IntegerProperty sizeRow = new SimpleIntegerProperty();
+    private IntegerProperty sizeCol = new SimpleIntegerProperty();
+
     // has
     private Field[][] field; // or use linked list (drawback: consumes more memory, may be a performance issue)
-    private Position actor;
-    private Position start;
+    private Position startPos = new Position();
+    private Position actorPos = new Position();
+    private Direction actorDir = Direction.UP;
+    private int actorBag = 0;
 
-    public World(int sizeX, int sizeY) throws InvalidWorldSizeException {
-        resize(sizeX, sizeY);
+    public World(int sizeRow, int sizeY) throws InvalidWorldSizeException {
+        resize(sizeRow, sizeY);
     }
 
     //__________________________________________________________________________________________________________________
-    //    commands
+    //    Controllable - commands
     //------------------------------------------------------------------------------------------------------------------
 
+    @Override
+    public void resize(int sizeRow, int sizeCol) throws InvalidWorldSizeException {
+        if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
 
-    public void resize(int sizeX, int sizeY) throws InvalidWorldSizeException {
-        if (minSize > sizeX || minSize > sizeY) throw new InvalidWorldSizeException();
-
-        this.sizeX.set(sizeX);
-        this.sizeY.set(sizeY);
+        this.sizeRow.set(sizeRow);
+        this.sizeCol.set(sizeCol);
 
         Field[][] oldGrid = field;
-        field = new Field[sizeX][sizeY];
-        actor = new Position();
-        start = new Position();
+        field = new Field[sizeRow][sizeCol];
+        actorPos = new Position();
+        startPos = new Position();
 
-        for (int x = 0; x < field.length; x++) {
-            for (int y = 0; y < field[x].length; y++) {
-                if (oldGrid != null && x < oldGrid.length && y < oldGrid[x].length) {
-                    field[x][y] = oldGrid[x][y];
-                    if (field[x][y].isOccupiedBy(Field.ACTOR)) actor.set(x, y);
-                    if (field[x][y].isOccupiedBy(Field.START)) start.set(x, y);
+        for (int row = 0; row < field.length; row++) {
+            for (int col = 0; col < field[row].length; col++) {
+                if (oldGrid != null && row < oldGrid.length && col < oldGrid[row].length) {
+                    field[row][col] = oldGrid[row][col];
+                    if (field[row][col].hasActor()) actorPos.set(row, col);
+                    if (field[row][col].hasStart()) startPos.set(row, col);
                 } else {
-                    field[x][y] = Field.FREE;
+                    field[row][col] = Field.FREE;
                 }
             }
-
         }
-    }
-
-
-    // Should not happen, only if world file has been externally modified
-    public void checkStartExists() throws RequireStartException {
-        if (!start.exists()) throw new RequireStartException();
-    }
-
-    // Should not happen, only if world file has been externally modified
-    public void checkActorExists() throws RequireActorException {
-        if (!actor.exists()) throw new RequireActorException();
+        notifyObservers();
     }
 
     //__________________________________________________________________________________________________________________
-    //    placement commands
+    //    Controllable - placement commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public void remove(int x, int y) {
-        if (Field.NotRemovable.contains(field[x][y])) return;
-        field[x][y] = field[x][y].with(Field.FREE);
+    @Override
+    public void remove(int row, int col) {
+        if (field[row][col].notRemovable()) return;
+        field[row][col] = field[row][col].set(Field.FREE);
+        notifyObservers();
     }
 
-    public void place(Field field, int x, int y) {
+    @Override
+    public void place(Field field, int row, int col) {
         switch (field) {
             case FREE:
-                remove(x, y);
+                remove(row, col);
                 break;
             case ACTOR:
-                placeKarl(x, y);
+                placeActor(row, col);
                 break;
             case ITEM:
-                placeDanger(x, y);
+                placeItem(row, col);
                 break;
             case OBSTACLE:
-                placeWall(x, y);
+                placeObstacle(row, col);
                 break;
             case START:
-                placeOffice(x, y);
+                placeStart(row, col);
                 break;
-
-
         }
     }
 
-    public void placeWall(int x, int y) throws PositionInvalidException {
-        checkIsInBoundary(x, y);
-        if (Field.OBSTACLE.equals(field[x][y]) || Field.NotRemovable.contains(field[x][y])) return;
-        field[x][y] = field[x][y].with(Field.OBSTACLE);
+    @Override
+    public void placeObstacle(int row, int col) throws PositionInvalidException {
+        checkBoundary(row, col);
+        if (field[row][col].hasObstacle() || field[row][col].notRemovable()) return;
+        field[row][col] = field[row][col].set(Field.OBSTACLE);
+        notifyObservers();
     }
 
-    public void placeDanger(int x, int y) throws PositionInvalidException {
-        checkIsInBoundary(x, y);
-        if (Field.WithItems.contains(field[x][y]) || field[x][y].equals(Field.START)) return;
-        field[x][y] = field[x][y].with(Field.ITEM);
+    @Override
+    public void placeItem(int row, int col) throws PositionInvalidException {
+        checkBoundary(row, col);
+        if (field[row][col].hasItem() || field[row][col].hasStart()) return;
+        field[row][col] = field[row][col].set(Field.ITEM);
+        notifyObservers();
     }
 
-    public void placeKarl(int x, int y) throws PositionInvalidException {
-        checkIsInBoundary(x, y);
-        if (Field.WithActor.contains(field[x][y])) return;
+    @Override
+    public void placeActor(int row, int col) throws PositionInvalidException {
+        checkBoundary(row, col);
+        if (field[row][col].hasActor()) return;
 
         // remove old position with exists
-        if (actor.exists()) field[actor.x][actor.y] = field[actor.x][actor.y].without(Field.ACTOR);
+        if (actorPos.exists()) field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ACTOR);
 
         // set new position
-        field[x][y] = field[x][y].with(Field.ACTOR);
+        field[row][col] = field[row][col].set(Field.ACTOR);
 
         // confirm position
-        actor.set(x, y);
+        actorPos.set(row, col);
+
+        notifyObservers();
     }
 
-    public void placeOffice(int x, int y) throws PositionInvalidException {
-        checkIsInBoundary(x, y);
-        if (Field.WithStart.contains(field[x][y])) return;
-        
+    @Override
+    public void placeStart(int row, int col) throws PositionInvalidException {
+        checkBoundary(row, col);
+        if (field[row][col].hasStart()) return;
+
         // remove old position with exists
-        if (start.exists()) field[start.x][start.y] = field[start.x][start.y].without(Field.START);
+        if (startPos.exists()) field[startPos.row][startPos.col] = field[startPos.row][startPos.col].remove(Field.START);
 
         // set new position
-        field[x][y] = field[x][y].with(Field.START);
+        field[row][col] = field[row][col].set(Field.START);
 
         // confirm position
-        start.set(x, y);
+        startPos.set(row, col);
+
+        notifyObservers();
+    }
+
+
+    //__________________________________________________________________________________________________________________
+    //    Controllable - test commands
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean isInBoundary(int row, int col){
+        return row < sizeRow.get() || col < sizeCol.get();
+    }
+
+    @Override
+    public void checkBoundary(int row, int col) throws PositionInvalidException {
+        if (!isInBoundary(row, col)) throw new PositionInvalidException();
+    }
+
+    @Override
+    public void existActor() throws RequireActorException {
+        if (!actorPos.exists()) throw new RequireActorException();
+    }
+
+    @Override
+    public void existsStart() throws RequireStartException {
+        if (!startPos.exists()) throw new RequireStartException();
+    }
+
+    @Override
+    public boolean isFieldWithActor(int row, int col) {
+        return field[row][col].hasActor();
+    }
+
+    @Override
+    public boolean isFieldWithStart(int row, int col) {
+        return field[row][col].hasStart();
+    }
+
+    @Override
+    public boolean isFieldAtBorder(int row, int col) {
+        return row == 0 || col == 0 || row == sizeRow.get() - 1  || col == sizeCol.get() - 1;
     }
 
     //__________________________________________________________________________________________________________________
-    //    check commands
+    //    Controllable - getter / setter
     //------------------------------------------------------------------------------------------------------------------
 
-    private boolean isInBoundary(int x, int y){
-        return x < sizeX.get() || y < sizeY.get();
+    @Override
+    public Field[][] getField() {
+        return field;
     }
 
-    private void checkIsInBoundary(int x, int y) throws PositionInvalidException {
-        if (!isInBoundary(x, y)) throw new PositionInvalidException();
+    @Override
+    public int sizeRow() {
+        return sizeRow.get();
+    }
+
+    @Override
+    public IntegerProperty sizeRowProperty() {
+        return sizeRow;
+    }
+
+    @Override
+    public int sizeCol() {
+        return sizeCol.get();
+    }
+
+    @Override
+    public IntegerProperty sizeColProperty() {
+        return sizeCol;
+    }
+
+    @Override
+    public Direction getActorDir() {
+        return actorDir;
     }
 
     // _________________________________________________________________________________________________________________
-    //     utility methods
+    //     Interactable - movement commands
     // -----------------------------------------------------------------------------------------------------------------
 
-    public boolean hasActor(int x, int y) {
-        return Field.WithActor.contains(field[x][y]);
+    @Override
+    public void stepAhead() throws NoClearPathException {
+        if (!aheadClear()) throw new NoClearPathException();
+        placeActor(actorPos.row + actorDir.row, actorPos.col + actorDir.col);
+        notifyObservers();
     }
 
-    public boolean hasStart(int x, int y) {
-        return Field.WithStart.contains(field[x][y]);
-    }
-
-    public boolean isBorder(int x, int y) {
-        return x == 0 || y == 0 || x == sizeX.get() - 1  || y == sizeY.get() - 1;
+    @Override
+    public void turnRight() {
+        actorDir = actorDir.turnRight();
+        notifyObservers();
     }
 
     // _________________________________________________________________________________________________________________
-    //     Actor Interactions Implementation
+    //     Interactable - complexity reducing commands
     // -----------------------------------------------------------------------------------------------------------------
-    
-    @Override
-    public void doStepForward(int dirX, int dirY) throws NoClearPathException {
-        if (!aheadClear(dirX, dirY)) throw new NoClearPathException();
-        actor.x += dirX;
-        actor.y += dirY;
-        if (foundDanger()) field[actor.x][actor.y] = Field.ACTOR_ON_ITEM;
-        else if (inOffice()) field[actor.x][actor.y] = Field.ACTOR_AT_START;
-        else field[actor.x][actor.y] = Field.ACTOR;
-    }
 
     @Override
-    public boolean aheadClear(int dirX, int dirY) {
-        int x = actor.x + dirX;
-        int y = actor.y + dirY;
-        return !field[x][y].isOccupiedBy(Field.OBSTACLE) && isInBoundary(x, y);
+    public void backToStart() {
+
     }
 
+    // _________________________________________________________________________________________________________________
+    //     Interactable - action commands
+    // -----------------------------------------------------------------------------------------------------------------
+
     @Override
-    public boolean foundDanger() {
-        return field[actor.x][actor.y].isOccupiedBy(Field.ACTOR_ON_ITEM);
+    public void pickUp() throws ItemNotFoundException, BagFullException {
+        if (!foundItem()) throw new ItemNotFoundException();
+        if (actorBag == BAG_MAX) throw new BagFullException();
+        field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ITEM);
+        actorBag++;
+        notifyObservers();
     }
 
     @Override
-    public boolean inOffice() {
-        return field[actor.x][actor.y].isOccupiedBy(Field.ACTOR_AT_START);
+    public void dropDown() throws ItemDropNotAllowedException, BagEmptyException {
+        if (!atStart()) throw new ItemDropNotAllowedException();
+        if (bagEmpty()) throw new BagEmptyException();
+        actorBag--;
+        notifyObservers();
     }
 
-    //__________________________________________________________________________________________________________________
-    //    getter setter
-    //------------------------------------------------------------------------------------------------------------------
+    // _________________________________________________________________________________________________________________
+    //     Interactable - test commands
+    // -----------------------------------------------------------------------------------------------------------------
 
-    public Field[][] state() {
-        return field.clone();
+    @Override
+    public boolean aheadClear() {
+        int nextX = actorPos.row + actorDir.row;
+        int nextY = actorPos.col + actorDir.col;
+        return !field[nextX][nextY].hasObstacle() && isInBoundary(nextX, nextY);
     }
 
-    public int getSizeX() {
-        return sizeX.get();
+    @Override
+    public boolean bagEmpty() {
+        return actorBag == 0;
     }
 
-    public IntegerProperty sizeXProperty() {
-        return sizeX;
+    @Override
+    public boolean foundItem() {
+        return field[actorPos.row][actorPos.col].equals(Field.ACTOR_ON_ITEM);
     }
 
-    public int getSizeY() {
-        return sizeY.get();
-    }
-
-    public IntegerProperty sizeYProperty() {
-        return sizeY;
+    @Override
+    public boolean atStart() {
+        return field[actorPos.row][actorPos.col].equals(Field.ACTOR_AT_START);
     }
 }

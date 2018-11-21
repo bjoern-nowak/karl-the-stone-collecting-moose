@@ -1,6 +1,8 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.Observer;
+import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -14,7 +16,7 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class ViewController extends SubController {
+public class ViewController extends SubController implements Observer<World> {
 
     @FXML
     private ScrollPane scrollPane;
@@ -49,7 +51,7 @@ public class ViewController extends SubController {
         // feature: changing fields
         frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             if (mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
-                world.get().place(mouseMode.get(), (int) (event.getX() / tileSize()), (int) (event.getY() / tileSize()));
+                world.get().place(mouseMode.get(), (int) (event.getY() / tileSize()), (int) (event.getX() / tileSize()));
                 draw();
             }
         });
@@ -57,22 +59,22 @@ public class ViewController extends SubController {
         // feature: placing by dragging (all fields allowed)
         frame.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.isPrimaryButtonDown()) {
-                int x = tileBy(event.getX());
-                int y = tileBy(event.getY());
-                if (world.get().hasActor(x, y)) {
+                int row = tileBy(event.getY());
+                int col = tileBy(event.getX());
+                if (world.get().isFieldWithActor(row, col)) {
                     dragging = Field.ACTOR;
-                } else if (world.get().hasStart(x, y)) {
+                } else if (world.get().isFieldWithStart(row, col)) {
                     dragging = Field.START;
                 } else {
-                    dragging = world.get().state()[x][y];
+                    dragging = world.get().getField()[row][col];
                 }
             }
         });
         frame.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (dragging != null) {
-                int x = tileBy(event.getX());
-                int y = tileBy(event.getY());
-                world.get().place(dragging, x, y);
+                int row = tileBy(event.getY());
+                int col = tileBy(event.getX());
+                world.get().place(dragging, row, col);
                 draw();
             }
         });
@@ -95,24 +97,32 @@ public class ViewController extends SubController {
     }
 
     public void postInitialize() {
+        // subscribe to world changes
+        world.get().addObserver("view", this);
+
         // auto scrollbars for canvas
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
 
+        update();
+    }
+
+    @Override
+    public void update() {
         resize();
         draw();
     }
 
     private void resize() {
-        frame.setHeight(tileSize(world.get().getSizeY()));
-        frame.setWidth(tileSize(world.get().getSizeX()));
+        frame.setHeight(tileSize(world.get().sizeRow()));
+        frame.setWidth(tileSize(world.get().sizeCol()));
     }
 
     private void draw() {
         // clean canvas
         gc.clearRect(0, 0, frame.getWidth(), frame.getHeight());
 
-        Field[][] state = world.get().state();
+        Field[][] state = world.get().getField();
         //drawGrid(state);
         drawGridBorder(state);
         drawGround(state);
@@ -120,11 +130,11 @@ public class ViewController extends SubController {
     }
 
     private void drawGrid(Field[][] state) {
-        for (int x = 0; x < state.length; x++) {
-            for (int y = 0; y < state[x].length; y++) {
+        for (int row = 0; row < state.length; row++) {
+            for (int col = 0; col < state[row].length; col++) {
                 gc.setStroke(Color.GRAY);
                 gc.setLineWidth(1);
-                gc.strokeRect(tileSize(x), tileSize(y), tileSize(), tileSize());
+                gc.strokeRect(tileSize(col), tileSize(row), tileSize(), tileSize());
             }
         }
     }
@@ -133,36 +143,36 @@ public class ViewController extends SubController {
     }
 
     private void drawGround(Field[][] state) {
-        for (int x = 0; x < state.length; x++) {
-            for (int y = 0; y < state[x].length; y++) {
-                gc.drawImage(ground, tileSize(x), tileSize(y), tileSize(), tileSize());
+        for (int row = 0; row < state.length; row++) {
+            for (int col = 0; col < state[row].length; col++) {
+                gc.drawImage(ground, tileSize(col), tileSize(row), tileSize(), tileSize());
             }
         }
     }
 
     private void drawFields(Field[][] state) throws InternalUnkownFieldException {
-        for (int x = 0; x < state.length; x++) {
-            for (int y = 0; y < state[x].length; y++) {
-                switch (state[x][y]) {
+        for (int row = 0; row < state.length; row++) {
+            for (int col = 0; col < state[row].length; col++) {
+                switch (state[row][col]) {
                     case START:
-                        drawStartpoint(x, y);
+                        drawStartpoint(row, col);
                         break;
                     case ACTOR_AT_START:
-                        drawStartpoint(x, y);
-                        drawActor(x, y);
+                        drawStartpoint(row, col);
+                        drawActor(row, col);
                         break;
                     case ACTOR:
-                        drawActor(x, y);
+                        drawActor(row, col);
                         break;
                     case ACTOR_ON_ITEM:
-                        drawItem(x, y);
-                        drawActor(x, y);
+                        drawItem(row, col);
+                        drawActor(row, col);
                         break;
                     case OBSTACLE:
-                        drawObstacle(x, y);
+                        drawObstacle(row, col);
                         break;
                     case ITEM:
-                        drawItem(x, y);
+                        drawItem(row, col);
                         break;
                     case FREE:
                         break;
@@ -174,38 +184,38 @@ public class ViewController extends SubController {
     }
 
 
-    private void drawStartpoint(int x, int y) {
-        gc.drawImage(start, tileSize(x), tileSize(y), tileSize(), tileSize());
+    private void drawStartpoint(int row, int col) {
+        gc.drawImage(start, tileSize(col), tileSize(row), tileSize(), tileSize());
     }
 
-    private void drawActor(int x, int y) {
-        switch(actor.get().dir) {
+    private void drawActor(int row, int col) {
+        switch(world.get().getActorDir()) {
             case UP:
-                gc.drawImage(actorU, tileSize(x), tileSize(y), tileSize(), tileSize());
+                gc.drawImage(actorU, tileSize(col), tileSize(row), tileSize(), tileSize());
                 break;
             case DOWN:
-                gc.drawImage(actorD, tileSize(x), tileSize(y), tileSize(), tileSize());
+                gc.drawImage(actorD, tileSize(col), tileSize(row), tileSize(), tileSize());
                 break;
             case LEFT:
-                gc.drawImage(actorL, tileSize(x), tileSize(y), tileSize(), tileSize());
+                gc.drawImage(actorL, tileSize(col), tileSize(row), tileSize(), tileSize());
                 break;
             case RIGHT:
-                gc.drawImage(actorR, tileSize(x), tileSize(y), tileSize(), tileSize());
+                gc.drawImage(actorR, tileSize(col), tileSize(row), tileSize(), tileSize());
                 break;
         }
 
     }
 
-    private void drawObstacle(int x, int y) {
+    private void drawObstacle(int row, int col) {
         Image img = obstacle;
-        if (world.get().isBorder(x, y) && 0.8 < new Random().nextDouble()) {
+        if (world.get().isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
             //img = obstacle_random // TODO add random obstacle ; like glass
         }
-        gc.drawImage(img, tileSize(x), tileSize(y), tileSize(), tileSize());
+        gc.drawImage(img, tileSize(col), tileSize(row), tileSize(), tileSize());
     }
 
-    private void drawItem(int x, int y) {
-        gc.drawImage(item, tileSize(x), tileSize(y), tileSize(), tileSize());
+    private void drawItem(int row, int col) {
+        gc.drawImage(item, tileSize(col), tileSize(row), tileSize(), tileSize());
     }
 
     private double tileSize() {
@@ -217,5 +227,4 @@ public class ViewController extends SubController {
     private int tileBy(double i) {
         return (int) (i / tileSize());
     }
-
 }

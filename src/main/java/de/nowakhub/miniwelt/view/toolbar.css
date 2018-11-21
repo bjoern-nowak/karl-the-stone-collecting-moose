@@ -31,16 +31,16 @@
     -fx-background-image: url("../../../../images/icons/compile_pr0.png");
 }
 
-.btn-wall {
+.btn-obstacle {
     -fx-background-image: url("../../../../images/world/debug/wall.png");
 }
-.btn-karl {
+.btn-actor {
     -fx-background-image: url("../../../../images/world/debug/karl_right.png");
 }
 .btn-start {
     -fx-background-image: url("../../../../images/world/debug/office.png");
 }
-.btn-object {
+.btn-item {
     -fx-background-image: url("../../../../images/world/debug/item.png");
 }
 .btn-remove {
@@ -59,4 +59,10 @@
 }
 .btn-stop {
     -fx-background-image: url("../../../../images/icons/stop.png");
+}
+
+.sliderSimSpeedLabel {
+    -fx-content-display: text-only;
+    -fx-alignment: center;
+    -fx-padding: 5px 0 0 10px;
 }

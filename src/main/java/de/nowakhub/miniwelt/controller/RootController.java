@@ -1,11 +1,11 @@
 package de.nowakhub.miniwelt.controller;
 
-import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.World;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 
 import java.util.Random;
@@ -13,7 +13,6 @@ import java.util.Random;
 public class RootController {
 
     final ObjectProperty<World> world = new SimpleObjectProperty<>();
-    final ObjectProperty<Actor> actor = new SimpleObjectProperty<>();
 
     @FXML
     public Slider sliderSpeed;
@@ -21,8 +20,14 @@ public class RootController {
     @FXML
     public Label status;
 
+
     @FXML
-    public ActionController actionController;
+    public MenuBar menubar;
+
+    @FXML
+    public MenubarController menubarController;
+    @FXML
+    public ToolbarController toolbarController;
     @FXML
     public EditorController editorController;
     @FXML
@@ -31,45 +36,46 @@ public class RootController {
 
     public void initialize() {
         initBinds();
-        initWorld();
+        initModel();
         viewController.postInitialize();
     }
 
     private void initBinds() {
-        world.bindBidirectional(actionController.world);
+        // TODO refactor using a own model controller (pass this to other controller)
+        world.bindBidirectional(menubarController.world);
+        world.bindBidirectional(toolbarController.world);
         world.bindBidirectional(editorController.world);
         world.bindBidirectional(viewController.world);
-        actor.bindBidirectional(actionController.actor);
-        actor.bindBidirectional(editorController.actor);
-        actor.bindBidirectional(viewController.actor);
 
-        actionController.mouseMode.bindBidirectional(editorController.mouseMode);
-        actionController.mouseMode.bindBidirectional(viewController.mouseMode);
+        menubarController.mouseMode.bindBidirectional(toolbarController.mouseMode);
+        menubarController.mouseMode.bindBidirectional(editorController.mouseMode);
+        menubarController.mouseMode.bindBidirectional(viewController.mouseMode);
 
-        status.textProperty().bindBidirectional(actionController.statusText);
+        status.textProperty().bindBidirectional(menubarController.statusText);
+        status.textProperty().bindBidirectional(toolbarController.statusText);
         status.textProperty().bindBidirectional(editorController.statusText);
         status.textProperty().bindBidirectional(viewController.statusText);
     }
 
-    private void initWorld() {
-        world.set(new World(10, 10));
-        actor.set(new Actor(world.get()));
 
-        for (int x = 0; x < world.get().getSizeX(); x++) {
-            for (int y = 0; y < world.get().getSizeY(); y++) {
-                if (world.get().isBorder(x, y)) {
-                    world.get().placeWall(x,y);
+    private void initModel() {
+        world.set(new World(10, 10));
+        world.get().placeStart(2,2);
+        world.get().placeActor(2,2);
+
+        for (int x = 0; x < world.get().sizeRow(); x++) {
+            for (int y = 0; y < world.get().sizeCol(); y++) {
+                if (world.get().isFieldAtBorder(x, y)) {
+                    world.get().placeObstacle(x,y);
                 } else {
                     double random = new Random().nextDouble();
                     if (random < 0.2) {
-                        world.get().placeWall(x,y);
+                        world.get().placeObstacle(x,y);
                     } else if (random < 0.3) {
-                        world.get().placeDanger(x,y);
+                        world.get().placeItem(x,y);
                     }
                 }
             }
         }
-        world.get().placeOffice(2,2);
-        world.get().placeKarl(2,2);
     }
 }
