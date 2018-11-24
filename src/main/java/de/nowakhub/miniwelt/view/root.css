@@ -3,12 +3,9 @@
     -fx-pref-width: 1000px;
 }
 
-.status-bar {
+.status-text {
     -fx-pref-height: 25px;
     -fx-max-height: 25px;
-}
-
-.status-text {
     -fx-content-display: text-only;
     -fx-alignment: center-left;
     -fx-padding: 4 0 0 5px;

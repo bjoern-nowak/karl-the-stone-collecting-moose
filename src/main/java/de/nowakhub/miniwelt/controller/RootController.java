@@ -5,11 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 
-import java.io.File;
-
 public class RootController {
 
-    private final Model model = new Model();
+    private final Model model;
 
     @FXML
     private Tab tab;
@@ -17,17 +15,14 @@ public class RootController {
     private Label status;
 
     @FXML
-    private MenubarController menubarController;
-    @FXML
-    private ToolbarController toolbarController;
+    private ActionController actionController;
     @FXML
     private ProgramController programController;
     @FXML
     private WorldController worldController;
 
-    public RootController(TabsController tabsController, File programFile) {
-        model.tabsController = tabsController;
-        model.programFile = programFile;
+    public RootController(Model model) {
+        this.model = model;
     }
 
     public void initialize(){
@@ -37,13 +32,12 @@ public class RootController {
     }
 
     private void initBinds() {
-        status.textProperty().bindBidirectional(model.statusText);
-        tab.textProperty().bindBidirectional(model.programText);
+        actionController.setModel(model);
+        programController.setModel(model);
+        worldController.setModel(model);
 
-        menubarController.model = model;
-        toolbarController.model = model;
-        programController.model = model;
-        worldController.model = model;
+        tab.textProperty().bindBidirectional(model.tabText);
+        status.textProperty().bindBidirectional(model.statusText);
 
     }
 }

@@ -9,29 +9,18 @@
 <Tab fx:id="tab" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <BorderPane styleClass="root" stylesheets="@root.css">
         <top>
-            <fx:include fx:id="menubar" source="menubar.fxml" />
+            <fx:include fx:id="action" source="action.fxml" />
         </top>
 
         <center>
-            <BorderPane xmlns:fx="http://javafx.com/fxml">
-                <top>
-                    <fx:include fx:id="toolbar" source="toolbar.fxml" />
-                </top>
-
-                <center>
-                    <SplitPane dividerPositions="0.5">
-                        <fx:include fx:id="program" source="program.fxml" />
-                        <fx:include fx:id="world" source="world.fxml" />
-                    </SplitPane>
-                </center>
-
-                <bottom>
-                    <HBox styleClass="status-bar" BorderPane.alignment="CENTER">
-                        <Label fx:id="status" styleClass="status-text" />
-                    </HBox>
-                </bottom>
-            </BorderPane>
+            <SplitPane dividerPositions="0.5">
+                <fx:include fx:id="program" source="program.fxml" />
+                <fx:include fx:id="world" source="world.fxml" />
+            </SplitPane>
         </center>
 
+        <bottom>
+            <Label fx:id="status" styleClass="status-text" />
+        </bottom>
     </BorderPane>
 </Tab>

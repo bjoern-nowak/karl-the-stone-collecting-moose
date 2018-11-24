@@ -1,3 +1,8 @@
+.menubar {
+    -fx-font-family: Consolas;
+    -fx-pref-height: 25px;
+}
+
 .toolbar {
     -fx-pref-height: 60px;
     -fx-pref-width: 800px;

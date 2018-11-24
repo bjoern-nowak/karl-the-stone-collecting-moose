@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class WorldController extends SubController implements Observer {
+public class WorldController extends ModelController implements Observer {
 
     @FXML
     private ScrollPane scrollPane;

@@ -2,13 +2,40 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 
 
-public abstract class ActionController extends SubController {
-    public static enum EXPORT {PNG, XML}
+public class ActionController extends ModelController {
+
+    @FXML
+    public ToggleGroup mouseModeToggleGroupMenubar;
+
+    @FXML
+    public ToggleGroup mouseModeToggleGroupToolbar;
+
+    @FXML
+    public Slider sliderSimSpeed;
+
+
+
+
+    public void initialize() {
+        // TODO bind toggle groups
+
+        if (sliderSimSpeed != null) {
+            sliderSimSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
+                model.statusText.setValue("Speed changed to " + newValue.intValue());
+            });
+        }
+    }
+
+
+
 
     @FXML
     public void onProgramNew(ActionEvent actionEvent) {
@@ -23,13 +50,64 @@ public abstract class ActionController extends SubController {
     @FXML
     public void onProgramSave(ActionEvent actionEvent) {
         model.statusText.setValue("onProgramSave");
-
-
+        model.tabsController.save(model);
+    }
+    @FXML
+    public void onProgramPrint(ActionEvent actionEvent) {
+        model.statusText.setValue("onProgramPrint");
     }
     @FXML
     public void onProgramCompile(ActionEvent actionEvent) {
         model.statusText.setValue("onProgramCompile");
     }
+    @FXML
+    public void onProgramExit(ActionEvent actionEvent) {
+        model.statusText.setValue("onProgramExit");
+        // TODO check if any program editor is dirty
+        Platform.exit();
+    }
+
+
+
+
+    @FXML
+    public void onWorldReset(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldReset");
+    }
+    @FXML
+    public void onWorldLoad(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldLoad");
+    }
+    @FXML
+    public void onWorldSave(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldSave");
+    }
+    @FXML
+    public void onWorldExportPNG(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldExportPNG");
+    }
+    @FXML
+    public void onWorldExportXML(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldExportXML");
+    }
+    @FXML
+    public void onWorldExportText(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldExportText");
+    }
+    @FXML
+    public void onWorldChangeSize(ActionEvent actionEvent) {
+        model.statusText.setValue("onWorldChangeSize");
+        TextInputDialog dialog = new TextInputDialog(model.world.sizeRow() + "x" + model.world.sizeCol());
+        dialog.setTitle("Input Dialog");
+        dialog.setHeaderText("Change dimension of the model.world (Rows x Cols).\nRequire format: [nxn | n e IN]");
+        dialog.setContentText("Please enter dimension:");
+        dialog.showAndWait().ifPresent(input -> {
+            String[] dimension = input.split("x");
+            if (!input.matches("\\d+x\\d+") || dimension.length != 2) throw new InvalidInputException("Invalid format for model.world dimension");
+            model.world.resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
+        });
+    }
+
 
 
 
@@ -63,6 +141,18 @@ public abstract class ActionController extends SubController {
 
 
     @FXML
+    public void onActorBagChangeSize(ActionEvent actionEvent) {
+        model.statusText.setValue("onActorBagChangeSize");
+        TextInputDialog dialog = new TextInputDialog("" + model.world.getActorBagMax());
+        dialog.setTitle("Input Dialog");
+        dialog.setHeaderText("Change maximal size of actor bag.\nRequire format: [n | n e IN]");
+        dialog.setContentText("Please enter maximal item count:");
+        dialog.showAndWait().ifPresent(input -> {
+            if (!input.matches("\\d+")) throw new InvalidInputException("Invalid format for maximal bag size");
+            model.world.setActorBagMax(Integer.valueOf(input));
+        });
+    }
+    @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
         model.statusText.setValue("onActorBagChangeContent");
         TextInputDialog dialog = new TextInputDialog("" + model.world.getActorBag());
@@ -75,7 +165,43 @@ public abstract class ActionController extends SubController {
             model.world.setActorBag(Integer.valueOf(input));
         });
     }
-
+    @FXML
+    public void onActorStepAhead(ActionEvent actionEvent) {
+        model.world.stepAhead();
+        model.statusText.setValue("onActorStepAhead");
+    }
+    @FXML
+    public void onActorTurnRight(ActionEvent actionEvent) {
+        model.world.turnRight();
+        model.statusText.setValue("onActorTurnRight");
+    }
+    @FXML
+    public void onActorBackToStart(ActionEvent actionEvent) {
+        model.world.backToStart();
+        model.statusText.setValue("onActorBackToStart");
+    }
+    @FXML
+    public void onActorAheadClear(ActionEvent actionEvent) {
+        model.statusText.setValue("onActorAheadClear");
+    }
+    @FXML
+    public void onActorBagEmpty(ActionEvent actionEvent) {
+        model.statusText.setValue("onActorBagEmpty");
+    }
+    @FXML
+    public void onActorFoundItem(ActionEvent actionEvent) {
+        model.statusText.setValue("onActorFoundItem");
+    }
+    @FXML
+    public void onActorPickUp(ActionEvent actionEvent) {
+        model.world.pickUp();
+        model.statusText.setValue("onActorPickUp");
+    }
+    @FXML
+    public void onActorDropDown(ActionEvent actionEvent) {
+        model.world.dropDown();
+        model.statusText.setValue("onActorDropDown");
+    }
 
 
 

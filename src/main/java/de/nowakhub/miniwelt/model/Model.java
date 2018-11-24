@@ -11,18 +11,26 @@ import java.util.Random;
 
 public class Model {
 
-    public TabsController tabsController;
-
+    public final TabsController tabsController;
     public File programFile;
+    public final StringProperty program = new SimpleStringProperty();
 
     public final World world;
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
     
-    public final StringProperty programText = new SimpleStringProperty();
+    public final StringProperty tabText = new SimpleStringProperty();
     public final StringProperty statusText = new SimpleStringProperty();
 
-    public Model() {
+
+    public Model(TabsController tabsController, File programFile, String program) {
+        this.tabsController = tabsController;
+        this.programFile = programFile;
+        this.program.set(program != null ? program : "void main(String args[]) {\n\tstepForward()\n}");
         world = new World(10, 10);
+        defaultWorld();
+    }
+
+    private void defaultWorld() {
         world.placeStart(2,2);
         world.placeActor(2,2);
 
