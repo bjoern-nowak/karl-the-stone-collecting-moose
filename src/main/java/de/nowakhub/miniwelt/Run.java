@@ -38,7 +38,7 @@ public class Run extends Application {
 
         try {
             System.out.println("start -> Thread: " + Thread.currentThread().getName());
-            FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("view/root.fxml"));
+            FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("view/tabs.fxml"));
             primaryStage.setTitle("Karl the fire prevention officer");
             primaryStage.setScene(new Scene(rootLoader.load()));
             primaryStage.show();

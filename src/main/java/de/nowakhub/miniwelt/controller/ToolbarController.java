@@ -18,7 +18,7 @@ public class ToolbarController extends ActionController {
         // TODO bind toggle groups
         if (sliderSimSpeed != null) {
             sliderSimSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
-                statusText.setValue("Speed changed to " + newValue.intValue());
+                model.statusText.setValue("Speed changed to " + newValue.intValue());
             });
         }
     }

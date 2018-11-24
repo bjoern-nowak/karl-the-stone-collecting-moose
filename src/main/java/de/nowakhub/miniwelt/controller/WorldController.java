@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class ViewController extends SubController implements Observer {
+public class WorldController extends SubController implements Observer {
 
     @FXML
     private ScrollPane scrollPane;
@@ -49,8 +49,8 @@ public class ViewController extends SubController implements Observer {
     private void addEventHandler() {
         // feature: changing fields
         frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            if (mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
-                world.get().place(mouseMode.get(), (int) (event.getY() / tileSize()), (int) (event.getX() / tileSize()));
+            if (model.mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
+                model.world.place(model.mouseMode.get(), (int) (event.getY() / tileSize()), (int) (event.getX() / tileSize()));
                 draw();
             }
         });
@@ -60,12 +60,12 @@ public class ViewController extends SubController implements Observer {
             if (event.isPrimaryButtonDown()) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
-                if (world.get().isFieldWithActor(row, col)) {
+                if (model.world.isFieldWithActor(row, col)) {
                     dragging = Field.ACTOR;
-                } else if (world.get().isFieldWithStart(row, col)) {
+                } else if (model.world.isFieldWithStart(row, col)) {
                     dragging = Field.START;
                 } else {
-                    dragging = world.get().getField()[row][col];
+                    dragging = model.world.getField()[row][col];
                 }
             }
         });
@@ -73,7 +73,7 @@ public class ViewController extends SubController implements Observer {
             if (dragging != null) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
-                world.get().place(dragging, row, col);
+                model.world.place(dragging, row, col);
                 draw();
             }
         });
@@ -95,9 +95,9 @@ public class ViewController extends SubController implements Observer {
         });
     }
 
-    public void postInitialize() {
-        // subscribe to world changes
-        world.get().addObserver("view", this);
+    void postInitialize() {
+        // subscribe to model.world changes
+        model.world.addObserver("view", this);
 
         // auto scrollbars for canvas
         scrollPane.setFitToHeight(true);
@@ -113,15 +113,15 @@ public class ViewController extends SubController implements Observer {
     }
 
     private void resize() {
-        frame.setHeight(tileSize(world.get().sizeRow()));
-        frame.setWidth(tileSize(world.get().sizeCol()));
+        frame.setHeight(tileSize(model.world.sizeRow()));
+        frame.setWidth(tileSize(model.world.sizeCol()));
     }
 
     private void draw() {
         // clean canvas
         gc.clearRect(0, 0, frame.getWidth(), frame.getHeight());
 
-        Field[][] state = world.get().getField();
+        Field[][] state = model.world.getField();
         //drawGrid(state);
         drawGridBorder(state);
         drawGround(state);
@@ -188,7 +188,7 @@ public class ViewController extends SubController implements Observer {
     }
 
     private void drawActor(int row, int col) {
-        switch(world.get().getActorDir()) {
+        switch(model.world.getActorDir()) {
             case UP:
                 gc.drawImage(actorU, tileSize(col), tileSize(row), tileSize(), tileSize());
                 break;
@@ -207,7 +207,7 @@ public class ViewController extends SubController implements Observer {
 
     private void drawObstacle(int row, int col) {
         Image img = obstacle;
-        if (world.get().isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
+        if (model.world.isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
             //img = obstacle_random // TODO add random obstacle ; like glass
         }
         gc.drawImage(img, tileSize(col), tileSize(row), tileSize(), tileSize());

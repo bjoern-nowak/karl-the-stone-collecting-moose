@@ -17,28 +17,28 @@
         <ToggleGroup fx:id="mouseModeToggleGroupToolbar" />
     </fx:define>
 
-    <Button mnemonicParsing="false" onAction="#onEditorNew" prefHeight="40.0" prefWidth="40.0" text="Neu">
+    <Button mnemonicParsing="false" onAction="#onProgramNew" prefHeight="40.0" prefWidth="40.0" text="Neu">
         <styleClass>
             <String fx:value="btn-new" />
             <String fx:value="btn" />
         </styleClass>
         <tooltip><Tooltip text="Add a new Editor Tab" /></tooltip>
     </Button>
-    <Button mnemonicParsing="false" onAction="#onEditorOpen" text="Open">
+    <Button mnemonicParsing="false" onAction="#onProgramOpen" text="Open">
         <styleClass>
             <String fx:value="btn-open" />
             <String fx:value="btn" />
         </styleClass>
         <tooltip><Tooltip text="Opens an .java File" /></tooltip>
     </Button>
-    <Button mnemonicParsing="false" onAction="#onEditorSave" text="Save">
+    <Button mnemonicParsing="false" onAction="#onProgramSave" text="Save">
         <styleClass>
             <String fx:value="btn-save" />
             <String fx:value="btn" />
         </styleClass>
         <tooltip><Tooltip text="Save the editor as .java file" /></tooltip>
     </Button>
-    <Button mnemonicParsing="false" onAction="#onEditorCompile" text="Com">
+    <Button mnemonicParsing="false" onAction="#onProgramCompile" text="Com">
         <styleClass>
             <String fx:value="btn-compile" />
             <String fx:value="btn" />

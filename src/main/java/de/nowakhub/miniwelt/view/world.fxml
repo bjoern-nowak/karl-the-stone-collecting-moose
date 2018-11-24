@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<ScrollPane fx:id="scrollPane" styleClass="world" stylesheets="@world.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.WorldController">
+    <StackPane fx:id="stackPane" styleClass="world">
+        <Canvas fx:id="frame" />
+    </StackPane>
+</ScrollPane>

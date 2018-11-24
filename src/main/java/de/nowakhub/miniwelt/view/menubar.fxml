@@ -17,20 +17,20 @@
     </fx:define>
 
     <Menu text="_Editor">
-        <MenuItem mnemonicParsing="false" onAction="#onEditorNew" text="New">
+        <MenuItem mnemonicParsing="false" onAction="#onProgramNew" text="New">
          <accelerator>
             <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
          </accelerator></MenuItem>
-        <MenuItem mnemonicParsing="false" onAction="#onEditorOpen" text="Open">
+        <MenuItem mnemonicParsing="false" onAction="#onProgramOpen" text="Open">
          <accelerator>
             <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
          </accelerator></MenuItem>
-        <MenuItem mnemonicParsing="false" onAction="#onEditorSave" text="Save">
+        <SeparatorMenuItem mnemonicParsing="false" />
+        <MenuItem mnemonicParsing="false" onAction="#onProgramSave" text="Save">
          <accelerator>
             <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
          </accelerator></MenuItem>
-        <SeparatorMenuItem mnemonicParsing="false" />
-        <MenuItem mnemonicParsing="false" onAction="#onEditorCompile" text="Compile">
+        <MenuItem mnemonicParsing="false" onAction="#onProgramCompile" text="Compile">
          <accelerator>
             <KeyCodeCombination alt="UP" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
          </accelerator></MenuItem>

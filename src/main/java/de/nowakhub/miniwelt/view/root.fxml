@@ -1,40 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="de.nowakhub.miniwelt.controller.RootController"
-            styleClass="root"
-            stylesheets="@root.css">
-    <top>
-        <fx:include source="menubar.fxml" fx:id="menubar"/>
-    </top>
+<Tab fx:id="tab" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <BorderPane styleClass="root" stylesheets="@root.css">
+        <top>
+            <fx:include fx:id="menubar" source="menubar.fxml" />
+        </top>
 
-    <center>
-        <BorderPane xmlns:fx="http://javafx.com/fxml">
-            <top>
-                <fx:include source="toolbar.fxml" fx:id="toolbar"/>
-            </top>
+        <center>
+            <BorderPane xmlns:fx="http://javafx.com/fxml">
+                <top>
+                    <fx:include fx:id="toolbar" source="toolbar.fxml" />
+                </top>
 
-             <center>
-                 <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
-                     <fx:include source="editor.fxml" fx:id="editor"/>
-                     <!--<fx:define>-->
-                     <fx:include source="view.fxml" fx:id="view"/>
-                     <!--</fx:define>-->
-                 </SplitPane>
-             </center>
+                <center>
+                    <SplitPane dividerPositions="0.5">
+                        <fx:include fx:id="program" source="program.fxml" />
+                        <fx:include fx:id="world" source="world.fxml" />
+                    </SplitPane>
+                </center>
 
-             <bottom>
-                 <HBox styleClass="status-bar" BorderPane.alignment="CENTER">
-                     <Label fx:id="status" styleClass="status-text"/>
-                 </HBox>
-             </bottom>
-        </BorderPane>
-    </center>
+                <bottom>
+                    <HBox styleClass="status-bar" BorderPane.alignment="CENTER">
+                        <Label fx:id="status" styleClass="status-text" />
+                    </HBox>
+                </bottom>
+            </BorderPane>
+        </center>
 
-</BorderPane>
+    </BorderPane>
+</Tab>

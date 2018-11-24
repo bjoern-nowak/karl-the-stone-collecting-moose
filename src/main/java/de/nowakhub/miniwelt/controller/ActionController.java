@@ -10,51 +10,53 @@ import javafx.scene.control.TextInputDialog;
 public abstract class ActionController extends SubController {
     public static enum EXPORT {PNG, XML}
 
+    @FXML
+    public void onProgramNew(ActionEvent actionEvent) {
+        model.statusText.setValue("onProgramNew");
+        model.tabsController.add();
+    }
+    @FXML
+    public void onProgramOpen(ActionEvent actionEvent) {
+        model.statusText.setValue("onProgramOpen");
+        model.tabsController.open();
+    }
+    @FXML
+    public void onProgramSave(ActionEvent actionEvent) {
+        model.statusText.setValue("onProgramSave");
 
 
-    @FXML
-    public void onEditorNew(ActionEvent actionEvent) {
-        statusText.setValue("onEditorNew");
     }
     @FXML
-    public void onEditorOpen(ActionEvent actionEvent) {
-        statusText.setValue("onEditorOpen");
-    }
-    @FXML
-    public void onEditorSave(ActionEvent actionEvent) {
-        statusText.setValue("onEditorSave");
-    }
-    @FXML
-    public void onEditorCompile(ActionEvent actionEvent) {
-        statusText.setValue("onEditorCompile");
+    public void onProgramCompile(ActionEvent actionEvent) {
+        model.statusText.setValue("onProgramCompile");
     }
 
 
 
     @FXML
     public void onMouseModePlaceObstacle(ActionEvent actionEvent) {
-        mouseMode.setValue(Field.OBSTACLE);
-        statusText.setValue("onMouseModePlaceWall");
+        model.mouseMode.setValue(Field.OBSTACLE);
+        model.statusText.setValue("onMouseModePlaceWall");
     }
     @FXML
     public void onMouseModePlaceActor(ActionEvent actionEvent) {
-        mouseMode.setValue(Field.ACTOR);
-        statusText.setValue("onMouseModePlaceActor");
+        model.mouseMode.setValue(Field.ACTOR);
+        model.statusText.setValue("onMouseModePlaceActor");
     }
     @FXML
     public void onMouseModePlaceItem(ActionEvent actionEvent) {
-        mouseMode.setValue(Field.ITEM);
-        statusText.setValue("onMouseModePlaceItem");
+        model.mouseMode.setValue(Field.ITEM);
+        model.statusText.setValue("onMouseModePlaceItem");
     }
     @FXML
     public void onMouseModePlaceStart(ActionEvent actionEvent) {
-        mouseMode.setValue(Field.START);
-        statusText.setValue("onMouseModePlaceStart");
+        model.mouseMode.setValue(Field.START);
+        model.statusText.setValue("onMouseModePlaceStart");
     }
     @FXML
     public void onMouseModePlaceFree(ActionEvent actionEvent) {
-        mouseMode.setValue(Field.FREE);
-        statusText.setValue("onMouseModePlaceFree");
+        model.mouseMode.setValue(Field.FREE);
+        model.statusText.setValue("onMouseModePlaceFree");
     }
 
 
@@ -62,15 +64,15 @@ public abstract class ActionController extends SubController {
 
     @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
-        statusText.setValue("onActorBagChangeContent");
-        TextInputDialog dialog = new TextInputDialog("" + world.get().getActorBag());
+        model.statusText.setValue("onActorBagChangeContent");
+        TextInputDialog dialog = new TextInputDialog("" + model.world.getActorBag());
         dialog.setTitle("Input Dialog");
         dialog.setHeaderText("Change item count of actor bag.\nRequire format: [n | n e IN, n <= maximal bag size]");
-        dialog.setContentText("Please enter item count smaller then " + (world.get().getActorBagMax()+1) + ":");
+        dialog.setContentText("Please enter item count smaller then " + (model.world.getActorBagMax()+1) + ":");
         dialog.showAndWait().ifPresent(input -> {
-            if (!input.matches("\\d+") || world.get().getActorBagMax() < Integer.valueOf(input))
+            if (!input.matches("\\d+") || model.world.getActorBagMax() < Integer.valueOf(input))
                 throw new InvalidInputException("Invalid format for bag item count");
-            world.get().setActorBag(Integer.valueOf(input));
+            model.world.setActorBag(Integer.valueOf(input));
         });
     }
 
@@ -80,15 +82,15 @@ public abstract class ActionController extends SubController {
 
     @FXML
     public void onSimStartOrContinue(ActionEvent actionEvent) {
-        statusText.setValue("onSimStartOrContinue");
+        model.statusText.setValue("onSimStartOrContinue");
     }
     @FXML
     public void onSimPause(ActionEvent actionEvent) {
-        statusText.setValue("onSimPause");
+        model.statusText.setValue("onSimPause");
     }
     @FXML
     public void onSimStop(ActionEvent actionEvent) {
-        statusText.setValue("onSimStop");
+        model.statusText.setValue("onSimStop");
     }
 
 }
