@@ -108,6 +108,7 @@ public class TabsController {
                 if (tabPane.getTabs().isEmpty()) Platform.exit();
             });
             tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
         } catch (IOException ex) {
             ex.printStackTrace(); // TODO crap
         }

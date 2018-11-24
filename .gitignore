@@ -10,3 +10,6 @@ out/
 
 # Log file
 *.log
+
+## ignore programs folder
+programs
