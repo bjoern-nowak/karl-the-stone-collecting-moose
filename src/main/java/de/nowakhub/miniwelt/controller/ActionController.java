@@ -63,8 +63,8 @@ public class ActionController extends ModelController {
     @FXML
     public void onProgramExit(ActionEvent actionEvent) {
         model.statusText.setValue("onProgramExit");
-        // TODO check if any program editor is dirty
-        Platform.exit();
+        TabsController.confirmExitIfNecessaery(actionEvent, model.tabsController.getTabs());
+        if (!actionEvent.isConsumed()) Platform.exit();
     }
 
 

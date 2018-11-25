@@ -13,6 +13,10 @@ public class Actor  {
         this.interaction = interaction;
     }
 
+    public void main() {
+
+    }
+
     public Interactable getInteraction() {
         return interaction;
     }

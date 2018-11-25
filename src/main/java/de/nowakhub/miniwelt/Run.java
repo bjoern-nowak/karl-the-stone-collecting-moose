@@ -1,11 +1,14 @@
 package de.nowakhub.miniwelt;
 
+import de.nowakhub.miniwelt.controller.TabsController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -31,6 +34,7 @@ public class Run extends Application {
             System.out.println("init -> Parameter: " + string);
         }
     }
+
     @Override
     public void start(Stage primaryStage) {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> dialogException(t, e)));
@@ -40,7 +44,11 @@ public class Run extends Application {
             System.out.println("start -> Thread: " + Thread.currentThread().getName());
             FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("view/tabs.fxml"));
             primaryStage.setTitle("Karl the fire prevention officer");
-            primaryStage.setScene(new Scene(rootLoader.load()));
+            Parent parent = rootLoader.load();
+            Scene scene = new Scene(parent);
+            primaryStage.setScene(scene);
+            primaryStage.setOnCloseRequest(event ->
+                    TabsController.confirmExitIfNecessaery(event, ((TabPane) parent).getTabs()));
             primaryStage.show();
         } catch (Exception e) {
             dialogException(Thread.currentThread(), e);

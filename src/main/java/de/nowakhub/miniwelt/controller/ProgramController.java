@@ -10,5 +10,7 @@ public class ProgramController extends ModelController {
 
     public void postInitialize() {
         program.textProperty().bindBidirectional(model.program);
+        program.textProperty().addListener(
+                (observable, oldValue, newValue) -> model.programDirty = !model.programSave.equals(newValue));
     }
 }
