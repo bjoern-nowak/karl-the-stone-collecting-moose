@@ -58,8 +58,8 @@
            <MenuItem onAction="#onWorldChangeSize" text="_Change world size">
            </MenuItem>
            <Menu text="Set _mouse mode to...">
-               <RadioMenuItem onAction="#onMouseModePlaceObstacle" text="Place Wall" />
-               <RadioMenuItem onAction="#onMouseModePlaceItem" text="Place Danger" />
+               <RadioMenuItem onAction="#onMouseModePlaceObstacle" text="Place Wall" toggleGroup="$mouseModeToggleGroupMenubar" />
+               <RadioMenuItem onAction="#onMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar" />
                <RadioMenuItem onAction="#onMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar" />
                <RadioMenuItem onAction="#onMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar" />
                <RadioMenuItem onAction="#onMouseModePlaceFree" text="Remove" toggleGroup="$mouseModeToggleGroupMenubar" />
@@ -163,7 +163,7 @@
 
       <Separator orientation="VERTICAL" prefHeight="25.0" />
 
-      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceObstacle" text="Wall">
+      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceObstacle" text="Wall" toggleGroup="$mouseModeToggleGroupToolbar">
           <styleClass>
               <String fx:value="btn-obstacle" />
               <String fx:value="btn" />
@@ -172,7 +172,7 @@
            <Tooltip text="Set left click to place a wall" />
         </tooltip>
       </ToggleButton>
-      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceItem" text="Danger">
+      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceItem" text="Danger" toggleGroup="$mouseModeToggleGroupToolbar">
           <styleClass>
               <String fx:value="btn-item" />
               <String fx:value="btn" />
@@ -181,7 +181,7 @@
            <Tooltip text="Set left click to place a danger" />
         </tooltip>
       </ToggleButton>
-      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceActor" text="Karl">
+      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceActor" text="Karl" toggleGroup="$mouseModeToggleGroupToolbar">
           <styleClass>
               <String fx:value="btn-actor" />
               <String fx:value="btn" />
