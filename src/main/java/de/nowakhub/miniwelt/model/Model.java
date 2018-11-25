@@ -15,8 +15,8 @@ public class Model {
 
     public File programFile;
     public final StringProperty program = new SimpleStringProperty();
-    public boolean programDirty = false;
-    public String programSave = "";
+    public boolean programDirty;
+    public String programSave;
 
     public final World world;
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
@@ -28,12 +28,16 @@ public class Model {
     public Model(TabsController tabsController, File programFile, String program) {
         this.tabsController = tabsController;
         this.programFile = programFile;
+
         this.program.set(program);
+        this.programDirty = false;
         this.programSave = program;
         if (programFile == null && program == null) {
             this.program.set("void main() {\n\tstepForward()\n}");
             this.programDirty = true;
+            this.programSave = null;
         }
+
         world = new World(10, 10);
         defaultWorld();
     }

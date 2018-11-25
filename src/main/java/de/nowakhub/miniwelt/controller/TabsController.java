@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class TabsController {
     private final String POSTFIX = "}";
 
     private FileChooser fileChooser;
+    private List<File> openFiles = new ArrayList<>();
 
     @FXML
     private TabPane tabPane;
@@ -58,10 +60,19 @@ public class TabsController {
             File file = fileChooser.showOpenDialog(tabPane.getScene().getWindow());
             if (file != null) {
 
+                if (openFiles.contains(file)) {
+                    tabPane.getTabs().stream()
+                            .filter(tab -> file.equals(getModel(tab).programFile))
+                            .findFirst()
+                            .ifPresent(tab -> tabPane.getSelectionModel().select(tab));
+                    return;
+                }
+
                 try {
                     // java7 feature: used for reading small files
                     List<String> lines = Files.readAllLines(file.toPath());
                     addTab(file, String.join("\n", lines.subList(1, lines.size() - 1)));
+                    openFiles.add(file);
                 } catch (IOException e) {
                     e.printStackTrace(); // TODO crap
                 }
@@ -95,7 +106,9 @@ public class TabsController {
                     printWriter.println(model.program.get());
                     printWriter.print(POSTFIX);
 
+                    if (model.programFile != null) openFiles.remove(model.programFile);
                     model.programFile = file;
+                    openFiles.add(file);
                     model.programDirty = false;
                     model.programSave = model.program.get();
                     model.tabText.set(file.getName());
@@ -108,6 +121,7 @@ public class TabsController {
     }
 
     void close(Tab tab) {
+        openFiles.remove(getModel(tab).programFile);
         tabPane.getTabs().remove(tab);
     }
 
@@ -119,7 +133,10 @@ public class TabsController {
             Tab tab = tabLoader.load();
             tab.setUserData(model);
             tab.setText(file != null ? file.getName() : "DefaultProgram");
-            tab.setOnCloseRequest(event -> confirmCloseIfNecessaery(event, model));
+            tab.setOnCloseRequest(event -> {
+                confirmCloseIfNecessaery(event, model);
+                if (!event.isConsumed()) openFiles.remove(model.programFile);
+            });
             tab.setOnClosed(event -> {
                 if (tabPane.getTabs().isEmpty()) Platform.exit();
             });
@@ -130,14 +147,22 @@ public class TabsController {
         }
     }
 
-    public static void confirmCloseIfNecessaery(Event event, Model model) {
+    /**
+     * Confirmation is required if target program tab is dirty (changed and unsaved)
+     * Event gets consumed if user canceled action
+     */
+    static void confirmCloseIfNecessaery(Event event, Model model) {
         if (model.programDirty) {
             confirmClose(event,
                     "Please confirm the CLOSE action.",
-                    "This program tab (" + model.tabText.get() + ") is changed and unsaved.\nStill continue?");
+                    "This program tab (" + model.tabText.get() + ") is changed and unsaved.\n\nStill continue?");
         }
     }
 
+    /**
+     * Confirmation is required if any program tab is dirty (changed and unsaved)
+     * Event gets consumed if user canceled action
+     */
     public static void confirmExitIfNecessaery(Event event, Collection<Tab> tabs) {
         Collection<Tab> dirtyTabs = getDirtyTabs(tabs);
         if (!dirtyTabs.isEmpty()) {
@@ -148,16 +173,12 @@ public class TabsController {
             }
             confirmClose(event,
                     "Please confirm the EXIT action.",
-                    "Following program tabs are changed and unsaved:\n" + dirtyTabNames +"\nStill continue?");
+                    "Following program tabs are changed and unsaved:\n" + dirtyTabNames +"\n\nStill continue?");
         }
     }
-
-    private static Collection<Tab> getDirtyTabs(Collection<Tab> tabs) {
-        return tabs.stream()
-                .filter(tab -> ((Model) tab.getUserData()).programDirty)
-                .collect(Collectors.toList());
-    }
-
+    /**
+     * Consumes event if user canceles action
+     */
     private static void confirmClose(Event event, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initModality(Modality.APPLICATION_MODAL);
@@ -171,7 +192,18 @@ public class TabsController {
         // TODO ask to save all files
     }
 
-    public ObservableList<Tab> getTabs() {
+
+    static Collection<Tab> getDirtyTabs(Collection<Tab> tabs) {
+        return tabs.stream()
+                .filter(tab -> getModel(tab).programDirty)
+                .collect(Collectors.toList());
+    }
+
+    ObservableList<Tab> getTabs() {
         return tabPane.getTabs();
+    }
+
+    static Model getModel(Tab tab) {
+        return ((Model) tab.getUserData());
     }
 }

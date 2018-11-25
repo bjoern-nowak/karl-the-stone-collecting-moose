@@ -5,9 +5,12 @@ import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 
 
 public class ActionController extends ModelController {
@@ -39,17 +42,14 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onProgramNew(ActionEvent actionEvent) {
-        model.statusText.setValue("onProgramNew");
         model.tabsController.add();
     }
     @FXML
     public void onProgramOpen(ActionEvent actionEvent) {
-        model.statusText.setValue("onProgramOpen");
         model.tabsController.open();
     }
     @FXML
     public void onProgramSave(ActionEvent actionEvent) {
-        model.statusText.setValue("onProgramSave");
         model.tabsController.save(model);
     }
     @FXML
@@ -62,7 +62,6 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onProgramExit(ActionEvent actionEvent) {
-        model.statusText.setValue("onProgramExit");
         TabsController.confirmExitIfNecessaery(actionEvent, model.tabsController.getTabs());
         if (!actionEvent.isConsumed()) Platform.exit();
     }
@@ -96,7 +95,6 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onWorldChangeSize(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldChangeSize");
         TextInputDialog dialog = new TextInputDialog(model.world.sizeRow() + "x" + model.world.sizeCol());
         dialog.setTitle("Input Dialog");
         dialog.setHeaderText("Change dimension of the model.world (Rows x Cols).\nRequire format: [nxn | n e IN]");
@@ -114,27 +112,22 @@ public class ActionController extends ModelController {
     @FXML
     public void onMouseModePlaceObstacle(ActionEvent actionEvent) {
         model.mouseMode.setValue(Field.OBSTACLE);
-        model.statusText.setValue("onMouseModePlaceWall");
     }
     @FXML
     public void onMouseModePlaceActor(ActionEvent actionEvent) {
         model.mouseMode.setValue(Field.ACTOR);
-        model.statusText.setValue("onMouseModePlaceActor");
     }
     @FXML
     public void onMouseModePlaceItem(ActionEvent actionEvent) {
         model.mouseMode.setValue(Field.ITEM);
-        model.statusText.setValue("onMouseModePlaceItem");
     }
     @FXML
     public void onMouseModePlaceStart(ActionEvent actionEvent) {
         model.mouseMode.setValue(Field.START);
-        model.statusText.setValue("onMouseModePlaceStart");
     }
     @FXML
     public void onMouseModePlaceFree(ActionEvent actionEvent) {
         model.mouseMode.setValue(Field.FREE);
-        model.statusText.setValue("onMouseModePlaceFree");
     }
 
 
@@ -142,7 +135,6 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onActorBagChangeSize(ActionEvent actionEvent) {
-        model.statusText.setValue("onActorBagChangeSize");
         TextInputDialog dialog = new TextInputDialog("" + model.world.getActorBagMax());
         dialog.setTitle("Input Dialog");
         dialog.setHeaderText("Change maximal size of actor bag.\nRequire format: [n | n e IN]");
@@ -154,7 +146,6 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
-        model.statusText.setValue("onActorBagChangeContent");
         TextInputDialog dialog = new TextInputDialog("" + model.world.getActorBag());
         dialog.setTitle("Input Dialog");
         dialog.setHeaderText("Change item count of actor bag.\nRequire format: [n | n e IN, n <= maximal bag size]");
@@ -168,39 +159,40 @@ public class ActionController extends ModelController {
     @FXML
     public void onActorStepAhead(ActionEvent actionEvent) {
         model.world.stepAhead();
-        model.statusText.setValue("onActorStepAhead");
     }
     @FXML
     public void onActorTurnRight(ActionEvent actionEvent) {
         model.world.turnRight();
-        model.statusText.setValue("onActorTurnRight");
     }
     @FXML
     public void onActorBackToStart(ActionEvent actionEvent) {
         model.world.backToStart();
-        model.statusText.setValue("onActorBackToStart");
     }
     @FXML
     public void onActorAheadClear(ActionEvent actionEvent) {
-        model.statusText.setValue("onActorAheadClear");
+        showNonBlockingInfo(
+                "Actor test command result",
+                "Result of aheadClear(): " + model.world.aheadClear());
     }
     @FXML
     public void onActorBagEmpty(ActionEvent actionEvent) {
-        model.statusText.setValue("onActorBagEmpty");
+        showNonBlockingInfo(
+                "Actor test command result",
+                "Result of bagEmpty(): " + model.world.bagEmpty());
     }
     @FXML
     public void onActorFoundItem(ActionEvent actionEvent) {
-        model.statusText.setValue("onActorFoundItem");
+        showNonBlockingInfo(
+                "Actor test command result",
+                "Result of foundItem(): " + model.world.foundItem());
     }
     @FXML
     public void onActorPickUp(ActionEvent actionEvent) {
         model.world.pickUp();
-        model.statusText.setValue("onActorPickUp");
     }
     @FXML
     public void onActorDropDown(ActionEvent actionEvent) {
         model.world.dropDown();
-        model.statusText.setValue("onActorDropDown");
     }
 
 
@@ -219,5 +211,15 @@ public class ActionController extends ModelController {
         model.statusText.setValue("onSimStop");
     }
 
+
+    public static void showNonBlockingInfo(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initStyle(StageStyle.UTILITY);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.show();
+    }
 }
 

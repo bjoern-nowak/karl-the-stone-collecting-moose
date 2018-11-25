@@ -3,3 +3,18 @@
     -fx-pref-height: 600px;
     -fx-pref-width: 600px;
 }
+
+/* custom boolean property on model class Editor */
+.program .content {
+    -fx-background-color: #e6e6ff;
+}
+
+/* custom boolean property on model class Editor */
+.program:compiled .content {
+    -fx-background-color: #e6ffe6;
+}
+
+/* custom boolean property on model class Editor */
+.program:dirty .content {
+    -fx-background-color: #ffe6e6;
+}
