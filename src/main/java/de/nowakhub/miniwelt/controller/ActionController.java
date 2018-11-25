@@ -12,6 +12,11 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+import java.io.ByteArrayOutputStream;
+import java.nio.file.Paths;
+
 
 public class ActionController extends ModelController {
 
@@ -50,7 +55,11 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onProgramSave(ActionEvent actionEvent) {
-        model.tabsController.save(model);
+        model.tabsController.save(model, false);
+    }
+    @FXML
+    public void onProgramSaveUnder(ActionEvent actionEvent) {
+        model.tabsController.save(model, true);
     }
     @FXML
     public void onProgramPrint(ActionEvent actionEvent) {
@@ -58,7 +67,25 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onProgramCompile(ActionEvent actionEvent) {
-        model.statusText.setValue("onProgramCompile");
+        model.tabsController.save(model, false);
+        JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+        String actorPath = Paths.get("de/nowakhub/miniwelt/model/Actor.java").toAbsolutePath().toString();
+        String userActorPath = model.programFile.toString();
+        // TODO set classpath
+        boolean success = javac.run(null, null, errStream, actorPath, userActorPath) == 0;
+        if (!success) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Compiler says no. He complains:");
+            alert.setContentText(errStream.toString());
+            alert.show();
+        } else {
+            showNonBlockingInfo("Compiler says yes.", "Compile was successful.");
+            // TODO add compiled user actor to world
+        }
     }
     @FXML
     public void onProgramExit(ActionEvent actionEvent) {

@@ -25,6 +25,10 @@
                <accelerator>
                    <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
+           <MenuItem mnemonicParsing="false" onAction="#onProgramSaveUnder" text="Save under">
+               <accelerator>
+                   <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator></MenuItem>
            <MenuItem mnemonicParsing="false" onAction="#onProgramCompile" text="Compile">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />

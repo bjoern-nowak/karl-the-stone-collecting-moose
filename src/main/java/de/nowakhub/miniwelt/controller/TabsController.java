@@ -28,8 +28,7 @@ import java.util.stream.Collectors;
 // TODO or use different scenes, tab selecting changes visible scene (which has the same fxml structure)
 public class TabsController {
 
-    private final String CLASSNAME_PREFIX = "UserActorImpl_";
-    private final String PREFIX = "public class " + CLASSNAME_PREFIX + "%s extends Actor { public";
+    private final String PREFIX = "public class %s extends Actor { public";
     private final String PREFIX_REGEX = "public class \\w+ extends Actor { public";
     private final String POSTFIX = "}";
 
@@ -92,13 +91,16 @@ public class TabsController {
         });
     }
 
-    void save(Model model) {
+    void save(Model model, boolean forceUserInput) {
         Platform.runLater(() -> {
             if (model.programFile != null) {
                 //fileChooser.setInitialDirectory(model.programFile.getParentFile());
                 fileChooser.setInitialFileName(model.programFile.getName());
             }
-            File file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());
+
+            File file = model.programFile;
+            if (forceUserInput || file == null) file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());
+
             if (file != null) {
                 try (FileWriter fileWriter = new FileWriter(file);
                      PrintWriter printWriter = new PrintWriter(fileWriter)) {
@@ -106,9 +108,9 @@ public class TabsController {
                     printWriter.println(model.program.get());
                     printWriter.print(POSTFIX);
 
-                    if (model.programFile != null) openFiles.remove(model.programFile);
-                    model.programFile = file;
+                    openFiles.remove(model.programFile);
                     openFiles.add(file);
+                    model.programFile = file;
                     model.programDirty = false;
                     model.programSave = model.program.get();
                     model.tabText.set(file.getName());
@@ -116,6 +118,7 @@ public class TabsController {
                     e.printStackTrace(); // TODO crap
                 }
             }
+
             fileChooser.setInitialFileName("");
         });
     }
