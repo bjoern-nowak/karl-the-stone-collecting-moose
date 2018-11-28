@@ -1,5 +1,6 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.application.Platform;
@@ -12,6 +13,8 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 
 
@@ -66,60 +69,47 @@ public class ActionController extends ModelController {
     public void onProgramCompile(ActionEvent actionEvent) {
         boolean saved = model.tabsController.save(model, false);
         if (saved) {
-            File classDir = Paths.get("out/production/miniwelt_bjnowak").toAbsolutePath().toFile();
-            File modelDir = Paths.get("src/main/java").toAbsolutePath().toFile();
-
-            String[] args = new String[] {
-                    "-classpath", System.getProperty("java.class.path") + ";" + classDir.toString(),
-                    "-sourcepath", modelDir.toString(),
-                    "-d", model.programFile.getParent(),
-                    model.programFile.toString()
-            };
-            JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
-            ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-            boolean success = javac.run(null, null, errStream, args) == 0;
-            if (!success) {
-                Alerts.showError(
-                        "Compiler says no. He complains:",
-                        errStream.toString());
-            } else {
-                Alerts.showInfo(
-                        "Compiler says yes.",
-                        "Compile was successful.");
-
-                // TODO add compiled user actor to world
-
-            }
-
-            /*
-            JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
-            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-            try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
-                fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Collections.singletonList(outDir));
-                fileManager.setLocation(StandardLocation.SOURCE_PATH, Collections.singletonList(modelDir));
-                Iterable<? extends JavaFileObject> compilationFiles = fileManager.getJavaFileObjectsFromFiles(files);
-
-                Iterable<String> options = Arrays.asList("-d", outDir.toString());
-                boolean success = javac.getTask(null, fileManager, diagnostics, options, null, compilationFiles).call();
-                if (!success) {
-                    for (Diagnostic diagnostic : diagnostics.getDiagnostics())
-                        Alerts.showError(
-                                "Compiler says no. He complains:",
-                                diagnostic.getMessage(null));
-                } else {
-                    Alerts.showInfo(
-                            "Compiler says yes.",
-                            "Compile was successful.");
-
-                    // T O D O add compiled user actor to world
-
-                }
-            } catch (IOException ex) {
-                Alerts.showException(null, ex);
-            }
-            */
+            compile(false);
         }
     }
+
+    void compile(boolean silently) {
+        if (model.programFile == null) return;
+
+        File classDir = Paths.get("out/production/miniwelt_bjnowak").toAbsolutePath().toFile();
+        File modelDir = Paths.get("src/main/java").toAbsolutePath().toFile();
+
+        String[] args = new String[] {
+                "-classpath", System.getProperty("java.class.path") + ";" + classDir.toString(),
+                "-sourcepath", modelDir.toString(),
+                "-d", model.programFile.getParent(),
+                model.programFile.toString()
+        };
+        JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+        ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+        boolean success = javac.run(null, null, errStream, args) == 0;
+        if (!success) {
+            if (!silently) Alerts.showError(
+                    "Compiler says no. He complains:",
+                    errStream.toString());
+        } else {
+            if (!silently) Alerts.showInfo(
+                    "Compiler says yes.",
+                    "Compile was successful.");
+
+            try {
+                URL[] urls = new URL[] { model.programFile.getParentFile().toURI().toURL() };
+                ClassLoader cl = new URLClassLoader(urls);
+                String clsName = model.programFile.getName().substring(0, model.programFile.getName().length() - 5);
+                Class<?> cls = cl.loadClass(clsName);
+                model.actor = (Actor) cls.newInstance();
+            } catch (Exception ex) {
+                if (!silently) Alerts.showException(null, ex);
+            }
+
+        }
+    }
+
     @FXML
     public void onProgramExit(ActionEvent actionEvent) {
         TabsController.confirmExitIfNecessaery(actionEvent, model.tabsController.getTabs());

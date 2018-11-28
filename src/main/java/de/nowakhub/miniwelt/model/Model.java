@@ -19,8 +19,7 @@ public class Model {
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
     public Actor actor;
-    
-    public final StringProperty tabText = new SimpleStringProperty();
+
     public final StringProperty statusText = new SimpleStringProperty();
 
 

@@ -36,8 +36,10 @@ public class RootController {
         programController.setModel(model);
         worldController.setModel(model);
 
-        tab.textProperty().bindBidirectional(model.tabText);
         status.textProperty().bindBidirectional(model.statusText);
+    }
 
+    void compileSilently() {
+        actionController.compile(true);
     }
 }

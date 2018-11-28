@@ -14,7 +14,7 @@ import java.util.Optional;
 public class Alerts {
 
     /**
-     * Show info, non-blocking
+     * Show info
      */
     public static void showInfo(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -23,7 +23,7 @@ public class Alerts {
         alert.setTitle("Information Dialog");
         alert.setHeaderText(header);
         alert.setContentText(content);
-        alert.show();
+        alert.showAndWait();
     }
 
     /**
@@ -54,7 +54,7 @@ public class Alerts {
     }
 
     /**
-     * Show error, non-blocking
+     * Show error
      */
     public static void showError(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -63,7 +63,7 @@ public class Alerts {
         alert.setTitle("Error Dialog");
         alert.setHeaderText(header);
         alert.setContentText(content);
-        alert.show();
+        alert.showAndWait();
     }
 
     // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
@@ -73,12 +73,12 @@ public class Alerts {
         alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Exception Dialog");
         alert.setHeaderText("Oops, something has gone wrong.");
-        alert.setContentText(ex.getCause().getCause().getMessage());
+        alert.setContentText(ex.getMessage());
         Label label = new Label("The exception stacktrace was:");
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        ex.getCause().getCause().printStackTrace(pw);
+        ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
         TextArea textArea = new TextArea(exceptionText);

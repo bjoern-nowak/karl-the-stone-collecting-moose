@@ -72,18 +72,6 @@ public class TabsController {
             } catch (IOException ex) {
                 Alerts.showException(null, ex);
             }
-            // alternative to above:
-            /*
-            try (FileReader fileReader = new FileReader(file);
-                 BufferedReader reader = new BufferedReader(fileReader)) {
-                StringBuilder builder = new StringBuilder();
-                reader.lines().skip(1).forEachOrdered(builder::append);
-                // TODO  remove last line
-                addTab(file, builder.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            */
         }
     }
 
@@ -112,7 +100,7 @@ public class TabsController {
                 model.programFile = file;
                 model.programDirty.set(false);
                 model.programSave = model.program.get();
-                model.tabText.set(file.getName());
+                getTab(model).setText(getTabText(file));
                 return true;
             } catch (IOException ex) {
                 Alerts.showException(null, ex);
@@ -131,10 +119,11 @@ public class TabsController {
         try {
             FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/root.fxml"));
             Model model = new Model(this, file, fileContent);
-            tabLoader.setController(new RootController(model));
+            RootController rootController = new RootController(model);
+            tabLoader.setController(rootController);
             Tab tab = tabLoader.load();
             tab.setUserData(model);
-            tab.setText(file != null ? file.getName() : "DefaultProgram");
+            tab.setText(getTabText(file));
             tab.setOnCloseRequest(event -> {
                 confirmCloseIfNecessaery(event, model);
                 if (!event.isConsumed()) openFiles.remove(model.programFile);
@@ -144,6 +133,8 @@ public class TabsController {
             });
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
+
+            rootController.compileSilently();
             return tab;
         } catch (IOException ex) {
             Alerts.showException(null, ex);
@@ -155,11 +146,11 @@ public class TabsController {
      * Confirmation is required if target program tab is dirty (changed and unsaved)
      * Event gets consumed if user canceled action
      */
-    static void confirmCloseIfNecessaery(Event event, Model model) {
+    private static void confirmCloseIfNecessaery(Event event, Model model) {
         if (model.programDirty.get()) {
             Alerts.confirmClose(event,
                     "Please confirm the CLOSE action.",
-                    "This program tab (" + model.tabText.get() + ") is changed and unsaved.\n\nStill continue?");
+                    "This program tab (" + getTabText(model.programFile) + ") is changed and unsaved.\n\nStill continue?");
         }
     }
 
@@ -182,17 +173,25 @@ public class TabsController {
     }
 
 
-    static Collection<Tab> getDirtyTabs(Collection<Tab> tabs) {
+    ObservableList<Tab> getTabs() {
+        return tabPane.getTabs();
+    }
+
+    private static Collection<Tab> getDirtyTabs(Collection<Tab> tabs) {
         return tabs.stream()
                 .filter(tab -> getModel(tab).programDirty.get())
                 .collect(Collectors.toList());
     }
 
-    ObservableList<Tab> getTabs() {
-        return tabPane.getTabs();
+    private Tab getTab(Model model) {
+        return getTabs().filtered(tab -> getModel(tab).equals(model)).get(0);
     }
 
-    static Model getModel(Tab tab) {
+    private static Model getModel(Tab tab) {
         return ((Model) tab.getUserData());
+    }
+
+    private static String getTabText(File file) {
+        return file != null ? file.getName().replace(".java", "") : "DefaultProgram";
     }
 }
