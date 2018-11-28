@@ -1,18 +1,15 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Model;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,8 +25,8 @@ import java.util.stream.Collectors;
 // TODO or use different scenes, tab selecting changes visible scene (which has the same fxml structure)
 public class TabsController {
 
-    private final String PREFIX = "public class %s extends Actor { public";
-    private final String PREFIX_REGEX = "public class \\w+ extends Actor { public";
+    private final String PREFIX = " public class %s extends " + Actor.class.getName() + " { public";
+    private final String PREFIX_REGEX = "public class \\w+ extends " + Actor.class.getName() + " { public";
     private final String POSTFIX = "}";
 
     private FileChooser fileChooser;
@@ -55,72 +52,74 @@ public class TabsController {
     }
 
     void open() {
-        Platform.runLater(() -> {
-            File file = fileChooser.showOpenDialog(tabPane.getScene().getWindow());
-            if (file != null) {
+        File file = fileChooser.showOpenDialog(tabPane.getScene().getWindow());
+        if (file != null) {
 
-                if (openFiles.contains(file)) {
-                    tabPane.getTabs().stream()
-                            .filter(tab -> file.equals(getModel(tab).programFile))
-                            .findFirst()
-                            .ifPresent(tab -> tabPane.getSelectionModel().select(tab));
-                    return;
-                }
-
-                try {
-                    // java7 feature: used for reading small files
-                    List<String> lines = Files.readAllLines(file.toPath());
-                    addTab(file, String.join("\n", lines.subList(1, lines.size() - 1)));
-                    openFiles.add(file);
-                } catch (IOException e) {
-                    e.printStackTrace(); // TODO crap
-                }
-                // alternative to above:
-                /*
-                try (FileReader fileReader = new FileReader(file);
-                     BufferedReader reader = new BufferedReader(fileReader)) {
-                    StringBuilder builder = new StringBuilder();
-                    reader.lines().skip(1).forEachOrdered(builder::append);
-                    // TODO  remove last line
-                    addTab(file, builder.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
+            if (openFiles.contains(file)) {
+                tabPane.getTabs().stream()
+                        .filter(tab -> file.equals(getModel(tab).programFile))
+                        .findFirst()
+                        .ifPresent(tab -> tabPane.getSelectionModel().select(tab));
+                return;
             }
-        });
+
+            try {
+                // java7 feature: used for reading small files
+                List<String> lines = Files.readAllLines(file.toPath());
+                Tab newTab = addTab(file, String.join("\n", lines.subList(1, lines.size() - 1)));
+                openFiles.add(file);
+                if (newTab != null) getModel(newTab).programDirty.set(false);
+            } catch (IOException ex) {
+                Alerts.showException(null, ex);
+            }
+            // alternative to above:
+            /*
+            try (FileReader fileReader = new FileReader(file);
+                 BufferedReader reader = new BufferedReader(fileReader)) {
+                StringBuilder builder = new StringBuilder();
+                reader.lines().skip(1).forEachOrdered(builder::append);
+                // TODO  remove last line
+                addTab(file, builder.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            */
+        }
     }
 
-    void save(Model model, boolean forceUserInput) {
-        Platform.runLater(() -> {
-            if (model.programFile != null) {
+    boolean save(Model model, boolean forceUserInput) {
+
+
+        File file = model.programFile;
+        if (file == null || forceUserInput) {
+            if (file != null) {
                 //fileChooser.setInitialDirectory(model.programFile.getParentFile());
                 fileChooser.setInitialFileName(model.programFile.getName());
             }
-
-            File file = model.programFile;
-            if (forceUserInput || file == null) file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());
-
-            if (file != null) {
-                try (FileWriter fileWriter = new FileWriter(file);
-                     PrintWriter printWriter = new PrintWriter(fileWriter)) {
-                    printWriter.println(String.format(PREFIX, file.getName().replace(".java", "")));
-                    printWriter.println(model.program.get());
-                    printWriter.print(POSTFIX);
-
-                    openFiles.remove(model.programFile);
-                    openFiles.add(file);
-                    model.programFile = file;
-                    model.programDirty = false;
-                    model.programSave = model.program.get();
-                    model.tabText.set(file.getName());
-                } catch (IOException e) {
-                    e.printStackTrace(); // TODO crap
-                }
-            }
-
+            file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());
             fileChooser.setInitialFileName("");
-        });
+        }
+
+        if (file != null) {
+            try (FileWriter fileWriter = new FileWriter(file);
+                 PrintWriter printWriter = new PrintWriter(fileWriter)) {
+                printWriter.println(String.format(PREFIX, file.getName().replace(".java", "")));
+                printWriter.println(model.program.get());
+                printWriter.print(POSTFIX);
+
+                openFiles.remove(model.programFile);
+                openFiles.add(file);
+                model.programFile = file;
+                model.programDirty.set(false);
+                model.programSave = model.program.get();
+                model.tabText.set(file.getName());
+                return true;
+            } catch (IOException ex) {
+                Alerts.showException(null, ex);
+                return false;
+            }
+        }
+        return false;
     }
 
     void close(Tab tab) {
@@ -128,7 +127,7 @@ public class TabsController {
         tabPane.getTabs().remove(tab);
     }
 
-    private void addTab(File file, String fileContent) {
+    private Tab addTab(File file, String fileContent) {
         try {
             FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/root.fxml"));
             Model model = new Model(this, file, fileContent);
@@ -145,9 +144,11 @@ public class TabsController {
             });
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
+            return tab;
         } catch (IOException ex) {
-            ex.printStackTrace(); // TODO crap
+            Alerts.showException(null, ex);
         }
+        return null;
     }
 
     /**
@@ -155,8 +156,8 @@ public class TabsController {
      * Event gets consumed if user canceled action
      */
     static void confirmCloseIfNecessaery(Event event, Model model) {
-        if (model.programDirty) {
-            confirmClose(event,
+        if (model.programDirty.get()) {
+            Alerts.confirmClose(event,
                     "Please confirm the CLOSE action.",
                     "This program tab (" + model.tabText.get() + ") is changed and unsaved.\n\nStill continue?");
         }
@@ -174,31 +175,16 @@ public class TabsController {
                 if (dirtyTabNames.length() > 0) dirtyTabNames += ", ";
                 dirtyTabNames += tab.getText();
             }
-            confirmClose(event,
+            Alerts.confirmClose(event,
                     "Please confirm the EXIT action.",
                     "Following program tabs are changed and unsaved:\n" + dirtyTabNames +"\n\nStill continue?");
         }
-    }
-    /**
-     * Consumes event if user canceles action
-     */
-    private static void confirmClose(Event event, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait()
-                .filter(buttonType -> buttonType.equals(ButtonType.CANCEL))
-                .ifPresent(buttonType -> event.consume());
-        // TODO ask to save all files
     }
 
 
     static Collection<Tab> getDirtyTabs(Collection<Tab> tabs) {
         return tabs.stream()
-                .filter(tab -> getModel(tab).programDirty)
+                .filter(tab -> getModel(tab).programDirty.get())
                 .collect(Collectors.toList());
     }
 

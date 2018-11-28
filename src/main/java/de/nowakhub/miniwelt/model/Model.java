@@ -1,10 +1,7 @@
 package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.controller.TabsController;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 import java.io.File;
 import java.util.Random;
@@ -15,11 +12,13 @@ public class Model {
 
     public File programFile;
     public final StringProperty program = new SimpleStringProperty();
-    public boolean programDirty;
+    public final BooleanProperty programDirty = new SimpleBooleanProperty();
     public String programSave;
 
     public final World world;
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
+
+    public Actor actor;
     
     public final StringProperty tabText = new SimpleStringProperty();
     public final StringProperty statusText = new SimpleStringProperty();
@@ -30,15 +29,16 @@ public class Model {
         this.programFile = programFile;
 
         this.program.set(program);
-        this.programDirty = false;
+        this.programDirty.set(false);
         this.programSave = program;
         if (programFile == null && program == null) {
-            this.program.set("void main() {\n\tstepForward()\n}");
-            this.programDirty = true;
+            this.program.set("void main() {\n\tstepAhead();\n}");
+            this.programDirty.set(true);
             this.programSave = null;
         }
 
         world = new World(10, 10);
+        actor = new Actor(world);
         defaultWorld();
     }
 

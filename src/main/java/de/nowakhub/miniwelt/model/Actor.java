@@ -2,7 +2,7 @@ package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
 
-public class Actor  {
+public class Actor {
 
     public Interactable interaction;
 
