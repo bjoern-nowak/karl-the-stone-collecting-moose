@@ -104,6 +104,7 @@ public class WorldController extends ModelController implements Observer {
                             Alerts.showInfo(method.getName() + "()", "" + result);
                         }
                     } catch (Exception ex) {
+                        // TODO add sound
                         Alerts.showException(null, ex);
                     }
                 });
