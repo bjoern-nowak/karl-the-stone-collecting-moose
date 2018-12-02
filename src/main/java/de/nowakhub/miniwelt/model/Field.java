@@ -50,9 +50,10 @@ public enum Field {
 
     public Field set(Field with) {
         if (ACTOR.equals(with) && StackableOnActor.contains(this)) {
-            return byKey(with.getKey().concat(this.getKey()));
-        } else if (ACTOR.equals(this) && StackableOnActor.contains(with)) {
-            return byKey(this.getKey().concat(with.getKey()));
+            return byKey(ACTOR.getKey().concat(this.getKey()));
+        } else if ((ACTOR.equals(this) && StackableOnActor.contains(with))
+                || (ACTOR_ON_ITEM.equals(this) && FREE.equals(with))) {
+            return byKey(ACTOR.getKey().concat(with.getKey()));
         }
         return with;
     }
@@ -76,7 +77,7 @@ public enum Field {
 
 
 
-    private static EnumSet<Field> NotRemovable = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM, Field.START, Field.ACTOR_AT_START);
+    private static EnumSet<Field> NotRemovable = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.START, Field.ACTOR_AT_START);
     private static EnumSet<Field> StackableOnActor = EnumSet.of(Field.START, Field.ITEM);
     private static EnumSet<Field> StackedOnActor = EnumSet.of(Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);
     private static EnumSet<Field> WithActor = EnumSet.of(Field.ACTOR, Field.ACTOR_AT_START, Field.ACTOR_ON_ITEM);

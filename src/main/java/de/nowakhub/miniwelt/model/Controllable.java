@@ -72,4 +72,8 @@ public interface Controllable {
     int getActorBagMax();
 
     void setActorBagMax(int actorBagMax);
+
+    public Actor getActor();
+
+    public void setActor(Actor actor);
 }

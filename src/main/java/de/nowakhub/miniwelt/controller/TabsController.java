@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO or use different scenes, tab selecting changes visible scene (which has the same fxml structure)
+// TODO tab pane enclose only program and world, userData = a model, controllers work with active tab userData
 public class TabsController {
 
     private final String PREFIX = " public class %s extends " + Actor.class.getName() + " { public";

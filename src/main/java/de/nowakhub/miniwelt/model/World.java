@@ -231,10 +231,12 @@ public class World extends Observable implements Controllable, Interactable {
         this.actorBagMax = actorBagMax;
     }
 
+    @Override
     public Actor getActor() {
         return actor;
     }
 
+    @Override
     public void setActor(Actor actor) {
         this.actor = actor;
         notifyObservers();
