@@ -9,6 +9,7 @@ import javafx.stage.StageStyle;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class Alerts {
@@ -18,7 +19,7 @@ public class Alerts {
      */
     public static void showInfo(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initModality(Modality.WINDOW_MODAL);
+        alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Information Dialog");
         alert.setHeaderText(header);
@@ -73,7 +74,11 @@ public class Alerts {
         alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Exception Dialog");
         alert.setHeaderText("Oops, something has gone wrong.");
-        alert.setContentText(ex.getMessage());
+        String contentText = ex.toString();
+        if (ex instanceof InvocationTargetException) {
+            contentText = ((InvocationTargetException) ex).getTargetException().getMessage();
+        }
+        alert.setContentText(contentText);
         Label label = new Label("The exception stacktrace was:");
 
         StringWriter sw = new StringWriter();
@@ -84,6 +89,8 @@ public class Alerts {
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);
         textArea.setWrapText(true);
+        textArea.setPrefHeight(600.0);
+        textArea.setPrefWidth(800.0);
         textArea.setMaxWidth(Double.MAX_VALUE);
         textArea.setMaxHeight(Double.MAX_VALUE);
         GridPane.setVgrow(textArea, Priority.ALWAYS);

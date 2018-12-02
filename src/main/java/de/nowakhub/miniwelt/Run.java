@@ -28,7 +28,7 @@ public class Run extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> Platform.runLater(() -> Alerts.showException(t, e)));
+        Thread.setDefaultUncaughtExceptionHandler((t, ex) -> Platform.runLater(() -> Alerts.showException(t, ex)));
         Thread.currentThread().setUncaughtExceptionHandler(Alerts::showException);
 
         try {
@@ -41,8 +41,8 @@ public class Run extends Application {
             primaryStage.setOnCloseRequest(event ->
                     TabsController.confirmExitIfNecessaery(event, ((TabPane) parent).getTabs()));
             primaryStage.show();
-        } catch (Exception e) {
-            Alerts.showException(Thread.currentThread(), e);
+        } catch (Exception ex) {
+            Alerts.showException(Thread.currentThread(), ex);
         }
     }
 

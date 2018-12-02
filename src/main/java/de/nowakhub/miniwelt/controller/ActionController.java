@@ -77,11 +77,11 @@ public class ActionController extends ModelController {
         if (model.programFile == null) return;
 
         File classDir = Paths.get("out/production/miniwelt_bjnowak").toAbsolutePath().toFile();
-        File modelDir = Paths.get("src/main/java").toAbsolutePath().toFile();
+        File sourceDir = Paths.get("src/main/java").toAbsolutePath().toFile();
 
         String[] args = new String[] {
                 "-classpath", System.getProperty("java.class.path") + ";" + classDir.toString(),
-                "-sourcepath", modelDir.toString(),
+                "-sourcepath", sourceDir.toString(),
                 "-d", model.programFile.getParent(),
                 model.programFile.toString()
         };
@@ -102,7 +102,8 @@ public class ActionController extends ModelController {
                 ClassLoader cl = new URLClassLoader(urls);
                 String clsName = model.programFile.getName().substring(0, model.programFile.getName().length() - 5);
                 Class<?> cls = cl.loadClass(clsName);
-                model.actor = (Actor) cls.newInstance();
+                model.world.setActor((Actor) cls.newInstance());
+                model.world.getActor().setInteraction(model.world);
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(null, ex);
             }

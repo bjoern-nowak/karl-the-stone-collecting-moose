@@ -19,6 +19,8 @@ public class World extends Observable implements Controllable, Interactable {
     private int actorBag = 0;
     private int actorBagMax = 3;
 
+    private Actor actor;
+
     public World(int sizeRow, int sizeY) throws InvalidWorldSizeException {
         resize(sizeRow, sizeY);
     }
@@ -227,6 +229,15 @@ public class World extends Observable implements Controllable, Interactable {
     @Override
     public void setActorBagMax(int actorBagMax) {
         this.actorBagMax = actorBagMax;
+    }
+
+    public Actor getActor() {
+        return actor;
+    }
+
+    public void setActor(Actor actor) {
+        this.actor = actor;
+        notifyObservers();
     }
 
     // _________________________________________________________________________________________________________________

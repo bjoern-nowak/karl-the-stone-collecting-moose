@@ -1,19 +1,29 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.Invisible;
 import de.nowakhub.miniwelt.model.Observer;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class WorldController extends ModelController implements Observer {
 
@@ -29,6 +39,7 @@ public class WorldController extends ModelController implements Observer {
     private final int TILE_SIZE = 32;
     private double zoom = 1.0;
     private Field dragging;
+    private ContextMenu actorContextMenu;
 
     private Image obstacle = new Image("/images/world/debug/wall.png");
     private Image ground = new Image("/images/world/debug/ground.png");
@@ -44,6 +55,61 @@ public class WorldController extends ModelController implements Observer {
     public void initialize() {
         gc = frame.getGraphicsContext2D();
         addEventHandler();
+    }
+
+    private void buildActorContextMenu() {
+        actorContextMenu = new ContextMenu();
+        actorContextMenu.setAutoFix(true);
+
+        // for better user experience: add separators between specific method groups
+        addMethodsToActorContextMenu(Arrays.asList("stepAhead", "turnRight", "pickUp", "dropDown"));
+        addMethodsToActorContextMenu(Arrays.asList("aheadClear", "bagEmpty", "foundItem", "atStart"));
+        Class<? extends Actor> cls = model.world.getActor().getClass();
+        if (!cls.equals(Actor.class)) {
+            Arrays.stream(cls.getDeclaredMethods()).forEach(this::addMethodToActorContextMenu);
+        }
+    }
+
+    private void addMethodsToActorContextMenu(Collection<String> methods) {
+        methods.forEach(method -> {
+            try {
+                Method m = model.world.getActor().getClass().getMethod(method);
+                addMethodToActorContextMenu(m);
+            } catch (NoSuchMethodException ex) {
+                Alerts.showException(null, ex);
+            }
+        });
+        actorContextMenu.getItems().add(new SeparatorMenuItem());
+    }
+
+    private void addMethodToActorContextMenu(Method method) {
+        int modifiers = method.getModifiers();
+        if (method.getAnnotation(Invisible.class) == null
+                && !Modifier.isAbstract(modifiers)
+                && !Modifier.isStatic(modifiers)
+                && !Modifier.isPrivate(modifiers)) {
+            MenuItem item = new MenuItem();
+            if (method.getParameterCount() > 0) {
+                String paramTypes = Arrays.stream(method.getParameterTypes())
+                        .map(Class::getName)
+                        .collect(Collectors.joining(","));
+                item.setText(method.getReturnType().getName() + " " + method.getName() + "(" + paramTypes +")");
+                item.setDisable(true);
+            } else {
+                item.setText(method.getReturnType().getName() + " " + method.getName() + "()");
+                item.setOnAction(event -> {
+                    try {
+                        Object result = method.invoke(model.world.getActor());
+                        if (result != null) { // instead of instanceOf check to enable various return types
+                            Alerts.showInfo(method.getName() + "()", "" + result);
+                        }
+                    } catch (Exception ex) {
+                        Alerts.showException(null, ex);
+                    }
+                });
+            }
+            actorContextMenu.getItems().add(item);
+        }
     }
 
     private void addEventHandler() {
@@ -81,6 +147,17 @@ public class WorldController extends ModelController implements Observer {
             dragging = null;
         });
 
+        // feature: actors popup menu
+        frame.setOnContextMenuRequested(event -> {
+            int row = tileBy(event.getY());
+            int col = tileBy(event.getX());
+            if (model.world.isFieldWithActor(row, col)) {
+                actorContextMenu.setX(event.getScreenX());
+                actorContextMenu.setY(event.getScreenY());
+                actorContextMenu.show(frame.getScene().getWindow());
+            }
+        });
+
         // feature: alt + mouse scroll can zomm in/out canvas
         scrollPane.addEventHandler(ScrollEvent.SCROLL, event -> {
             if (event.isAltDown()) {
@@ -108,6 +185,7 @@ public class WorldController extends ModelController implements Observer {
 
     @Override
     public void update() {
+        buildActorContextMenu();
         resize();
         draw();
     }

@@ -4,7 +4,7 @@ import de.nowakhub.miniwelt.model.exceptions.*;
 
 public class Actor {
 
-    public Interactable interaction;
+    private Interactable interaction;
 
     public Actor() {
     }
@@ -15,14 +15,6 @@ public class Actor {
 
     public void main() {
 
-    }
-
-    public Interactable getInteraction() {
-        return interaction;
-    }
-
-    public void setInteraction(Interactable interaction) {
-        this.interaction = interaction;
     }
 
     //__________________________________________________________________________________________________________________
@@ -75,5 +67,20 @@ public class Actor {
 
     public boolean atStart() {
         return interaction.atStart();
+    }
+
+
+    //__________________________________________________________________________________________________________________
+    //    invisible commands
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Invisible
+    public Interactable getInteraction() {
+        return interaction;
+    }
+
+    @Invisible
+    public void setInteraction(Interactable interaction) {
+        this.interaction = interaction;
     }
 }

@@ -168,7 +168,7 @@ public class TabsController {
             }
             Alerts.confirmClose(event,
                     "Please confirm the EXIT action.",
-                    "Following program tabs are changed and unsaved:\n" + dirtyTabNames +"\n\nStill continue?");
+                    "Following program tabs are new or changed and unsaved:\n" + dirtyTabNames +"\n\nStill continue?");
         }
     }
 

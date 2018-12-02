@@ -18,8 +18,6 @@ public class Model {
     public final World world;
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
-    public Actor actor;
-
     public final StringProperty statusText = new SimpleStringProperty();
 
 
@@ -37,7 +35,7 @@ public class Model {
         }
 
         world = new World(10, 10);
-        actor = new Actor(world);
+        world.setActor(new Actor(world));
         defaultWorld();
     }
 
