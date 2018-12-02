@@ -7,24 +7,27 @@ import javafx.scene.control.TextArea;
 
 public class Editor extends TextArea {
 
-    private static final PseudoClass DIRTY_PSEUDO_CLASS = PseudoClass.getPseudoClass("dirty");
+    private BooleanProperty dirty = buildBooleanProperty(PseudoClass.getPseudoClass("dirty"), "dirty");
+    private BooleanProperty compiled = buildBooleanProperty(PseudoClass.getPseudoClass("compiled"), "compiled");
 
-    private BooleanProperty dirty = new BooleanPropertyBase(false) {
-        @Override
-        protected void invalidated() {
-            pseudoClassStateChanged(DIRTY_PSEUDO_CLASS, get());
-        }
+    private BooleanPropertyBase buildBooleanProperty(PseudoClass pseudoClass, String name) {
+        return new BooleanPropertyBase(false) {
+            @Override
+            protected void invalidated() {
+                pseudoClassStateChanged(pseudoClass, get());
+            }
 
-        @Override
-        public Object getBean() {
-            return Editor.this;
-        }
+            @Override
+            public Object getBean() {
+                return Editor.this;
+            }
 
-        @Override
-        public String getName() {
-            return "dirty";
-        }
-    };
+            @Override
+            public String getName() {
+                return name;
+            }
+        };
+    }
 
     public boolean isDirty() {
         return dirty.get();
@@ -36,5 +39,17 @@ public class Editor extends TextArea {
 
     public void setDirty(boolean dirty) {
         this.dirty.set(dirty);
+    }
+
+    public boolean isCompiled() {
+        return compiled.get();
+    }
+
+    public BooleanProperty compiledProperty() {
+        return compiled;
+    }
+
+    public void setCompiled(boolean compiled) {
+        this.compiled.set(compiled);
     }
 }

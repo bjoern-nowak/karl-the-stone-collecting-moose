@@ -13,6 +13,8 @@ public class Model {
     public File programFile;
     public final StringProperty program = new SimpleStringProperty();
     public final BooleanProperty programDirty = new SimpleBooleanProperty();
+    public final BooleanProperty programSaved = new SimpleBooleanProperty();
+    public final BooleanProperty programCompiled = new SimpleBooleanProperty();
     public String programSave;
 
     public final World world;

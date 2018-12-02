@@ -99,6 +99,7 @@ public class TabsController {
                 openFiles.add(file);
                 model.programFile = file;
                 model.programDirty.set(false);
+                model.programCompiled.set(false);
                 model.programSave = model.program.get();
                 getTab(model).setText(getTabText(file));
                 return true;

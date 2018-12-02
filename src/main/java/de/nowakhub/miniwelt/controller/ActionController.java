@@ -89,10 +89,12 @@ public class ActionController extends ModelController {
         ByteArrayOutputStream errStream = new ByteArrayOutputStream();
         boolean success = javac.run(null, null, errStream, args) == 0;
         if (!success) {
+            model.programCompiled.set(false);
             if (!silently) Alerts.showError(
                     "Compiler says no. He complains:",
                     errStream.toString());
         } else {
+            model.programCompiled.set(true);
             if (!silently) Alerts.showInfo(
                     "Compiler says yes.",
                     "Compile was successful.");
