@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.scene.control.*?>
-<?import javafx.scene.input.*?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import java.lang.*?>
-<VBox xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ActionController" stylesheets="@action.css">
-   <MenuBar fx:id="menubar" styleClass="menubar" >
+
+
+<VBox stylesheets="@action.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ActionController">
+   <MenuBar fx:id="menubar" styleClass="menubar">
        <fx:define>
            <ToggleGroup fx:id="mouseModeToggleGroupMenubar" />
        </fx:define>
@@ -62,7 +76,7 @@
            <MenuItem onAction="#onWorldChangeSize" text="_Change world size">
            </MenuItem>
            <Menu text="Set _mouse mode to...">
-               <RadioMenuItem onAction="#onMouseModePlaceObstacle" text="Place Wall" toggleGroup="$mouseModeToggleGroupMenubar" />
+               <RadioMenuItem onAction="#onMouseModePlaceObstacle" text="Place Wall" />
                <RadioMenuItem onAction="#onMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar" />
                <RadioMenuItem onAction="#onMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar" />
                <RadioMenuItem onAction="#onMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar" />
@@ -167,7 +181,7 @@
 
       <Separator orientation="VERTICAL" prefHeight="25.0" />
 
-      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceObstacle" text="Wall" toggleGroup="$mouseModeToggleGroupToolbar">
+      <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceObstacle" text="Wall">
           <styleClass>
               <String fx:value="btn-obstacle" />
               <String fx:value="btn" />
@@ -226,41 +240,41 @@
       </Button>
 
       <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator" />
-
-      <Button mnemonicParsing="false" onAction="#onSimStartOrContinue" text="Start">
+      <Button fx:id="btnSimStart" mnemonicParsing="false" onAction="#onSimStartOrContinue" text="Start">
           <styleClass>
               <String fx:value="btn-run" />
               <String fx:value="btn" />
           </styleClass>
           <tooltip>
-           <Tooltip text="Run your editor program or continues after pause" />
-        </tooltip>
+              <Tooltip text="Run your editor program or continues after pause" />
+          </tooltip>
       </Button>
-      <Button mnemonicParsing="false" onAction="#onSimPause" text="Pause">
+      <Button fx:id="btnSimPause" mnemonicParsing="false" onAction="#onSimPause" text="Pause">
           <styleClass>
               <String fx:value="btn-pause" />
               <String fx:value="btn" />
           </styleClass>
           <tooltip>
-           <Tooltip text="Pause the simulation" />
-        </tooltip>
+              <Tooltip text="Pause the simulation" />
+          </tooltip>
       </Button>
-      <Button mnemonicParsing="false" onAction="#onSimStop" text="Stop">
+      <Button fx:id="btnSimStop" mnemonicParsing="false" onAction="#onSimStop" text="Stop">
           <styleClass>
               <String fx:value="btn-stop" />
               <String fx:value="btn" />
           </styleClass>
           <tooltip>
-           <Tooltip text="Stops the simulation (reset fields prior start)" />
-        </tooltip>
+              <Tooltip text="Stops the simulation (reset fields prior start)" />
+          </tooltip>
       </Button>
-     <VBox>
-         <Label styleClass="sliderSimSpeedLabel" text="Simulation-Speed" />
-         <Slider fx:id="sliderSimSpeed" majorTickUnit="50.0" minorTickCount="4" showTickMarks="true" snapToTicks="true" value="50.0">
-             <tooltip>
-              <Tooltip text="Adjust speed of simulation" />
-           </tooltip>
-         </Slider>
-     </VBox>
+      <VBox>
+          <Label styleClass="sliderSimSpeedLabel" text="Simulation-Speed" />
+          <Slider fx:id="sliderSimSpeed" majorTickUnit="50.0" minorTickCount="4" showTickMarks="true"
+                  snapToTicks="true" value="50.0">
+              <tooltip>
+                  <Tooltip text="Adjust speed of simulation" />
+              </tooltip>
+          </Slider>
+      </VBox>
   </ToolBar>
 </VBox>

@@ -6,6 +6,7 @@ import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
 
@@ -20,16 +21,25 @@ import java.nio.file.Paths;
 
 public class ActionController extends ModelController {
 
+    private Simulation simulation;
+
+
+
     @FXML
     public ToggleGroup mouseModeToggleGroupMenubar;
 
     @FXML
     public ToggleGroup mouseModeToggleGroupToolbar;
 
+
+    @FXML
+    public Button btnSimStart;
+    @FXML
+    public Button btnSimPause;
+    @FXML
+    public Button btnSimStop;
     @FXML
     public Slider sliderSimSpeed;
-
-
 
 
     public void initialize() {
@@ -42,7 +52,14 @@ public class ActionController extends ModelController {
         }
     }
 
-
+    void postInitialize() {
+        model.simulationRunning.addListener((observable, oldValue, newValue) -> {
+            btnSimStart.setDisable(newValue);
+            btnSimPause.setDisable(!newValue);
+            btnSimStop.setDisable(!newValue);
+        });
+        model.simulationRunning.set(false);
+    }
 
 
     @FXML
@@ -256,15 +273,20 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onSimStartOrContinue(ActionEvent actionEvent) {
-        model.statusText.setValue("onSimStartOrContinue");
+        if (simulation == null || !simulation.isAlive()) {
+            simulation = new Simulation(model);
+            simulation.start();
+        } else {
+            simulation.proceed();
+        }
     }
     @FXML
     public void onSimPause(ActionEvent actionEvent) {
-        model.statusText.setValue("onSimPause");
+        simulation.pause();
     }
     @FXML
     public void onSimStop(ActionEvent actionEvent) {
-        model.statusText.setValue("onSimStop");
+        simulation.terminate();
     }
 }
 

@@ -33,22 +33,24 @@ public class World extends Observable implements Controllable, Interactable {
     public void resize(int sizeRow, int sizeCol) throws InvalidWorldSizeException {
         if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
 
-        this.sizeRow.set(sizeRow);
-        this.sizeCol.set(sizeCol);
+        synchronized (this) {
+            this.sizeRow.set(sizeRow);
+            this.sizeCol.set(sizeCol);
 
-        Field[][] oldGrid = field;
-        field = new Field[sizeRow][sizeCol];
-        actorPos = new Position();
-        startPos = new Position();
+            Field[][] oldGrid = field;
+            field = new Field[sizeRow][sizeCol];
+            actorPos = new Position();
+            startPos = new Position();
 
-        for (int row = 0; row < field.length; row++) {
-            for (int col = 0; col < field[row].length; col++) {
-                if (oldGrid != null && row < oldGrid.length && col < oldGrid[row].length) {
-                    field[row][col] = oldGrid[row][col];
-                    if (field[row][col].hasActor()) actorPos.set(row, col);
-                    if (field[row][col].hasStart()) startPos.set(row, col);
-                } else {
-                    field[row][col] = Field.FREE;
+            for (int row = 0; row < field.length; row++) {
+                for (int col = 0; col < field[row].length; col++) {
+                    if (oldGrid != null && row < oldGrid.length && col < oldGrid[row].length) {
+                        field[row][col] = oldGrid[row][col];
+                        if (field[row][col].hasActor()) actorPos.set(row, col);
+                        if (field[row][col].hasStart()) startPos.set(row, col);
+                    } else {
+                        field[row][col] = Field.FREE;
+                    }
                 }
             }
         }
@@ -58,13 +60,6 @@ public class World extends Observable implements Controllable, Interactable {
     //__________________________________________________________________________________________________________________
     //    Controllable - placement commands
     //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    public void remove(int row, int col) {
-        if (field[row][col].notRemovable()) return;
-        field[row][col] = field[row][col].set(Field.FREE);
-        notifyObservers();
-    }
 
     @Override
     public void place(Field field, int row, int col) {
@@ -88,52 +83,69 @@ public class World extends Observable implements Controllable, Interactable {
     }
 
     @Override
+    public void remove(int row, int col) {
+        synchronized (this) {
+            if (field[row][col].notRemovable()) return;
+            field[row][col] = field[row][col].set(Field.FREE);
+        }
+        notifyObservers();
+    }
+
+    @Override
     public void placeObstacle(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
-        if (field[row][col].hasObstacle() || field[row][col].notRemovable()) return;
-        field[row][col] = field[row][col].set(Field.OBSTACLE);
+        synchronized (this) {
+            if (field[row][col].hasObstacle() || field[row][col].notRemovable()) return;
+            field[row][col] = field[row][col].set(Field.OBSTACLE);
+        }
         notifyObservers();
     }
 
     @Override
     public void placeItem(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
-        if (field[row][col].hasItem() || field[row][col].hasStart()) return;
-        field[row][col] = field[row][col].set(Field.ITEM);
+        synchronized (this) {
+            if (field[row][col].hasItem() || field[row][col].hasStart()) return;
+            field[row][col] = field[row][col].set(Field.ITEM);
+        }
         notifyObservers();
     }
 
     @Override
     public void placeActor(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
-        if (field[row][col].hasActor()) return;
+        synchronized (this) {
+            if (field[row][col].hasActor()) return;
 
-        // remove old position with exists
-        if (actorPos.exists()) field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ACTOR);
+            // remove old position with exists
+            if (actorPos.exists())
+                field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ACTOR);
 
-        // set new position
-        field[row][col] = field[row][col].set(Field.ACTOR);
+            // set new position
+            field[row][col] = field[row][col].set(Field.ACTOR);
 
-        // confirm position
-        actorPos.set(row, col);
-
+            // confirm position
+            actorPos.set(row, col);
+        }
         notifyObservers();
     }
 
     @Override
     public void placeStart(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
-        if (field[row][col].hasStart()) return;
+        synchronized (this) {
+            if (field[row][col].hasStart()) return;
 
-        // remove old position with exists
-        if (startPos.exists()) field[startPos.row][startPos.col] = field[startPos.row][startPos.col].remove(Field.START);
+            // remove old position with exists
+            if (startPos.exists())
+                field[startPos.row][startPos.col] = field[startPos.row][startPos.col].remove(Field.START);
 
-        // set new position
-        field[row][col] = field[row][col].set(Field.START);
+            // set new position
+            field[row][col] = field[row][col].set(Field.START);
 
-        // confirm position
-        startPos.set(row, col);
-
+            // confirm position
+            startPos.set(row, col);
+        }
         notifyObservers();
     }
 
@@ -182,7 +194,7 @@ public class World extends Observable implements Controllable, Interactable {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    public Field[][] getField() {
+    synchronized public Field[][] getField() {
         return field;
     }
 
@@ -207,7 +219,7 @@ public class World extends Observable implements Controllable, Interactable {
     }
 
     @Override
-    public Direction getActorDir() {
+    synchronized public Direction getActorDir() {
         return actorDir;
     }
 
@@ -248,14 +260,18 @@ public class World extends Observable implements Controllable, Interactable {
 
     @Override
     public void stepAhead() throws NoClearPathException {
-        if (!aheadClear()) throw new NoClearPathException();
-        placeActor(actorPos.row + actorDir.row, actorPos.col + actorDir.col);
+        synchronized (this) {
+            if (!aheadClear()) throw new NoClearPathException();
+            placeActor(actorPos.row + actorDir.row, actorPos.col + actorDir.col);
+        }
         notifyObservers();
     }
 
     @Override
     public void turnRight() {
-        actorDir = actorDir.turnRight();
+        synchronized (actorDir) {
+            actorDir = actorDir.turnRight();
+        }
         notifyObservers();
     }
 
@@ -264,7 +280,7 @@ public class World extends Observable implements Controllable, Interactable {
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
-    public void backToStart() {
+    synchronized public void backToStart() {
 
     }
 
@@ -274,18 +290,22 @@ public class World extends Observable implements Controllable, Interactable {
 
     @Override
     public void pickUp() throws ItemNotFoundException, BagFullException {
-        if (!foundItem()) throw new ItemNotFoundException();
-        if (actorBag == actorBagMax) throw new BagFullException();
-        field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ITEM);
-        actorBag++;
+        synchronized (this) {
+            if (!foundItem()) throw new ItemNotFoundException();
+            if (actorBag == actorBagMax) throw new BagFullException();
+            field[actorPos.row][actorPos.col] = field[actorPos.row][actorPos.col].remove(Field.ITEM);
+            actorBag++;
+        }
         notifyObservers();
     }
 
     @Override
     public void dropDown() throws ItemDropNotAllowedException, BagEmptyException {
-        if (!atStart()) throw new ItemDropNotAllowedException();
-        if (bagEmpty()) throw new BagEmptyException();
-        actorBag--;
+        synchronized (this) {
+            if (!atStart()) throw new ItemDropNotAllowedException();
+            if (bagEmpty()) throw new BagEmptyException();
+            actorBag--;
+        }
         notifyObservers();
     }
 
@@ -294,24 +314,24 @@ public class World extends Observable implements Controllable, Interactable {
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
-    public boolean aheadClear() {
+    synchronized public boolean aheadClear() {
         int nextX = actorPos.row + actorDir.row;
         int nextY = actorPos.col + actorDir.col;
         return !field[nextX][nextY].hasObstacle() && isInBoundary(nextX, nextY);
     }
 
     @Override
-    public boolean bagEmpty() {
+    synchronized public boolean bagEmpty() {
         return actorBag == 0;
     }
 
     @Override
-    public boolean foundItem() {
+    synchronized public boolean foundItem() {
         return field[actorPos.row][actorPos.col].equals(Field.ACTOR_ON_ITEM);
     }
 
     @Override
-    public boolean atStart() {
+    synchronized public boolean atStart() {
         return field[actorPos.row][actorPos.col].equals(Field.ACTOR_AT_START);
     }
 }

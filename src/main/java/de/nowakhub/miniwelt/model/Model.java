@@ -20,6 +20,8 @@ public class Model {
     public final World world;
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
+    public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
+
     public final StringProperty statusText = new SimpleStringProperty();
 
 

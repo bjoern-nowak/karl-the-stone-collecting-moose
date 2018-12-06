@@ -29,6 +29,7 @@ public class RootController {
         initBinds();
         programController.postInitialize();
         worldController.postInitialize();
+        actionController.postInitialize();
     }
 
     private void initBinds() {
