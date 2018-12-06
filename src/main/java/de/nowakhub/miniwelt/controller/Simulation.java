@@ -16,6 +16,7 @@ public class Simulation extends Thread {
 
     public void run() {
         try {
+            // TODO everything is bad about this, also to many "start" attemps break the world canvas or throws exceptions
             synchronized (this) {
                 while(paused) wait();
                 model.world.getActor().main();
@@ -33,18 +34,15 @@ public class Simulation extends Thread {
     }
 
     public void pause() {
-        model.simulationRunning.set(false);
         paused = true;
     }
 
     synchronized public void proceed() {
-        model.simulationRunning.set(true);
         paused = false;
         notify();
     }
 
     public void terminate() {
-        model.simulationRunning.set(false);
         interrupt();
     }
 }

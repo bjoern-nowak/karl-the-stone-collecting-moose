@@ -273,6 +273,7 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onSimStartOrContinue(ActionEvent actionEvent) {
+        model.simulationRunning.set(true);
         if (simulation == null || !simulation.isAlive()) {
             simulation = new Simulation(model);
             simulation.start();
@@ -282,10 +283,12 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onSimPause(ActionEvent actionEvent) {
+        model.simulationRunning.set(false);
         simulation.pause();
     }
     @FXML
     public void onSimStop(ActionEvent actionEvent) {
+        model.simulationRunning.set(false);
         simulation.terminate();
     }
 }

@@ -26,16 +26,16 @@
        </fx:define>
 
        <Menu text="_Program">
-           <MenuItem mnemonicParsing="false" onAction="#onProgramNew" text="New">
+           <MenuItem styleClass="miProgramNew" mnemonicParsing="false" onAction="#onProgramNew" text="New">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
-           <MenuItem mnemonicParsing="false" onAction="#onProgramOpen" text="Open">
+           <MenuItem styleClass="miProgramOpen" mnemonicParsing="false" onAction="#onProgramOpen" text="Open">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
            <SeparatorMenuItem mnemonicParsing="false" />
-           <MenuItem mnemonicParsing="false" onAction="#onProgramSave" text="Save">
+           <MenuItem styleClass="miProgramSave" mnemonicParsing="false" onAction="#onProgramSave" text="Save">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
@@ -43,7 +43,7 @@
                <accelerator>
                    <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
-           <MenuItem mnemonicParsing="false" onAction="#onProgramCompile" text="Compile">
+           <MenuItem styleClass="miProgramCompile" mnemonicParsing="false" onAction="#onProgramCompile" text="Compile">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="K" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
@@ -76,11 +76,11 @@
            <MenuItem onAction="#onWorldChangeSize" text="_Change world size">
            </MenuItem>
            <Menu text="Set _mouse mode to...">
-               <RadioMenuItem onAction="#onMouseModePlaceObstacle" text="Place Wall" />
-               <RadioMenuItem onAction="#onMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar" />
-               <RadioMenuItem onAction="#onMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar" />
-               <RadioMenuItem onAction="#onMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar" />
-               <RadioMenuItem onAction="#onMouseModePlaceFree" text="Remove" toggleGroup="$mouseModeToggleGroupMenubar" />
+               <RadioMenuItem styleClass="miMouseModePlaceObstacle" onAction="#onMouseModePlaceObstacle" text="Place Wall" />
+               <RadioMenuItem styleClass="miMouseModePlaceItem" onAction="#onMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar" />
+               <RadioMenuItem styleClass="miMouseModePlaceActor" onAction="#onMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar" />
+               <RadioMenuItem styleClass="miMouseModePlaceStart" onAction="#onMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar" />
+               <RadioMenuItem styleClass="miMouseModePlaceFree" onAction="#onMouseModePlaceFree" text="Remove" toggleGroup="$mouseModeToggleGroupMenubar" />
            </Menu>
        </Menu>
 
@@ -88,7 +88,7 @@
            <MenuItem mnemonicParsing="false" onAction="#onActorBagChangeSize" text="Change bag max. size"><accelerator>
                <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="UP" shortcut="UP" />
            </accelerator></MenuItem>
-           <MenuItem mnemonicParsing="false" onAction="#onActorBagChangeContent" text="Change bag content"><accelerator>
+           <MenuItem styleClass="miActorBagChangeContent" mnemonicParsing="false" onAction="#onActorBagChangeContent" text="Change bag content"><accelerator>
                <KeyCodeCombination alt="UP" code="F2" control="UP" meta="UP" shift="UP" shortcut="UP" />
            </accelerator></MenuItem>
            <SeparatorMenuItem mnemonicParsing="false" />
@@ -119,15 +119,15 @@
        </Menu>
 
        <Menu text="_Simulation">
-           <MenuItem mnemonicParsing="false" onAction="#onSimStartOrContinue" text="Start / Continue">
+           <MenuItem styleClass="miSimStart" mnemonicParsing="false" onAction="#onSimStartOrContinue" text="Start / Continue">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="RIGHT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
-           <MenuItem mnemonicParsing="false" onAction="#onSimPause" text="Pause">
+           <MenuItem styleClass="miSimPause" mnemonicParsing="false" onAction="#onSimPause" text="Pause">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="DOWN" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>
-           <MenuItem mnemonicParsing="false" onAction="#onSimStop" text="Stop">
+           <MenuItem styleClass="miSimStop" mnemonicParsing="false" onAction="#onSimStop" text="Stop">
                <accelerator>
                    <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator></MenuItem>

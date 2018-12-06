@@ -3,6 +3,74 @@
     -fx-pref-height: 25px;
 }
 
+/* TODO really bad menu icon styling */
+
+.menubar .menu-item > .label {
+    -fx-padding: 0 0 0 18px;
+}
+
+.menubar .menu-item .accelerator-text {
+    -fx-graphic: none;
+    -fx-content-display: text-only;
+}
+
+.menubar .menu-item.miProgramNew > .label {
+    -fx-graphic: url("../../../../images/icons/new_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miProgramNew > .label {
+    -fx-graphic: url("../../../../images/icons/new_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miProgramOpen > .label {
+    -fx-graphic: url("../../../../images/icons/open_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miProgramSave > .label {
+    -fx-graphic: url("../../../../images/icons/save_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miProgramCompile > .label {
+    -fx-graphic: url("../../../../images/icons/compile_pr0_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miMouseModePlaceObstacle > .label {
+    -fx-graphic: url("../../../../images/world/debug/wall_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miMouseModePlaceActor > .label {
+    -fx-graphic: url("../../../../images/world/debug/karl_right_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miMouseModePlaceStart > .label {
+    -fx-graphic: url("../../../../images/world/debug/office_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miMouseModePlaceItem > .label {
+    -fx-graphic: url("../../../../images/world/debug/item_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miMouseModePlaceFree > .label {
+    -fx-graphic: url("../../../../images/world/debug/ground_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+
+.menubar .menu-item.miActorBagChangeContent > .label {
+}
+
+.menubar .menu-item.miSimStart > .label {
+    -fx-graphic: url("../../../../images/icons/run_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miSimPause > .label {
+    -fx-graphic: url("../../../../images/icons/pause_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+.menubar .menu-item.miSimStop > .label {
+    -fx-graphic: url("../../../../images/icons/stop_16x16.png");
+    -fx-padding: 0 0 0 0;
+}
+
 .toolbar {
     -fx-pref-height: 60px;
     -fx-pref-width: 800px;
