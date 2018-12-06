@@ -1,6 +1,7 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Actor;
+
 import de.nowakhub.miniwelt.model.Model;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -25,8 +26,9 @@ import java.util.stream.Collectors;
 // TODO tab pane enclose only program and world, userData = a model, controllers work with active tab userData
 public class TabsController {
 
-    private final String PREFIX = " public class %s extends " + Actor.class.getName() + " { public";
-    private final String PREFIX_REGEX = "public class \\w+ extends " + Actor.class.getName() + " { public";
+    private final String INVISIBLE = "import de.nowakhub.miniwelt.model.Invisible;";
+    private final String PREFIX = INVISIBLE + " public class %s extends " + Actor.class.getName() + " { public";
+    private final String PREFIX_REGEX = INVISIBLE + " public class \\w+ extends " + Actor.class.getName() + " { public";
     private final String POSTFIX = "}";
 
     private FileChooser fileChooser;
