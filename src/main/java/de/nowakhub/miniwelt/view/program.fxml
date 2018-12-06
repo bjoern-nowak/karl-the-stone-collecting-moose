@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.nowakhub.miniwelt.model.Editor?>
+<?import de.nowakhub.miniwelt.view.Editor?>
 
 
 <Editor fx:id="program" styleClass="program" stylesheets="@program.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ProgramController" />

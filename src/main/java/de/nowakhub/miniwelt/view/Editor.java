@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.model;
+package de.nowakhub.miniwelt.view;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;

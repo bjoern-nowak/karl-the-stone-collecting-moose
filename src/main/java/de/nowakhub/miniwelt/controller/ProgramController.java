@@ -1,6 +1,6 @@
 package de.nowakhub.miniwelt.controller;
 
-import de.nowakhub.miniwelt.model.Editor;
+import de.nowakhub.miniwelt.view.Editor;
 import javafx.fxml.FXML;
 
 public class ProgramController extends ModelController {
