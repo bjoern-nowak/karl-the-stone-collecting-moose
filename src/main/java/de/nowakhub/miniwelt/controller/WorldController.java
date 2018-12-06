@@ -99,12 +99,13 @@ public class WorldController extends ModelController implements Observer {
                 item.setText(method.getReturnType().getName() + " " + method.getName() + "()");
                 item.setOnAction(event -> {
                     try {
+                        method.setAccessible(true);
                         Object result = method.invoke(model.world.getActor());
                         if (result != null) { // instead of instanceOf check to enable various return types
                             Alerts.showInfo(method.getName() + "()", "" + result);
                         }
                     } catch (Exception ex) {
-                        // TODO add sound
+                        Alerts.playWarning();
                         Alerts.showException(null, ex);
                     }
                 });
@@ -137,7 +138,7 @@ public class WorldController extends ModelController implements Observer {
             }
         });
         frame.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-            if (dragging != null) {
+            if (dragging != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
                 model.world.place(dragging, row, col);
