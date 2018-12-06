@@ -106,4 +106,8 @@ public class Alerts {
 
         alert.showAndWait();
     }
+
+    public static void playWarning() {
+        // TODO play actual sound
+    }
 }
