@@ -1,15 +1,19 @@
 package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 
-public class World extends Observable implements Controllable, Interactable {
+import java.io.Serializable;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class World extends Observable implements Controllable, Interactable, Serializable {
+    static final long serialVersionUID = -8717671986526504937L;
 
     // limited by
     private static final int MIN_SIZE = 2;
-    private IntegerProperty sizeRow = new SimpleIntegerProperty();
-    private IntegerProperty sizeCol = new SimpleIntegerProperty();
+    private int sizeRow;
+    private int sizeCol;
+    private int actorBagMax = 3;
 
     // has
     private Field[][] field; // or use linked list (drawback: consumes more memory, may be a performance issue)
@@ -17,25 +21,62 @@ public class World extends Observable implements Controllable, Interactable {
     private Position actorPos = new Position();
     private Direction actorDir = Direction.UP;
     private int actorBag = 0;
-    private int actorBagMax = 3;
 
-    private Actor actor;
 
-    public World(int sizeRow, int sizeY) throws InvalidWorldSizeException {
-        resize(sizeRow, sizeY);
+    public World() {
+    }
+
+    public World(int sizeRow, int sizeCol) throws InvalidWorldSizeException {
+        resize(sizeRow, sizeCol);
     }
 
     //__________________________________________________________________________________________________________________
     //    Controllable - commands
     //------------------------------------------------------------------------------------------------------------------
 
+    public void reset() {
+        resize(sizeRow, sizeCol);
+        synchronized (this) {
+            for (int row = 0; row < getSizeRow(); row++)
+                for (int col = 0; col < getSizeCol(); col++)
+                    remove(row, col);
+            placeStart(2, 2);
+            placeActor(2, 2);
+        }
+        notifyObservers();
+    }
+
+    public void random() {
+        synchronized (this) {
+            sizeRow = ThreadLocalRandom.current().nextInt(3, 16);
+            sizeCol = ThreadLocalRandom.current().nextInt(3, 16);
+            reset();
+
+            for (int row = 0; row < getSizeRow(); row++) {
+                for (int col = 0; col < getSizeCol(); col++) {
+                    if (isFieldAtBorder(row, col)) {
+                        placeObstacle(row, col);
+                    } else {
+                        double random = new Random().nextDouble();
+                        if (random < 0.2) {
+                            placeObstacle(row, col);
+                        } else if (random < 0.3) {
+                            placeItem(row, col);
+                        }
+                    }
+                }
+            }
+        }
+        notifyObservers();
+    }
+
     @Override
     public void resize(int sizeRow, int sizeCol) throws InvalidWorldSizeException {
         if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
 
         synchronized (this) {
-            this.sizeRow.set(sizeRow);
-            this.sizeCol.set(sizeCol);
+            this.sizeRow = sizeRow;
+            this.sizeCol = sizeCol;
 
             Field[][] oldGrid = field;
             field = new Field[sizeRow][sizeCol];
@@ -156,7 +197,7 @@ public class World extends Observable implements Controllable, Interactable {
 
     @Override
     public boolean isInBoundary(int row, int col){
-        return row < sizeRow.get() || col < sizeCol.get();
+        return row < sizeRow || col < sizeCol;
     }
 
     @Override
@@ -186,7 +227,7 @@ public class World extends Observable implements Controllable, Interactable {
 
     @Override
     public boolean isFieldAtBorder(int row, int col) {
-        return row == 0 || col == 0 || row == sizeRow.get() - 1  || col == sizeCol.get() - 1;
+        return row == 0 || col == 0 || row == sizeRow - 1  || col == sizeCol - 1;
     }
 
     //__________________________________________________________________________________________________________________
@@ -199,22 +240,12 @@ public class World extends Observable implements Controllable, Interactable {
     }
 
     @Override
-    public int sizeRow() {
-        return sizeRow.get();
-    }
-
-    @Override
-    public IntegerProperty sizeRowProperty() {
+    synchronized public int getSizeRow() {
         return sizeRow;
     }
 
     @Override
-    public int sizeCol() {
-        return sizeCol.get();
-    }
-
-    @Override
-    public IntegerProperty sizeColProperty() {
+    synchronized public int getSizeCol() {
         return sizeCol;
     }
 
@@ -241,17 +272,6 @@ public class World extends Observable implements Controllable, Interactable {
     @Override
     public void setActorBagMax(int actorBagMax) {
         this.actorBagMax = actorBagMax;
-    }
-
-    @Override
-    public Actor getActor() {
-        return actor;
-    }
-
-    @Override
-    public void setActor(Actor actor) {
-        this.actor = actor;
-        notifyObservers();
     }
 
     // _________________________________________________________________________________________________________________
@@ -333,5 +353,46 @@ public class World extends Observable implements Controllable, Interactable {
     @Override
     synchronized public boolean atStart() {
         return field[actorPos.row][actorPos.col].equals(Field.ACTOR_AT_START);
+    }
+
+
+    // _________________________________________________________________________________________________________________
+    //     getter/setter for export (XML)
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public static int getMinSize() {
+        return MIN_SIZE;
+    }
+
+    public void setSizeRow(int sizeRow) {
+        this.sizeRow = sizeRow;
+    }
+
+    public void setSizeCol(int sizeCol) {
+        this.sizeCol = sizeCol;
+    }
+
+    public void setField(Field[][] field) {
+        this.field = field;
+    }
+
+    public Position getStartPos() {
+        return startPos;
+    }
+
+    public void setStartPos(Position startPos) {
+        this.startPos = startPos;
+    }
+
+    public Position getActorPos() {
+        return actorPos;
+    }
+
+    public void setActorPos(Position actorPos) {
+        this.actorPos = actorPos;
+    }
+
+    public void setActorDir(Direction actorDir) {
+        this.actorDir = actorDir;
     }
 }

@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class WorldController extends ModelController implements Observer {
@@ -64,7 +63,7 @@ public class WorldController extends ModelController implements Observer {
         // for better user experience: add separators between specific method groups
         addMethodsToActorContextMenu(Arrays.asList("stepAhead", "turnRight", "pickUp", "dropDown"));
         addMethodsToActorContextMenu(Arrays.asList("aheadClear", "bagEmpty", "foundItem", "atStart"));
-        Class<? extends Actor> cls = model.world.getActor().getClass();
+        Class<? extends Actor> cls = model.getActor().getClass();
         if (!cls.equals(Actor.class)) {
             Arrays.stream(cls.getDeclaredMethods()).forEach(this::addMethodToActorContextMenu);
         }
@@ -73,10 +72,10 @@ public class WorldController extends ModelController implements Observer {
     private void addMethodsToActorContextMenu(Collection<String> methods) {
         methods.forEach(method -> {
             try {
-                Method m = model.world.getActor().getClass().getMethod(method);
+                Method m = model.getActor().getClass().getMethod(method);
                 addMethodToActorContextMenu(m);
             } catch (NoSuchMethodException ex) {
-                Alerts.showException(null, ex);
+                Alerts.showException(ex);
             }
         });
         actorContextMenu.getItems().add(new SeparatorMenuItem());
@@ -100,13 +99,13 @@ public class WorldController extends ModelController implements Observer {
                 item.setOnAction(event -> {
                     try {
                         method.setAccessible(true);
-                        Object result = method.invoke(model.world.getActor());
+                        Object result = method.invoke(model.getActor());
                         if (result != null) { // instead of instanceOf check to enable various return types
                             Alerts.showInfo(method.getName() + "()", "" + result);
                         }
                     } catch (Exception ex) {
                         Alerts.playWarning();
-                        Alerts.showException(null, ex);
+                        Alerts.showException(ex);
                     }
                 });
             }
@@ -118,8 +117,7 @@ public class WorldController extends ModelController implements Observer {
         // feature: changing fields
         frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             if (model.mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
-                model.world.place(model.mouseMode.get(), (int) (event.getY() / tileSize()), (int) (event.getX() / tileSize()));
-                draw();
+                model.getWorld().place(model.mouseMode.get(), (int) (event.getY() / tileSize()), (int) (event.getX() / tileSize()));
             }
         });
 
@@ -128,12 +126,12 @@ public class WorldController extends ModelController implements Observer {
             if (event.isPrimaryButtonDown()) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
-                if (model.world.isFieldWithActor(row, col)) {
+                if (model.getWorld().isFieldWithActor(row, col)) {
                     dragging = Field.ACTOR;
-                } else if (model.world.isFieldWithStart(row, col)) {
+                } else if (model.getWorld().isFieldWithStart(row, col)) {
                     dragging = Field.START;
                 } else {
-                    dragging = model.world.getField()[row][col];
+                    dragging = model.getWorld().getField()[row][col];
                 }
             }
         });
@@ -141,19 +139,16 @@ public class WorldController extends ModelController implements Observer {
             if (dragging != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
-                model.world.place(dragging, row, col);
-                draw();
+                model.getWorld().place(dragging, row, col);
             }
         });
-        frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            dragging = null;
-        });
+        frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> dragging = null);
 
         // feature: actors popup menu
         frame.setOnContextMenuRequested(event -> {
             int row = tileBy(event.getY());
             int col = tileBy(event.getX());
-            if (model.world.isFieldWithActor(row, col)) {
+            if (model.getWorld().isFieldWithActor(row, col)) {
                 actorContextMenu.setX(event.getScreenX());
                 actorContextMenu.setY(event.getScreenY());
                 actorContextMenu.show(frame.getScene().getWindow());
@@ -175,8 +170,11 @@ public class WorldController extends ModelController implements Observer {
     }
 
     void postInitialize() {
+        // sync canvas for actionController to make snapshots
+        model.frame = frame;
+
         // subscribe to model.world changes
-        model.world.addObserver("view", this);
+        model.getWorld().addObserver("view", this);
 
         // auto scrollbars for canvas
         scrollPane.setFitToHeight(true);
@@ -193,15 +191,15 @@ public class WorldController extends ModelController implements Observer {
     }
 
     private void resize() {
-        frame.setHeight(tileSize(model.world.sizeRow()));
-        frame.setWidth(tileSize(model.world.sizeCol()));
+        frame.setHeight(tileSize(model.getWorld().getSizeRow()));
+        frame.setWidth(tileSize(model.getWorld().getSizeCol()));
     }
 
     private void draw() {
         // clean canvas
         gc.clearRect(0, 0, frame.getWidth(), frame.getHeight());
 
-        Field[][] state = model.world.getField();
+        Field[][] state = model.getWorld().getField();
         //drawGrid(state);
         drawGridBorder(state);
         drawGround(state);
@@ -268,7 +266,7 @@ public class WorldController extends ModelController implements Observer {
     }
 
     private void drawActor(int row, int col) {
-        switch(model.world.getActorDir()) {
+        switch(model.getWorld().getActorDir()) {
             case UP:
                 gc.drawImage(actorU, tileSize(col), tileSize(row), tileSize(), tileSize());
                 break;
@@ -287,9 +285,9 @@ public class WorldController extends ModelController implements Observer {
 
     private void drawObstacle(int row, int col) {
         Image img = obstacle;
-        if (model.world.isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
-            //img = obstacle_random // TODO add random obstacle ; like glass
-        }
+        //if (model.getWorld().isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
+        //    img = obstacle_random // TODO add random obstacle ; like glass
+        //}
         gc.drawImage(img, tileSize(col), tileSize(row), tileSize(), tileSize());
     }
 

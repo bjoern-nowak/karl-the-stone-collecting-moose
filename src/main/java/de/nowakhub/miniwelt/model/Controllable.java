@@ -4,7 +4,6 @@ import de.nowakhub.miniwelt.model.exceptions.InvalidWorldSizeException;
 import de.nowakhub.miniwelt.model.exceptions.PositionInvalidException;
 import de.nowakhub.miniwelt.model.exceptions.RequireActorException;
 import de.nowakhub.miniwelt.model.exceptions.RequireStartException;
-import javafx.beans.property.IntegerProperty;
 
 public interface Controllable {
 
@@ -12,68 +11,60 @@ public interface Controllable {
     //    Controllable - commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public void resize(int sizeX, int sizeY) throws InvalidWorldSizeException;
+    void resize(int sizeX, int sizeY) throws InvalidWorldSizeException;
 
     //__________________________________________________________________________________________________________________
     //    Controllable - placement commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public void remove(int x, int y);
+    void remove(int x, int y);
 
-    public void place(Field field, int x, int y);
+    void place(Field field, int x, int y);
 
-    public void placeObstacle(int x, int y) throws PositionInvalidException;
+    void placeObstacle(int x, int y) throws PositionInvalidException;
 
-    public void placeItem(int x, int y) throws PositionInvalidException;
+    void placeItem(int x, int y) throws PositionInvalidException;
 
-    public void placeActor(int x, int y) throws PositionInvalidException;
+    void placeActor(int x, int y) throws PositionInvalidException;
 
-    public void placeStart(int x, int y) throws PositionInvalidException;
+    void placeStart(int x, int y) throws PositionInvalidException;
 
 
     //__________________________________________________________________________________________________________________
     //    Controllable - test commands
     //------------------------------------------------------------------------------------------------------------------
 
-    public boolean isInBoundary(int x, int y);
+    boolean isInBoundary(int x, int y);
 
-    public void checkBoundary(int x, int y) throws PositionInvalidException;
+    void checkBoundary(int x, int y) throws PositionInvalidException;
 
-    public void existActor() throws RequireActorException;
+    void existActor() throws RequireActorException;
 
-    public void existsStart() throws RequireStartException;
+    void existsStart() throws RequireStartException;
 
-    public boolean isFieldWithActor(int x, int y);
+    boolean isFieldWithActor(int x, int y);
 
-    public boolean isFieldWithStart(int x, int y);
+    boolean isFieldWithStart(int x, int y);
 
-    public boolean isFieldAtBorder(int x, int y);
+    boolean isFieldAtBorder(int x, int y);
 
     //__________________________________________________________________________________________________________________
     //    Controllable - getter / setter
     //------------------------------------------------------------------------------------------------------------------
 
-    public Field[][] getField();
+    Field[][] getField();
 
-    public int sizeRow();
+    int getSizeRow();
 
-    public IntegerProperty sizeRowProperty();
+    int getSizeCol();
 
-    public int sizeCol();
+    Direction getActorDir();
 
-    public IntegerProperty sizeColProperty();
+    int getActorBag();
 
-    public Direction getActorDir();
-
-    public int getActorBag();
-
-    public void setActorBag(int actorBag);
+    void setActorBag(int actorBag);
 
     int getActorBagMax();
 
     void setActorBagMax(int actorBagMax);
-
-    public Actor getActor();
-
-    public void setActor(Actor actor);
 }

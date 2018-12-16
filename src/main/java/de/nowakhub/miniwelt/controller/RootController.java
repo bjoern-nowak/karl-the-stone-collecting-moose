@@ -23,10 +23,21 @@ public class RootController {
 
     public RootController(Model model) {
         this.model = model;
+        model.getWorld().random();
+        model.worldChanged.addListener((obs, oldV, newV) -> {
+            if (newV) {
+                worldController.postInitialize();
+                model.worldChanged.set(false);
+            }
+        });
     }
 
     public void initialize(){
         initBinds();
+        postInitialize();
+    }
+
+    private void postInitialize() {
         programController.postInitialize();
         worldController.postInitialize();
         actionController.postInitialize();

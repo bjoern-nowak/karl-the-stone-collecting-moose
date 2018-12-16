@@ -8,7 +8,7 @@ public abstract class Observable {
     private final Map<String, Observer> observers = new HashMap<>();
 
 
-    void notifyObservers() {
+    public void notifyObservers() {
         for (Observer observer : observers.values()) {
             observer.update();
         }

@@ -2,9 +2,9 @@ package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.controller.TabsController;
 import javafx.beans.property.*;
+import javafx.scene.canvas.Canvas;
 
 import java.io.File;
-import java.util.Random;
 
 public class Model {
 
@@ -17,11 +17,13 @@ public class Model {
     public final BooleanProperty programCompiled = new SimpleBooleanProperty();
     public String programSave;
 
-    public final World world;
+    private World world;
+    private Actor actor;
+    public final BooleanProperty worldChanged = new SimpleBooleanProperty();
+    public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
-    public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
-
+    public Canvas frame;
     public final StringProperty statusText = new SimpleStringProperty();
 
 
@@ -38,28 +40,26 @@ public class Model {
             this.programSave = null;
         }
 
-        world = new World(10, 10);
-        world.setActor(new Actor(world));
-        defaultWorld();
+        world = new World();
+        actor = new Actor(world);
     }
 
-    private void defaultWorld() {
-        world.placeStart(2,2);
-        world.placeActor(2,2);
+    public World getWorld() {
+        return world;
+    }
 
-        for (int x = 0; x < world.sizeRow(); x++) {
-            for (int y = 0; y < world.sizeCol(); y++) {
-                if (world.isFieldAtBorder(x, y)) {
-                    world.placeObstacle(x,y);
-                } else {
-                    double random = new Random().nextDouble();
-                    if (random < 0.2) {
-                        world.placeObstacle(x,y);
-                    } else if (random < 0.3) {
-                        world.placeItem(x,y);
-                    }
-                }
-            }
-        }
+    public void setWorld(World world) {
+        this.world = world;
+        worldChanged.set(true); // forces rootController to re-init observers
+        actor.setInteraction(world);
+    }
+
+    public Actor getActor() {
+        return actor;
+    }
+
+    public void setActor(Actor actor) {
+        this.actor = actor;
+        world.notifyObservers();
     }
 }

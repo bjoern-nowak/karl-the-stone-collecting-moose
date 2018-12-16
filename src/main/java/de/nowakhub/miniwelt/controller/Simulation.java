@@ -19,14 +19,14 @@ public class Simulation extends Thread {
             // TODO everything is bad about this, also to many "start" attemps break the world canvas or throws exceptions
             synchronized (this) {
                 while(paused) wait();
-                model.world.getActor().main();
+                model.getActor().main();
             }
         } catch (InterruptedException ex) {
             // someone really want us to stop
         } catch (PublicException ex) {
             Platform.runLater(() -> {
                 Alerts.playWarning();
-                Alerts.showException(null, ex);
+                Alerts.showException(ex);
             });
         } finally {
             model.simulationRunning.set(false);

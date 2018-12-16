@@ -1,8 +1,9 @@
 package de.nowakhub.miniwelt.model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public enum Field {    
+public enum Field implements Serializable {
     FREE(""),
     OBSTACLE("O"),
     ITEM("I"),
@@ -12,6 +13,7 @@ public enum Field {
     ACTOR_ON_ITEM("AI");
 
 
+    static final long serialVersionUID = -8717671986526504937L;
 
     private String key;
 

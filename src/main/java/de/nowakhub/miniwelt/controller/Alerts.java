@@ -67,6 +67,10 @@ public class Alerts {
         alert.showAndWait();
     }
 
+    public static void showException(Throwable ex) {
+        showException(null, ex);
+    }
+
     // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
     public static void showException(Thread th, Throwable ex) {
         Alert alert = new Alert(javafx.scene.control.Alert.AlertType.ERROR);

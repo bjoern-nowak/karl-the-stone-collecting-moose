@@ -6,7 +6,7 @@
 /* TODO really bad menu icon styling */
 
 .menubar .menu-item > .label {
-    -fx-padding: 0 0 0 18px;
+    -fx-padding: 0 0 0 20px;
 }
 
 .menubar .menu-item .accelerator-text {

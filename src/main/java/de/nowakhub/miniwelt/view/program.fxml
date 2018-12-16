@@ -3,4 +3,5 @@
 <?import de.nowakhub.miniwelt.view.Editor?>
 
 
-<Editor fx:id="program" styleClass="program" stylesheets="@program.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ProgramController" />
+<Editor fx:id="program" styleClass="program" stylesheets="@program.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="de.nowakhub.miniwelt.controller.ProgramController"/>

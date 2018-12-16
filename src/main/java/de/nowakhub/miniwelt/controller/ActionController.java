@@ -2,18 +2,29 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
+import javax.imageio.ImageIO;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
@@ -23,6 +34,7 @@ public class ActionController extends ModelController {
 
     private Simulation simulation;
 
+    private FileChooser fileChooser;
 
 
     @FXML
@@ -46,19 +58,30 @@ public class ActionController extends ModelController {
         // TODO bind toggle groups
 
         if (sliderSimSpeed != null) {
-            sliderSimSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
-                model.statusText.setValue("Speed changed to " + newValue.intValue());
-            });
+            sliderSimSpeed.valueProperty().addListener((obs, oldV, newV) -> model.statusText.setValue("Speed changed to " + newV.intValue()));
         }
+
+
+        fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Serialized", "*.ser"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+        File dir = Paths.get("programs").toFile();
+        if (!dir.exists()) dir.mkdirs();
+        fileChooser.setInitialDirectory(dir);
     }
 
     void postInitialize() {
-        model.simulationRunning.addListener((observable, oldValue, newValue) -> {
-            btnSimStart.setDisable(newValue);
-            btnSimPause.setDisable(!newValue);
-            btnSimStop.setDisable(!newValue);
+        model.simulationRunning.addListener((obs, oldV, newV) -> {
+            btnSimStart.setDisable(newV);
+            btnSimPause.setDisable(!newV);
+            btnSimStop.setDisable(!newV);
         });
         model.simulationRunning.set(false);
+    }
+
+
+    private Window getWindow() {
+        return sliderSimSpeed.getScene().getWindow();
     }
 
 
@@ -75,12 +98,25 @@ public class ActionController extends ModelController {
         model.tabsController.save(model, false);
     }
     @FXML
-    public void onProgramSaveUnder(ActionEvent actionEvent) {
+    public void onProgramSaveAs(ActionEvent actionEvent) {
         model.tabsController.save(model, true);
     }
     @FXML
     public void onProgramPrint(ActionEvent actionEvent) {
-        model.statusText.setValue("onProgramPrint");
+        PrinterJob job = PrinterJob.createPrinterJob();
+        Platform.runLater(() -> {
+            if (job != null)
+                if (job.showPrintDialog(getWindow())) {
+                    Text title = new Text(TabsController.getTabText(model.programFile));
+                    title.setFont(Font.font("Consolas", 14));
+                    Text program = new Text(model.program.get());
+                    program.setFont(Font.font("Consolas", 8));
+                    VBox box = new VBox(title, program);
+                    if (job.printPage(box))
+                        job.endJob();
+                }
+
+        });
     }
     @FXML
     public void onProgramCompile(ActionEvent actionEvent) {
@@ -121,10 +157,10 @@ public class ActionController extends ModelController {
                 ClassLoader cl = new URLClassLoader(urls);
                 String clsName = model.programFile.getName().substring(0, model.programFile.getName().length() - 5);
                 Class<?> cls = cl.loadClass(clsName);
-                model.world.setActor((Actor) cls.newInstance());
-                model.world.getActor().setInteraction(model.world);
+                model.setActor((Actor) cls.newInstance());
+                model.getActor().setInteraction(model.getWorld());
             } catch (Exception ex) {
-                if (!silently) Alerts.showException(null, ex);
+                if (!silently) Alerts.showException(ex);
             }
 
         }
@@ -141,39 +177,79 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onWorldReset(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldReset");
+        model.getWorld().reset();
+    }
+    @FXML
+    public void onWorldRandom(ActionEvent actionEvent) {
+        model.getWorld().random();
     }
     @FXML
     public void onWorldLoad(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldLoad");
+        File file = fileChooser.showOpenDialog(getWindow());
+        if (file != null) {
+            try (FileInputStream stream = new FileInputStream(file); ObjectInputStream ser = new ObjectInputStream(stream); XMLDecoder xml = new XMLDecoder(stream)) {
+                if (file.getName().toLowerCase().endsWith(".ser")) model.setWorld((World) ser.readObject());
+                else if (file.getName().toLowerCase().endsWith(".xml")) model.setWorld((World) xml.readObject());
+            } catch (Exception ex) {
+                Alerts.showException(ex);
+            }
+        }
     }
     @FXML
     public void onWorldSave(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldSave");
+        File file = fileChooser.showSaveDialog(getWindow());
+        if (file != null) {
+            try (FileOutputStream stream = new FileOutputStream(file); ObjectOutputStream ser = new ObjectOutputStream(stream); XMLEncoder xml = new XMLEncoder(stream)) {
+                if (file.getName().toLowerCase().endsWith(".ser")) ser.writeObject(model.getWorld());
+                else if (file.getName().toLowerCase().endsWith(".xml")) xml.writeObject(model.getWorld());
+            } catch (Exception ex) {
+                Alerts.showException(ex);
+            }
+        }
     }
     @FXML
-    public void onWorldExportPNG(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldExportPNG");
+    public void onWorldExport(ActionEvent actionEvent) throws IOException {
+
+        // TODO optimize fileChooser creation (multiple places over controller does the same)
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG", "*.jpg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF", "*.gif"));
+        File dir = Paths.get("programs").toFile();
+        if (!dir.exists()) dir.mkdirs();
+        fileChooser.setInitialDirectory(dir);
+
+        File file = fileChooser.showSaveDialog(getWindow());
+        if (file != null) {
+            WritableImage image = new WritableImage((int) model.frame.getWidth(), (int) model.frame.getHeight());
+            model.frame.snapshot(null, image);
+            if (file.getName().toLowerCase().endsWith(".png")) ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            else if (file.getName().toLowerCase().endsWith(".jpg")) ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", file);
+            else if (file.getName().toLowerCase().endsWith(".gif")) ImageIO.write(SwingFXUtils.fromFXImage(image, null), "gif", file);
+        }
     }
     @FXML
-    public void onWorldExportXML(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldExportXML");
+    public void onWorldPrint(ActionEvent actionEvent) {
+        PrinterJob job = PrinterJob.createPrinterJob();
+        Platform.runLater(() -> {
+            if (job != null)
+                if (job.showPrintDialog(getWindow()))
+                    if (job.printPage(model.frame))
+                        job.endJob();
+        });
     }
-    @FXML
-    public void onWorldExportText(ActionEvent actionEvent) {
-        model.statusText.setValue("onWorldExportText");
-    }
+
     @FXML
     public void onWorldChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
                 actionEvent,
-                model.world.sizeRow() + "x" + model.world.sizeCol(),
+                model.getWorld().getSizeRow() + "x" + model.getWorld().getSizeCol(),
                 "Change dimension of the model.world (Rows x Cols).\nRequire format: [nxn | n e IN]",
                 "Please enter dimension:"
         ).ifPresent(input -> {
             String[] dimension = input.split("x");
             if (!input.matches("\\d+x\\d+") || dimension.length != 2) throw new InvalidInputException("Invalid format for model.world dimension");
-            model.world.resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
+            model.getWorld().resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
         });
     }
 
@@ -208,64 +284,64 @@ public class ActionController extends ModelController {
     public void onActorBagChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
                 actionEvent,
-                "" + model.world.getActorBagMax(),
+                "" + model.getWorld().getActorBagMax(),
                 "Change maximal size of actor bag.\nRequire format: [n | n e IN]",
                 "Please enter maximal item count:"
         ).ifPresent(input -> {
             if (!input.matches("\\d+")) throw new InvalidInputException("Invalid format for maximal bag size");
-            model.world.setActorBagMax(Integer.valueOf(input));
+            model.getWorld().setActorBagMax(Integer.valueOf(input));
         });
     }
     @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
         Alerts.requestInput(
                 actionEvent,
-                "" + model.world.getActorBag(),
+                "" + model.getWorld().getActorBag(),
                 "Change item count of actor bag.\nRequire format: [n | n e IN, n <= maximal bag size]",
-                "Please enter item count smaller then " + (model.world.getActorBagMax()+1) + ":"
+                "Please enter item count smaller then " + (model.getWorld().getActorBagMax()+1) + ":"
         ).ifPresent(input -> {
-            if (!input.matches("\\d+") || model.world.getActorBagMax() < Integer.valueOf(input))
+            if (!input.matches("\\d+") || model.getWorld().getActorBagMax() < Integer.valueOf(input))
                 throw new InvalidInputException("Invalid format for bag item count");
-            model.world.setActorBag(Integer.valueOf(input));
+            model.getWorld().setActorBag(Integer.valueOf(input));
         });
     }
     @FXML
     public void onActorStepAhead(ActionEvent actionEvent) {
-        model.world.stepAhead();
+        model.getActor().stepAhead();
     }
     @FXML
     public void onActorTurnRight(ActionEvent actionEvent) {
-        model.world.turnRight();
+        model.getActor().turnRight();
     }
     @FXML
     public void onActorBackToStart(ActionEvent actionEvent) {
-        model.world.backToStart();
+        model.getActor().backToStart();
     }
     @FXML
     public void onActorAheadClear(ActionEvent actionEvent) {
         Alerts.showInfo(
                 "Actor test command result",
-                "Result of aheadClear(): " + model.world.aheadClear());
+                "Result of aheadClear(): " + model.getActor().aheadClear());
     }
     @FXML
     public void onActorBagEmpty(ActionEvent actionEvent) {
         Alerts.showInfo(
                 "Actor test command result",
-                "Result of bagEmpty(): " + model.world.bagEmpty());
+                "Result of bagEmpty(): " + model.getActor().bagEmpty());
     }
     @FXML
     public void onActorFoundItem(ActionEvent actionEvent) {
         Alerts.showInfo(
                 "Actor test command result",
-                "Result of foundItem(): " + model.world.foundItem());
+                "Result of foundItem(): " + model.getActor().foundItem());
     }
     @FXML
     public void onActorPickUp(ActionEvent actionEvent) {
-        model.world.pickUp();
+        model.getActor().pickUp();
     }
     @FXML
     public void onActorDropDown(ActionEvent actionEvent) {
-        model.world.dropDown();
+        model.getActor().dropDown();
     }
 
 

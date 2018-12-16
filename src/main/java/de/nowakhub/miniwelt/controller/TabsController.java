@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // TODO tab pane enclose only program and world, userData = a model, controllers work with active tab userData
+// TODO or controllers work with a shared model property, tabcontroller can change the hole model by tab switching
 public class TabsController {
 
     private final String INVISIBLE = "import de.nowakhub.miniwelt.model.Invisible;";
@@ -41,8 +42,8 @@ public class TabsController {
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java", "*.java"));
         File dir = Paths.get("programs").toFile();
-        dir.mkdirs();
-        if (dir.exists()) fileChooser.setInitialDirectory(dir);
+        if (!dir.exists()) dir.mkdirs();
+        fileChooser.setInitialDirectory(dir);
     }
 
     public void initialize() {
@@ -72,7 +73,7 @@ public class TabsController {
                 openFiles.add(file);
                 if (newTab != null) getModel(newTab).programDirty.set(false);
             } catch (IOException ex) {
-                Alerts.showException(null, ex);
+                Alerts.showException(ex);
             }
         }
     }
@@ -106,7 +107,7 @@ public class TabsController {
                 getTab(model).setText(getTabText(file));
                 return true;
             } catch (IOException ex) {
-                Alerts.showException(null, ex);
+                Alerts.showException(ex);
                 return false;
             }
         }
@@ -140,7 +141,7 @@ public class TabsController {
             rootController.compileSilently();
             return tab;
         } catch (IOException ex) {
-            Alerts.showException(null, ex);
+            Alerts.showException(ex);
         }
         return null;
     }
@@ -164,10 +165,10 @@ public class TabsController {
     public static void confirmExitIfNecessaery(Event event, Collection<Tab> tabs) {
         Collection<Tab> dirtyTabs = getDirtyTabs(tabs);
         if (!dirtyTabs.isEmpty()) {
-            String dirtyTabNames = "";
+            StringBuilder dirtyTabNames = new StringBuilder();
             for (Tab tab : dirtyTabs) {
-                if (dirtyTabNames.length() > 0) dirtyTabNames += ", ";
-                dirtyTabNames += tab.getText();
+                if (dirtyTabNames.length() > 0) dirtyTabNames.append(", ");
+                dirtyTabNames.append(tab.getText());
             }
             Alerts.confirmClose(event,
                     "Please confirm the EXIT action.",
@@ -194,7 +195,7 @@ public class TabsController {
         return ((Model) tab.getUserData());
     }
 
-    private static String getTabText(File file) {
+    static String getTabText(File file) {
         return file != null ? file.getName().replace(".java", "") : "DefaultProgram";
     }
 }
