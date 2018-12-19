@@ -10,7 +10,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
     static final long serialVersionUID = -8717671986526504937L;
 
     // limited by
-    private static final int MIN_SIZE = 2;
+    private transient static final int MIN_SIZE = 2;
     private int sizeRow;
     private int sizeCol;
     private int actorBagMax = 3;
@@ -24,6 +24,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
 
 
     public World() {
+        random();
     }
 
     public World(int sizeRow, int sizeCol) throws InvalidWorldSizeException {

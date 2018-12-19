@@ -1,9 +1,6 @@
 package de.nowakhub.miniwelt.controller;
 
-import de.nowakhub.miniwelt.model.Actor;
-import de.nowakhub.miniwelt.model.Field;
-import de.nowakhub.miniwelt.model.Invisible;
-import de.nowakhub.miniwelt.model.Observer;
+import de.nowakhub.miniwelt.model.*;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -24,7 +21,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class WorldController extends ModelController implements Observer {
+public class WorldController implements Observer {
+    
+    private Model model;
 
     @FXML
     private ScrollPane scrollPane;
@@ -50,8 +49,11 @@ public class WorldController extends ModelController implements Observer {
     private Image actorR = new Image("/images/world/debug/karl_right.png");
 
 
-
     public void initialize() {
+        // wrong: there is one world controller per model/tab
+        // subscribe to change of model (tab switch)
+        //ModelCtx.addObserver("" + this.hashCode(), this::postInitialize);
+        
         gc = frame.getGraphicsContext2D();
         addEventHandler();
     }
@@ -155,9 +157,9 @@ public class WorldController extends ModelController implements Observer {
             }
         });
 
-        // feature: alt + mouse scroll can zomm in/out canvas
+        // feature: ctrl + mouse scroll can zomm in/out canvas
         scrollPane.addEventHandler(ScrollEvent.SCROLL, event -> {
-            if (event.isAltDown()) {
+            if (event.isControlDown()) {
                 if (0 > event.getDeltaY()) {
                     zoom -= 0.1*zoom;
                 } else {
@@ -169,17 +171,21 @@ public class WorldController extends ModelController implements Observer {
         });
     }
 
-    void postInitialize() {
+    void postInitialize(Model model) {
+        // save model
+        this.model = model;
+        
         // sync canvas for actionController to make snapshots
-        model.frame = frame;
+        model.worldCanvas = frame;
 
-        // subscribe to model.world changes
-        model.getWorld().addObserver("view", this);
+        // subscribe to changes in the world
+        model.getWorld().addObserver("world", this);
 
         // auto scrollbars for canvas
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
 
+        //draw world
         update();
     }
 

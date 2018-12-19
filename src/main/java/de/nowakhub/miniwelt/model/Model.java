@@ -1,6 +1,5 @@
 package de.nowakhub.miniwelt.model;
 
-import de.nowakhub.miniwelt.controller.TabsController;
 import javafx.beans.property.*;
 import javafx.scene.canvas.Canvas;
 
@@ -8,27 +7,23 @@ import java.io.File;
 
 public class Model {
 
-    public final TabsController tabsController;
-
     public File programFile;
+    public String programSave;
     public final StringProperty program = new SimpleStringProperty();
     public final BooleanProperty programDirty = new SimpleBooleanProperty();
     public final BooleanProperty programSaved = new SimpleBooleanProperty();
     public final BooleanProperty programCompiled = new SimpleBooleanProperty();
-    public String programSave;
 
     private World world;
     private Actor actor;
-    public final BooleanProperty worldChanged = new SimpleBooleanProperty();
+    public Canvas worldCanvas;
     public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
-    public Canvas frame;
     public final StringProperty statusText = new SimpleStringProperty();
 
 
-    public Model(TabsController tabsController, File programFile, String program) {
-        this.tabsController = tabsController;
+    public Model(File programFile, String program) {
         this.programFile = programFile;
 
         this.program.set(program);
@@ -50,7 +45,6 @@ public class Model {
 
     public void setWorld(World world) {
         this.world = world;
-        worldChanged.set(true); // forces rootController to re-init observers
         actor.setInteraction(world);
     }
 

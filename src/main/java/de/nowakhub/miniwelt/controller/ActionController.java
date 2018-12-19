@@ -2,6 +2,7 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.ModelCtx;
 import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.application.Platform;
@@ -9,6 +10,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
@@ -30,12 +32,21 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 
 
-public class ActionController extends ModelController {
+public class ActionController {
+
+    private final String INVISIBLE = "import de.nowakhub.miniwelt.model.Invisible;";
+    private final String PREFIX = INVISIBLE + " public class %s extends " + Actor.class.getName() + " { public";
+    private final String PREFIX_REGEX = INVISIBLE + " public class \\w+ extends " + Actor.class.getName() + " { public";
+    private final String POSTFIX = "}";
+
+    private FileChooser programChooser;
+    private FileChooser worldChooser;
+    private FileChooser exportChooser;
 
     private Simulation simulation;
 
-    private FileChooser fileChooser;
 
+    private TabsController tabsController; // TODO move up into ModelCtx?
 
     @FXML
     public ToggleGroup mouseModeToggleGroupMenubar;
@@ -58,25 +69,41 @@ public class ActionController extends ModelController {
         // TODO bind toggle groups
 
         if (sliderSimSpeed != null) {
-            sliderSimSpeed.valueProperty().addListener((obs, oldV, newV) -> model.statusText.setValue("Speed changed to " + newV.intValue()));
+            sliderSimSpeed.valueProperty().addListener((obs, oldV, newV) -> ModelCtx.get().statusText.setValue("Speed changed to " + newV.intValue()));
         }
 
-
-        fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Serialized", "*.ser"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
-        File dir = Paths.get("programs").toFile();
-        if (!dir.exists()) dir.mkdirs();
-        fileChooser.setInitialDirectory(dir);
+        initFileChoosers();
     }
 
-    void postInitialize() {
-        model.simulationRunning.addListener((obs, oldV, newV) -> {
+    private void initFileChoosers() {
+        // make sure folder exists
+        File dir = Paths.get("programs").toFile();
+        if (!dir.exists()) dir.mkdirs();
+
+        programChooser = new FileChooser();
+        programChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java", "*.java"));
+        programChooser.setInitialDirectory(dir);
+
+        worldChooser = new FileChooser();
+        worldChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Serialized", "*.ser"));
+        worldChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+        worldChooser.setInitialDirectory(dir);
+
+        exportChooser = new FileChooser();
+        exportChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
+        exportChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG", "*.jpg"));
+        exportChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF", "*.gif"));
+        exportChooser.setInitialDirectory(dir);
+    }
+
+    void postInitialize(TabsController tabsController) {
+        this.tabsController = tabsController;
+        ModelCtx.get().simulationRunning.addListener((obs, oldV, newV) -> {
             btnSimStart.setDisable(newV);
             btnSimPause.setDisable(!newV);
             btnSimStop.setDisable(!newV);
         });
-        model.simulationRunning.set(false);
+        ModelCtx.get().simulationRunning.set(false);
     }
 
 
@@ -85,21 +112,58 @@ public class ActionController extends ModelController {
     }
 
 
+    // TODO get file handle logic out of tabsController
     @FXML
     public void onProgramNew(ActionEvent actionEvent) {
-        model.tabsController.add();
+        tabsController.addNew();
+        compile(true);
     }
     @FXML
     public void onProgramOpen(ActionEvent actionEvent) {
-        model.tabsController.open();
+        File file = programChooser.showOpenDialog(getWindow());
+        if (file != null) {
+            tabsController.open(file);
+            compile(true);
+        }
     }
     @FXML
     public void onProgramSave(ActionEvent actionEvent) {
-        model.tabsController.save(model, false);
+        saveProgram(false);
     }
     @FXML
     public void onProgramSaveAs(ActionEvent actionEvent) {
-        model.tabsController.save(model, true);
+        saveProgram(true);
+    }
+    private boolean saveProgram(boolean forceUserInput) {
+        File file = ModelCtx.get().programFile;
+        if (file == null || forceUserInput) {
+            if (file != null) {
+                //programChooser.setInitialDirectory(ModelCtx.get().programFile.getParentFile());
+                programChooser.setInitialFileName(ModelCtx.get().programFile.getName());
+            }
+            file = programChooser.showSaveDialog(getWindow());
+            programChooser.setInitialFileName("");
+        }
+
+        if (file != null) {
+            try (FileWriter fileWriter = new FileWriter(file);
+                 PrintWriter printWriter = new PrintWriter(fileWriter)) {
+                printWriter.println(String.format(PREFIX, file.getName().replace(".java", "")));
+                printWriter.println(ModelCtx.get().program.get());
+                printWriter.print(POSTFIX);
+            } catch (IOException ex) {
+                Alerts.showException(ex);
+                return false;
+            }
+
+            tabsController.saved(ModelCtx.get().programFile, file);
+            ModelCtx.get().programFile = file;
+            ModelCtx.get().programDirty.set(false);
+            ModelCtx.get().programCompiled.set(false);
+            ModelCtx.get().programSave = ModelCtx.get().program.get();
+            return true;
+        }
+        return false;
     }
     @FXML
     public void onProgramPrint(ActionEvent actionEvent) {
@@ -107,9 +171,9 @@ public class ActionController extends ModelController {
         Platform.runLater(() -> {
             if (job != null)
                 if (job.showPrintDialog(getWindow())) {
-                    Text title = new Text(TabsController.getTabText(model.programFile));
+                    Text title = new Text(TabsController.getTabText(ModelCtx.get().programFile));
                     title.setFont(Font.font("Consolas", 14));
-                    Text program = new Text(model.program.get());
+                    Text program = new Text(ModelCtx.get().program.get());
                     program.setFont(Font.font("Consolas", 8));
                     VBox box = new VBox(title, program);
                     if (job.printPage(box))
@@ -120,14 +184,14 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onProgramCompile(ActionEvent actionEvent) {
-        boolean saved = model.tabsController.save(model, false);
+        boolean saved = saveProgram(false);
         if (saved) {
             compile(false);
         }
     }
 
     void compile(boolean silently) {
-        if (model.programFile == null) return;
+        if (ModelCtx.get().programFile == null) return;
 
         File classDir = Paths.get("out/production/miniwelt_bjnowak").toAbsolutePath().toFile();
         File sourceDir = Paths.get("src/main/java").toAbsolutePath().toFile();
@@ -135,30 +199,30 @@ public class ActionController extends ModelController {
         String[] args = new String[] {
                 "-classpath", System.getProperty("java.class.path") + ";" + classDir.toString(),
                 "-sourcepath", sourceDir.toString(),
-                "-d", model.programFile.getParent(),
-                model.programFile.toString()
+                "-d", ModelCtx.get().programFile.getParent(),
+                ModelCtx.get().programFile.toString()
         };
         JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
         ByteArrayOutputStream errStream = new ByteArrayOutputStream();
         boolean success = javac.run(null, null, errStream, args) == 0;
         if (!success) {
-            model.programCompiled.set(false);
+            ModelCtx.get().programCompiled.set(false);
             if (!silently) Alerts.showError(
                     "Compiler says no. He complains:",
                     errStream.toString());
         } else {
-            model.programCompiled.set(true);
+            ModelCtx.get().programCompiled.set(true);
             if (!silently) Alerts.showInfo(
                     "Compiler says yes.",
                     "Compile was successful.");
 
             try {
-                URL[] urls = new URL[] { model.programFile.getParentFile().toURI().toURL() };
+                URL[] urls = new URL[] { ModelCtx.get().programFile.getParentFile().toURI().toURL() };
                 ClassLoader cl = new URLClassLoader(urls);
-                String clsName = model.programFile.getName().substring(0, model.programFile.getName().length() - 5);
+                String clsName = ModelCtx.get().programFile.getName().substring(0, ModelCtx.get().programFile.getName().length() - 5);
                 Class<?> cls = cl.loadClass(clsName);
-                model.setActor((Actor) cls.newInstance());
-                model.getActor().setInteraction(model.getWorld());
+                ModelCtx.setActor((Actor) cls.newInstance());
+                ModelCtx.actor().setInteraction(ModelCtx.world());
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(ex);
             }
@@ -168,7 +232,7 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onProgramExit(ActionEvent actionEvent) {
-        TabsController.confirmExitIfNecessaery(actionEvent, model.tabsController.getTabs());
+        TabsController.confirmExitIfNecessaery(actionEvent, tabsController.getTabs());
         if (!actionEvent.isConsumed()) Platform.exit();
     }
 
@@ -177,19 +241,19 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onWorldReset(ActionEvent actionEvent) {
-        model.getWorld().reset();
+        ModelCtx.world().reset();
     }
     @FXML
     public void onWorldRandom(ActionEvent actionEvent) {
-        model.getWorld().random();
+        ModelCtx.world().random();
     }
     @FXML
     public void onWorldLoad(ActionEvent actionEvent) {
-        File file = fileChooser.showOpenDialog(getWindow());
+        File file = worldChooser.showOpenDialog(getWindow());
         if (file != null) {
             try (FileInputStream stream = new FileInputStream(file); ObjectInputStream ser = new ObjectInputStream(stream); XMLDecoder xml = new XMLDecoder(stream)) {
-                if (file.getName().toLowerCase().endsWith(".ser")) model.setWorld((World) ser.readObject());
-                else if (file.getName().toLowerCase().endsWith(".xml")) model.setWorld((World) xml.readObject());
+                if (file.getName().toLowerCase().endsWith(".ser")) ModelCtx.setWorld((World) ser.readObject());
+                else if (file.getName().toLowerCase().endsWith(".xml")) ModelCtx.setWorld((World) xml.readObject());
             } catch (Exception ex) {
                 Alerts.showException(ex);
             }
@@ -197,11 +261,11 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onWorldSave(ActionEvent actionEvent) {
-        File file = fileChooser.showSaveDialog(getWindow());
+        File file = worldChooser.showSaveDialog(getWindow());
         if (file != null) {
             try (FileOutputStream stream = new FileOutputStream(file); ObjectOutputStream ser = new ObjectOutputStream(stream); XMLEncoder xml = new XMLEncoder(stream)) {
-                if (file.getName().toLowerCase().endsWith(".ser")) ser.writeObject(model.getWorld());
-                else if (file.getName().toLowerCase().endsWith(".xml")) xml.writeObject(model.getWorld());
+                if (file.getName().toLowerCase().endsWith(".ser")) ser.writeObject(ModelCtx.world());
+                else if (file.getName().toLowerCase().endsWith(".xml")) xml.writeObject(ModelCtx.world());
             } catch (Exception ex) {
                 Alerts.showException(ex);
             }
@@ -209,23 +273,12 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onWorldExport(ActionEvent actionEvent) throws IOException {
-
-        // TODO optimize fileChooser creation (multiple places over controller does the same)
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG", "*.jpg"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GIF", "*.gif"));
-        File dir = Paths.get("programs").toFile();
-        if (!dir.exists()) dir.mkdirs();
-        fileChooser.setInitialDirectory(dir);
-
-        File file = fileChooser.showSaveDialog(getWindow());
+        File file = exportChooser.showSaveDialog(getWindow());
         if (file != null) {
-            WritableImage image = new WritableImage((int) model.frame.getWidth(), (int) model.frame.getHeight());
-            model.frame.snapshot(null, image);
-            if (file.getName().toLowerCase().endsWith(".png")) ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-            else if (file.getName().toLowerCase().endsWith(".jpg")) ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", file);
-            else if (file.getName().toLowerCase().endsWith(".gif")) ImageIO.write(SwingFXUtils.fromFXImage(image, null), "gif", file);
+            Canvas worldCanvas = ModelCtx.get().worldCanvas;
+            WritableImage worldSnapshot = worldCanvas.snapshot(null, new WritableImage((int) worldCanvas.getWidth(), (int) worldCanvas.getHeight()));
+            String format = file.getName().toLowerCase().substring(file.getName().length() - 3);
+            ImageIO.write(SwingFXUtils.fromFXImage(worldSnapshot, null), format, file);
         }
     }
     @FXML
@@ -234,7 +287,7 @@ public class ActionController extends ModelController {
         Platform.runLater(() -> {
             if (job != null)
                 if (job.showPrintDialog(getWindow()))
-                    if (job.printPage(model.frame))
+                    if (job.printPage(ModelCtx.get().worldCanvas))
                         job.endJob();
         });
     }
@@ -243,13 +296,13 @@ public class ActionController extends ModelController {
     public void onWorldChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
                 actionEvent,
-                model.getWorld().getSizeRow() + "x" + model.getWorld().getSizeCol(),
+                ModelCtx.world().getSizeRow() + "x" + ModelCtx.world().getSizeCol(),
                 "Change dimension of the model.world (Rows x Cols).\nRequire format: [nxn | n e IN]",
                 "Please enter dimension:"
         ).ifPresent(input -> {
             String[] dimension = input.split("x");
             if (!input.matches("\\d+x\\d+") || dimension.length != 2) throw new InvalidInputException("Invalid format for model.world dimension");
-            model.getWorld().resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
+            ModelCtx.world().resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
         });
     }
 
@@ -258,23 +311,23 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onMouseModePlaceObstacle(ActionEvent actionEvent) {
-        model.mouseMode.setValue(Field.OBSTACLE);
+        ModelCtx.get().mouseMode.setValue(Field.OBSTACLE);
     }
     @FXML
     public void onMouseModePlaceActor(ActionEvent actionEvent) {
-        model.mouseMode.setValue(Field.ACTOR);
+        ModelCtx.get().mouseMode.setValue(Field.ACTOR);
     }
     @FXML
     public void onMouseModePlaceItem(ActionEvent actionEvent) {
-        model.mouseMode.setValue(Field.ITEM);
+        ModelCtx.get().mouseMode.setValue(Field.ITEM);
     }
     @FXML
     public void onMouseModePlaceStart(ActionEvent actionEvent) {
-        model.mouseMode.setValue(Field.START);
+        ModelCtx.get().mouseMode.setValue(Field.START);
     }
     @FXML
     public void onMouseModePlaceFree(ActionEvent actionEvent) {
-        model.mouseMode.setValue(Field.FREE);
+        ModelCtx.get().mouseMode.setValue(Field.FREE);
     }
 
 
@@ -284,64 +337,64 @@ public class ActionController extends ModelController {
     public void onActorBagChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
                 actionEvent,
-                "" + model.getWorld().getActorBagMax(),
+                "" + ModelCtx.world().getActorBagMax(),
                 "Change maximal size of actor bag.\nRequire format: [n | n e IN]",
                 "Please enter maximal item count:"
         ).ifPresent(input -> {
             if (!input.matches("\\d+")) throw new InvalidInputException("Invalid format for maximal bag size");
-            model.getWorld().setActorBagMax(Integer.valueOf(input));
+            ModelCtx.world().setActorBagMax(Integer.valueOf(input));
         });
     }
     @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
         Alerts.requestInput(
                 actionEvent,
-                "" + model.getWorld().getActorBag(),
+                "" + ModelCtx.world().getActorBag(),
                 "Change item count of actor bag.\nRequire format: [n | n e IN, n <= maximal bag size]",
-                "Please enter item count smaller then " + (model.getWorld().getActorBagMax()+1) + ":"
+                "Please enter item count smaller then " + (ModelCtx.world().getActorBagMax()+1) + ":"
         ).ifPresent(input -> {
-            if (!input.matches("\\d+") || model.getWorld().getActorBagMax() < Integer.valueOf(input))
+            if (!input.matches("\\d+") || ModelCtx.world().getActorBagMax() < Integer.valueOf(input))
                 throw new InvalidInputException("Invalid format for bag item count");
-            model.getWorld().setActorBag(Integer.valueOf(input));
+            ModelCtx.world().setActorBag(Integer.valueOf(input));
         });
     }
     @FXML
     public void onActorStepAhead(ActionEvent actionEvent) {
-        model.getActor().stepAhead();
+        ModelCtx.actor().stepAhead();
     }
     @FXML
     public void onActorTurnRight(ActionEvent actionEvent) {
-        model.getActor().turnRight();
+        ModelCtx.actor().turnRight();
     }
     @FXML
     public void onActorBackToStart(ActionEvent actionEvent) {
-        model.getActor().backToStart();
+        ModelCtx.actor().backToStart();
     }
     @FXML
     public void onActorAheadClear(ActionEvent actionEvent) {
         Alerts.showInfo(
                 "Actor test command result",
-                "Result of aheadClear(): " + model.getActor().aheadClear());
+                "Result of aheadClear(): " + ModelCtx.actor().aheadClear());
     }
     @FXML
     public void onActorBagEmpty(ActionEvent actionEvent) {
         Alerts.showInfo(
                 "Actor test command result",
-                "Result of bagEmpty(): " + model.getActor().bagEmpty());
+                "Result of bagEmpty(): " + ModelCtx.actor().bagEmpty());
     }
     @FXML
     public void onActorFoundItem(ActionEvent actionEvent) {
         Alerts.showInfo(
                 "Actor test command result",
-                "Result of foundItem(): " + model.getActor().foundItem());
+                "Result of foundItem(): " + ModelCtx.actor().foundItem());
     }
     @FXML
     public void onActorPickUp(ActionEvent actionEvent) {
-        model.getActor().pickUp();
+        ModelCtx.actor().pickUp();
     }
     @FXML
     public void onActorDropDown(ActionEvent actionEvent) {
-        model.getActor().dropDown();
+        ModelCtx.actor().dropDown();
     }
 
 
@@ -349,9 +402,9 @@ public class ActionController extends ModelController {
 
     @FXML
     public void onSimStartOrContinue(ActionEvent actionEvent) {
-        model.simulationRunning.set(true);
+        ModelCtx.get().simulationRunning.set(true);
         if (simulation == null || !simulation.isAlive()) {
-            simulation = new Simulation(model);
+            simulation = new Simulation(ModelCtx.get());
             simulation.start();
         } else {
             simulation.proceed();
@@ -359,12 +412,12 @@ public class ActionController extends ModelController {
     }
     @FXML
     public void onSimPause(ActionEvent actionEvent) {
-        model.simulationRunning.set(false);
+        ModelCtx.get().simulationRunning.set(false);
         simulation.pause();
     }
     @FXML
     public void onSimStop(ActionEvent actionEvent) {
-        model.simulationRunning.set(false);
+        ModelCtx.get().simulationRunning.set(false);
         simulation.terminate();
     }
 }

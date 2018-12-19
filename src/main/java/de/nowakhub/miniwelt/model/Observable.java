@@ -5,7 +5,7 @@ import java.util.Map;
 
 public abstract class Observable {
 
-    private final Map<String, Observer> observers = new HashMap<>();
+    private final transient Map<String, Observer> observers = new HashMap<>();
 
 
     public void notifyObservers() {
@@ -15,8 +15,8 @@ public abstract class Observable {
     }
 
     public void addObserver(String key, Observer observer) {
-        if (!observers.containsKey(key))
-            observers.put(key, observer);
+        //if (!observers.containsKey(key))
+        observers.put(key, observer);
     }
 
     public void deleteObserver(String key) {
