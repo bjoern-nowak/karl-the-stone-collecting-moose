@@ -198,7 +198,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
 
     @Override
     public boolean isInBoundary(int row, int col){
-        return row < sizeRow || col < sizeCol;
+        return 0 <= row && row < sizeRow && 0 <= col && col < sizeCol;
     }
 
     @Override
