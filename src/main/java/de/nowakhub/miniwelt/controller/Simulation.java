@@ -25,7 +25,6 @@ public class Simulation extends Thread {
             // someone really want us to stop
         } catch (PublicException ex) {
             Platform.runLater(() -> {
-                Alerts.playWarning();
                 Alerts.showException(ex);
             });
         } finally {

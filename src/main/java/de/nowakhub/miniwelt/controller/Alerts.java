@@ -1,9 +1,11 @@
 package de.nowakhub.miniwelt.controller;
 
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 
@@ -13,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class Alerts {
+
+    private static AudioClip alarm = new AudioClip(Alerts.class.getResource("/sounds/alarm_beep_warning_01.wav").toString());
 
     /**
      * Show info
@@ -58,6 +62,7 @@ public class Alerts {
      * Show error
      */
     public static void showError(String header, String content) {
+        playWarning();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UTILITY);
@@ -73,6 +78,7 @@ public class Alerts {
 
     // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
     public static void showException(Thread th, Throwable ex) {
+        playWarning();
         Alert alert = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UTILITY);
@@ -112,6 +118,6 @@ public class Alerts {
     }
 
     public static void playWarning() {
-        // TODO play actual sound
+        Platform.runLater(() -> alarm.play(0.2));
     }
 }

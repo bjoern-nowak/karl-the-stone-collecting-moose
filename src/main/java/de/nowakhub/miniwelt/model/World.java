@@ -55,16 +55,16 @@ public class World extends Observable implements Controllable, Interactable, Ser
 
             for (int row = 0; row < getSizeRow(); row++) {
                 for (int col = 0; col < getSizeCol(); col++) {
-                    if (isFieldAtBorder(row, col)) {
+                    //if (isFieldAtBorder(row, col)) {
+                    //    placeObstacle(row, col);
+                    //} else {
+                    double random = new Random().nextDouble();
+                    if (random < 0.2) {
                         placeObstacle(row, col);
-                    } else {
-                        double random = new Random().nextDouble();
-                        if (random < 0.2) {
-                            placeObstacle(row, col);
-                        } else if (random < 0.3) {
-                            placeItem(row, col);
-                        }
+                    } else if (random < 0.3) {
+                        placeItem(row, col);
                     }
+                    //}
                 }
             }
         }

@@ -223,7 +223,6 @@ public class WorldController implements Observer {
                             Alerts.showInfo(method.getName() + "()", "" + result);
                         }
                     } catch (Exception ex) {
-                        Alerts.playWarning();
                         Alerts.showException(ex);
                     }
                 });
