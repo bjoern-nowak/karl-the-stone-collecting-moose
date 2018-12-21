@@ -1,6 +1,7 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.*;
+import de.nowakhub.miniwelt.model.Observer;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,22 +19,22 @@ import javafx.scene.paint.Color;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WorldController implements Observer {
     
     private Model model;
+    private Map<String, Double> randomGrass = new HashMap<>();
+    private Map<String, Double> randomWater = new HashMap<>();
+    private Random radomizer = new Random();
 
     @FXML
     private ScrollPane scrollPane;
     @FXML
     private StackPane stackPane;
-
     @FXML
-    private Canvas frame;
+    private Canvas canvas;
     private GraphicsContext gc;
 
     private final int TILE_SIZE = 32;
@@ -41,49 +42,17 @@ public class WorldController implements Observer {
     private Field dragging;
     private ContextMenu actorContextMenu;
 
-    private Image obstacle = new Image("/images/world/obstacle.png");
-    private Image item = new Image("/images/world/item.png");
-    private Image start = new Image("/images/world/bush.png");
-
-    private Image actorU = new Image("/images/world/actor.png");
-    private Image actorL = new Image("/images/world/actor.png");
-    private Image actorD = new Image("/images/world/actor.png");
-    private Image actorR = new Image("/images/world/actor.png");
-
-    private Image grass_clean = new Image("/images/world/grass_clean.png");
-    private Image grass_dirty = new Image("/images/world/grass_dirty.png");
-    private Image grass_wild = new Image("/images/world/grass_wild.png");
-
-    private Image corner_up_left = new Image("/images/world/border_up_left.png");
-    private Image corner_up_right = new Image("/images/world/border_up_right.png");
-    private Image corner_down_left = new Image("/images/world/border_down_left.png");
-    private Image corner_down_right = new Image("/images/world/border_down_right.png");
-
-    private Image border_up_clean = new Image("/images/world/border_up_clean.png");
-    private Image border_up_wild = new Image("/images/world/border_up_wild.png");
-    private Image border_left_clean = new Image("/images/world/border_left_clean.png");
-    private Image border_left_wild = new Image("/images/world/border_left_wild.png");
-    private Image border_down_clean = new Image("/images/world/border_down_clean.png");
-    private Image border_down_wild = new Image("/images/world/border_down_wild.png");
-    private Image border_right_clean = new Image("/images/world/border_right_clean.png");
-    private Image border_right_wild = new Image("/images/world/border_right_wild.png");
-
-    private Image water_clean = new Image("/images/world/water_clean.png");
-    private Image water_wild = new Image("/images/world/water_wild.png");
-    private Image water_shiny = new Image("/images/world/water_shiny.png");
-    private Image water_dirt = new Image("/images/world/water_dirt.png");
-    private Image water_grass = new Image("/images/world/water_grass.png");
-    private Image water_rock = new Image("/images/world/water_rock.png");
-    private Image water_leaf = new Image("/images/world/water_leaf.png");
-
-
     public void initialize() {
         // wrong: there is one world controller per model/tab
         // subscribe to change of model (tab switch)
         //ModelCtx.addObserver("" + this.hashCode(), this::postInitialize);
         
-        gc = frame.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
         addEventHandler();
+
+        // auto scrollbars for canvas
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
     }
 
     private void addEventHandler() {
@@ -91,19 +60,19 @@ public class WorldController implements Observer {
         EventHandler<MouseEvent> OnlyEventsOnActualField = event -> {
             if (!model.getWorld().isInBoundary(tileBy(event.getY()), tileBy(event.getX()))) event.consume();
         };
-        frame.addEventFilter(MouseEvent.MOUSE_RELEASED, OnlyEventsOnActualField);
-        frame.addEventFilter(MouseEvent.MOUSE_PRESSED, OnlyEventsOnActualField);
-        frame.addEventFilter(MouseEvent.MOUSE_DRAGGED, OnlyEventsOnActualField);
+        canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, OnlyEventsOnActualField);
+        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, OnlyEventsOnActualField);
+        canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, OnlyEventsOnActualField);
 
         // feature: changing fields
-        frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+        canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             if (model.mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                 model.getWorld().place(model.mouseMode.get(), tileBy(event.getY()), tileBy(event.getX()));
             }
         });
 
         // feature: placing by dragging (all fields allowed)
-        frame.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.isPrimaryButtonDown()) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
@@ -116,23 +85,23 @@ public class WorldController implements Observer {
                 }
             }
         });
-        frame.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (dragging != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                 int row = tileBy(event.getY());
                 int col = tileBy(event.getX());
                 model.getWorld().place(dragging, row, col);
             }
         });
-        frame.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> dragging = null);
+        canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> dragging = null);
 
         // feature: actors popup menu
-        frame.setOnContextMenuRequested(event -> {
+        canvas.setOnContextMenuRequested(event -> {
             int row = tileBy(event.getY());
             int col = tileBy(event.getX());
             if (model.getWorld().isFieldWithActor(row, col)) {
                 actorContextMenu.setX(event.getScreenX());
                 actorContextMenu.setY(event.getScreenY());
-                actorContextMenu.show(frame.getScene().getWindow());
+                actorContextMenu.show(canvas.getScene().getWindow());
             }
         });
 
@@ -140,9 +109,9 @@ public class WorldController implements Observer {
         scrollPane.addEventHandler(ScrollEvent.SCROLL, event -> {
             if (event.isControlDown()) {
                 if (0 > event.getDeltaY()) {
-                    zoom -= 0.1*zoom;
+                    zoom -= 0.1 * zoom;
                 } else {
-                    zoom += 0.1*zoom;
+                    zoom += 0.1 * zoom;
                 }
                 resize();
                 draw();
@@ -155,14 +124,10 @@ public class WorldController implements Observer {
         this.model = model;
         
         // sync canvas for actionController to make snapshots
-        model.worldCanvas = frame;
+        model.worldCanvas = canvas;
 
         // subscribe to changes in the world
         model.getWorld().addObserver("world", this);
-
-        // auto scrollbars for canvas
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
 
         //draw world
         update();
@@ -232,17 +197,17 @@ public class WorldController implements Observer {
     }
 
     private void resize() {
-        frame.setHeight(tilePos(2) + tilePos(model.getWorld().getSizeRow()));
-        frame.setWidth(tilePos(2) + tilePos(model.getWorld().getSizeCol()));
+        canvas.setHeight(tilePos(0) + tilePos(model.getWorld().getSizeRow()));
+        canvas.setWidth(tilePos(0) + tilePos(model.getWorld().getSizeCol()));
     }
 
     private void draw() {
         // clean canvas
-        gc.clearRect(0, 0, frame.getWidth(), frame.getHeight());
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         Field[][] state = model.getWorld().getField();
+        drawWater(state);
         drawGround(state);
-        drawGroundBorder(state);
         drawFields(state);
         //drawGrid(state);
     }
@@ -258,42 +223,68 @@ public class WorldController implements Observer {
         }
     }
 
-    private void drawGround(Field[][] state) {
-        Random radomizer = new Random();
-        
-        for (int row = 0; row < state.length; row++) {
-            for (int col = 0; col < state[row].length; col++) {
-                Image img = grass_clean;
-                double random = radomizer.nextDouble();
-                if (random < 0.3) img = grass_wild;
-                else if (random < 0.6) img = grass_dirty;
-                drawImage(grass_clean, col, row);
+    private void drawWater(Field[][] state) {
+
+        for (int row = 0; row < state.length + 4; row++) {
+            for (int col = 0; col < state[0].length + 4; col++) {
+                boolean isOuter = row == 0 || col == 0 || row == state.length + 3  || col == state[0].length + 3;
+                boolean isInner = row == 1 || col == 1 || row == state.length + 2  || col == state[0].length + 2;
+
+                if (isOuter || isInner) {
+
+                    String key = row + "" + col;
+                    if (!randomWater.containsKey(key)) randomWater.put(key, radomizer.nextDouble());
+                    Double random = randomWater.get(key);
+                    Image img = null;
+
+                    if (isOuter) {
+                        if (random < 0.7) img = Images.water_clean;
+                        else if (random < 0.75) img = Images.water_dirt;
+                        else if (random < 0.8) img = Images.water_grass;
+                        else if (random < 0.85) img = Images.water_leaf;
+                        else if (random < 0.9) img = Images.water_rock;
+                        else if (random < 0.95) img = Images.water_shiny;
+                        else if (random < 1.0) img = Images.water_wild;
+
+                    } else {
+                        boolean up = row == 1;
+                        boolean left = col == 1;
+                        boolean down = row == state.length + 2;
+                        boolean right = col == state[0].length + 2;
+
+                        if (up && left)  img = Images.corner_up_left;
+                        else if (up && right)  img = Images.corner_up_right;
+                        else if (down && left)  img = Images.corner_down_left;
+                        else if (down && right)  img = Images.corner_down_right;
+
+                        if (random < 0.8) {
+                            if (up && !left && !right)  img = Images.border_up_clean;
+                            else if (left && !up && !down)  img = Images.border_left_clean;
+                            else if (down && !left && !right)  img = Images.border_down_clean;
+                            else if (right && !up && !down)  img = Images.border_right_clean;
+                        } else {
+                            if (up && !left && !right)  img = Images.border_up_wild;
+                            else if (left && !up && !down)  img = Images.border_left_wild;
+                            else if (down && !left && !right)  img = Images.border_down_wild;
+                            else if (right && !up && !down)  img = Images.border_right_wild;
+                        }
+                    }
+
+                    gc.drawImage(img, tilePos(col) - (tileSize() * 2), tilePos(row) - (tileSize() * 2), tileSize(), tileSize());
+                }
             }
         }
     }
 
-    private void drawGroundBorder(Field[][] state) {
-
-        for (int row = 0; row < state.length + 2; row++) {
-            for (int col = 0; col < state[0].length + 2; col++) {
-                Image img = null;
-
-                boolean up = row == 0;
-                boolean left = col == 0;
-                boolean down = row == state.length + 1;
-                boolean right = col == state[state.length - 1].length + 1;
-
-                if (up && left)  img = corner_up_left;
-                if (up && right)  img = corner_up_right;
-                if (down && left)  img = corner_down_left;
-                if (down && right)  img = corner_down_right;
-
-                if (up && !left && !right)  img = border_up_clean;
-                if (left && !up && !down)  img = border_left_clean;
-                if (down && !left && !right)  img = border_down_clean;
-                if (right && !up && !down)  img = border_right_clean;
-
-                gc.drawImage(img, tilePos(col) - tileSize(), tilePos(row) - tileSize(), tileSize(), tileSize());
+    private void drawGround(Field[][] state) {
+        for (int row = 0; row < state.length; row++) {
+            for (int col = 0; col < state[row].length; col++) {
+                Image img = Images.grass_clean;
+                String key = row + "" + col;
+                if (!randomGrass.containsKey(key)) randomGrass.put(key, radomizer.nextDouble());
+                if (randomGrass.get(key) < 0.2) img = Images.grass_wild;
+                else if (randomGrass.get(key) < 0.25) img = Images.grass_dirty;
+                drawImage(img, col, row);
             }
         }
     }
@@ -333,19 +324,19 @@ public class WorldController implements Observer {
 
 
     private void drawStartpoint(int row, int col) {
-        drawImage(start, col, row);
+        drawImage(Images.start, col, row);
     }
 
     private void drawActor(int row, int col) {
         switch(model.getWorld().getActorDir()) {
             case UP:
-                drawImage(actorU, col, row);
+                drawImage(Images.actorU, col, row);
                 break;
             case DOWN:
-                drawImage(actorD, col, row);
+                drawImage(Images.actorD, col, row);
                 break;
             case LEFT:
-                drawImage(actorL, col, row);
+                drawImage(Images.actorL, col, row);
                 break;
             case RIGHT:
                 drawImage(row, col);
@@ -355,11 +346,11 @@ public class WorldController implements Observer {
     }
 
     private void drawImage(int row, int col) {
-        drawImage(actorR, col, row);
+        drawImage(Images.actorR, col, row);
     }
 
     private void drawObstacle(int row, int col) {
-        Image img = obstacle;
+        Image img = Images.obstacle;
         //if (model.getWorld().isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
         //    img = obstacle_random // TODO add random obstacle ; like glass
         //}
@@ -367,7 +358,7 @@ public class WorldController implements Observer {
     }
 
     private void drawItem(int row, int col) {
-        drawImage(item, col, row);
+        drawImage(Images.item, col, row);
     }
     
     private void drawImage(Image img, double col, double row) {
@@ -378,9 +369,9 @@ public class WorldController implements Observer {
         return zoom * TILE_SIZE;
     }
     private double tilePos(double multiplikator) {
-        return tileSize() + (tileSize() * multiplikator);
+        return tileSize() * (multiplikator + 2);
     }
     private int tileBy(double i) {
-        return (int) (i / tileSize()) - 1;
+        return (int) (i / tileSize()) - 2;
     }
 }
