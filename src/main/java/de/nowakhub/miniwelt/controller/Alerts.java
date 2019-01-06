@@ -1,6 +1,5 @@
 package de.nowakhub.miniwelt.controller;
 
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -62,7 +61,7 @@ public class Alerts {
      * Show error
      */
     public static void showError(String header, String content) {
-        playWarning();
+        Sounds.playWarning();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UTILITY);
@@ -78,7 +77,7 @@ public class Alerts {
 
     // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
     public static void showException(Thread th, Throwable ex) {
-        playWarning();
+        Sounds.playWarning();
         Alert alert = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UTILITY);
@@ -115,9 +114,5 @@ public class Alerts {
         alert.getDialogPane().setExpandableContent(expContent);
 
         alert.showAndWait();
-    }
-
-    public static void playWarning() {
-        Platform.runLater(() -> alarm.play(0.2));
     }
 }
