@@ -35,7 +35,7 @@
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceObstacle > .label {
-    -fx-graphic: url("../../../../images/world/debug/wall_16x16.png");
+    -fx-graphic: url("../../../../images/world/fence.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceActor > .label {
@@ -105,19 +105,19 @@
 }
 
 .btn-obstacle {
-    -fx-background-image: url("../../../../images/world/debug/wall.png");
+    -fx-background-image: url("../../../../images/world/fence.png");
 }
 .btn-actor {
-    -fx-background-image: url("../../../../images/world/debug/karl_right.png");
+    -fx-background-image: url("../../../../images/world/actor_right.png");
 }
 .btn-start {
-    -fx-background-image: url("../../../../images/world/debug/office.png");
+    -fx-background-image: url("../../../../images/world/start.png");
 }
 .btn-item {
-    -fx-background-image: url("../../../../images/world/debug/item.png");
+    -fx-background-image: url("../../../../images/world/item.png");
 }
 .btn-remove {
-    -fx-background-image: url("../../../../images/world/debug/ground.png");
+    -fx-background-image: url("../../../../images/world/grass_clean.png");
 }
 
 .btn-pocket {

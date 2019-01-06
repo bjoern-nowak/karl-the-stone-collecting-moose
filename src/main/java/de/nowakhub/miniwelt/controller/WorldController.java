@@ -327,21 +327,22 @@ public class WorldController implements Observer {
     }
 
     private void drawActor(int row, int col) {
+        Image img;
         switch(model.getWorld().getActorDir()) {
             case UP:
-                drawImage(Images.actorU, col, row);
+                img = Images.actor_up;
                 break;
             case DOWN:
-                drawImage(Images.actorD, col, row);
+                img = Images.actor_down;
                 break;
             case LEFT:
-                drawImage(Images.actorL, col, row);
+                img = Images.actor_left;
                 break;
-            case RIGHT:
-                drawImage(row, col);
-                break;
+            default:
+                img = Images.actor_right;
         }
-
+        // draw actor bigger so it gets an isometric look & feel
+        gc.drawImage(img, tilePos(col) - (tileSize() / 2), tilePos(row) - (tileSize() / 1.8), tileSize() * 1.8, tileSize() * 1.8);
     }
 
     private void drawObstacle(int row, int col, Field[][] state) {
@@ -368,7 +369,7 @@ public class WorldController implements Observer {
 
 
     private void drawImage(int row, int col) {
-        drawImage(Images.actorR, col, row);
+        drawImage(Images.actor_right, col, row);
     }
 
     private void drawImage(Image img, double col, double row) {

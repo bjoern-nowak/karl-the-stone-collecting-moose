@@ -14,12 +14,12 @@ public class Images {
     public static Image obstacle_right = new Image("/images/world/fence_right.png");
 
     public static Image item = new Image("/images/world/item.png");
-    public static Image start = new Image("/images/world/bush.png");
+    public static Image start = new Image("/images/world/start.png");
 
-    public static Image actorU = new Image("/images/world/actor.png");
-    public static Image actorL = new Image("/images/world/actor.png");
-    public static Image actorD = new Image("/images/world/actor.png");
-    public static Image actorR = new Image("/images/world/actor.png");
+    public static Image actor_up = new Image("/images/world/actor_up.png");
+    public static Image actor_left = new Image("/images/world/actor_left.png");
+    public static Image actor_down = new Image("/images/world/actor_down.png");
+    public static Image actor_right = new Image("/images/world/actor_right.png");
 
     public static Image grass_clean = new Image("/images/world/grass_clean.png");
     public static Image grass_dirty = new Image("/images/world/grass_dirty.png");
