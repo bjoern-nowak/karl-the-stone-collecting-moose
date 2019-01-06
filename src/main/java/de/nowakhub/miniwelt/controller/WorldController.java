@@ -66,30 +66,29 @@ public class WorldController implements Observer {
 
         // feature: changing fields
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            if (model.mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
+            if (dragging == null && model.mouseMode.get() != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                 model.getWorld().place(model.mouseMode.get(), tileBy(event.getY()), tileBy(event.getX()));
             }
         });
 
         // feature: placing by dragging (all fields allowed)
-        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-            if (event.isPrimaryButtonDown()) {
-                int row = tileBy(event.getY());
-                int col = tileBy(event.getX());
-                if (model.getWorld().isFieldWithActor(row, col)) {
-                    dragging = Field.ACTOR;
-                } else if (model.getWorld().isFieldWithStart(row, col)) {
-                    dragging = Field.START;
-                } else {
-                    dragging = model.getWorld().getField()[row][col];
-                }
-            }
-        });
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-            if (dragging != null && event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
-                int row = tileBy(event.getY());
-                int col = tileBy(event.getX());
-                model.getWorld().place(dragging, row, col);
+            if (event.isPrimaryButtonDown()) {
+                if (dragging == null) {
+                    int row = tileBy(event.getY());
+                    int col = tileBy(event.getX());
+                    Field field = model.getWorld().getField()[row][col];
+                    if (model.getWorld().isFieldWithActor(row, col)) {
+                        field = Field.ACTOR;
+                    } else if (model.getWorld().isFieldWithStart(row, col)) {
+                        field = Field.START;
+                    }
+                    dragging = field;
+                } else { // if (event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
+                    int row = tileBy(event.getY());
+                    int col = tileBy(event.getX());
+                    model.getWorld().place(dragging, row, col);
+                }
             }
         });
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> dragging = null);
