@@ -77,7 +77,7 @@
                 <RadioMenuItem styleClass="miMouseModePlaceItem" onAction="#onMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar"/>
                 <RadioMenuItem styleClass="miMouseModePlaceActor" onAction="#onMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar"/>
                 <RadioMenuItem styleClass="miMouseModePlaceStart" onAction="#onMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar"/>
-                <RadioMenuItem styleClass="miMouseModePlaceFree" onAction="#onMouseModePlaceFree" text="Remove" toggleGroup="$mouseModeToggleGroupMenubar"/>
+                <RadioMenuItem styleClass="miMouseModePlaceFree" onAction="#onMouseModePlaceFree" text="Place Grass" toggleGroup="$mouseModeToggleGroupMenubar"/>
             </Menu>
         </Menu>
 
@@ -236,7 +236,7 @@
                 <Tooltip text="Set left click to place a startpoint"/>
             </tooltip>
         </ToggleButton>
-        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceFree" text="Remove" toggleGroup="$mouseModeToggleGroupToolbar">
+        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceFree" text="Grass" toggleGroup="$mouseModeToggleGroupToolbar">
             <styleClass>
                 <String fx:value="btn-remove"/>
                 <String fx:value="btn"/>
@@ -248,7 +248,7 @@
 
         <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator"/>
 
-        <Button mnemonicParsing="false" onAction="#onActorBagChangeContent" text="BagContent">
+        <Button mnemonicParsing="false" onAction="#onActorBagChangeContent" text="MAX">
             <styleClass>
                 <String fx:value="btn-pocket"/>
                 <String fx:value="btn"/>

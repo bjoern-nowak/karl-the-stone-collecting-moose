@@ -39,19 +39,19 @@
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceActor > .label {
-    -fx-graphic: url("../../../../images/world/debug/karl_right_16x16.png");
+    -fx-graphic: url("../../../../images/world/actor_right.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceStart > .label {
-    -fx-graphic: url("../../../../images/world/debug/office_16x16.png");
+    -fx-graphic: url("../../../../images/world/start.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceItem > .label {
-    -fx-graphic: url("../../../../images/world/debug/item_16x16.png");
+    -fx-graphic: url("../../../../images/world/item.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceFree > .label {
-    -fx-graphic: url("../../../../images/world/debug/ground_16x16.png");
+    -fx-graphic: url("../../../../images/world/grass_wild.png");
     -fx-padding: 0 0 0 0;
 }
 
@@ -117,11 +117,15 @@
     -fx-background-image: url("../../../../images/world/item.png");
 }
 .btn-remove {
-    -fx-background-image: url("../../../../images/world/grass_clean.png");
+    -fx-background-image: url("../../../../images/world/grass_wild.png");
 }
 
 .btn-pocket {
-    -fx-content-display: text-only;
+    -fx-content-display: center;
+    -fx-background-image: url("../../../../images/world/item.png");
+    -fx-text-fill: red;
+    -fx-font: bold 14pt "Consolas";
+    -fx-padding: 14px 0 0 0;
 }
 
 .btn-run {
