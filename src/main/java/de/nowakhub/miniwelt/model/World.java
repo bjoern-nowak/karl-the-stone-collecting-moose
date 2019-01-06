@@ -338,7 +338,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
     synchronized public boolean aheadClear() {
         int nextX = actorPos.row + actorDir.row;
         int nextY = actorPos.col + actorDir.col;
-        return !field[nextX][nextY].hasObstacle() && isInBoundary(nextX, nextY);
+        return isInBoundary(nextX, nextY) && !field[nextX][nextY].hasObstacle();
     }
 
     @Override
