@@ -10,4 +10,6 @@ public class Sounds {
     public static void playWarning() {
         Platform.runLater(() -> alarm.play(0.2));
     }
+
+    // TODO add background sound (per tab)
 }

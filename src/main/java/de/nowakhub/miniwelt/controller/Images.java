@@ -4,7 +4,15 @@ import javafx.scene.image.Image;
 
 public class Images {
 
-    public static Image obstacle = new Image("/images/world/obstacle.png");
+    public static Image obstacle = new Image("/images/world/fence.png");
+    public static Image obstacle_down = new Image("/images/world/fence_down.png");
+    public static Image obstacle_down_right = new Image("/images/world/fence_down_right.png");
+    public static Image obstacle_left = new Image("/images/world/fence_left.png");
+    public static Image obstacle_left_down = new Image("/images/world/fence_left_down.png");
+    public static Image obstacle_left_down_right = new Image("/images/world/fence_left_down_right.png");
+    public static Image obstacle_left_right = new Image("/images/world/fence_left_right.png");
+    public static Image obstacle_right = new Image("/images/world/fence_right.png");
+
     public static Image item = new Image("/images/world/item.png");
     public static Image start = new Image("/images/world/bush.png");
 

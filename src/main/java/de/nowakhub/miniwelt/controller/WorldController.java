@@ -307,7 +307,7 @@ public class WorldController implements Observer {
                         drawActor(row, col);
                         break;
                     case OBSTACLE:
-                        drawObstacle(row, col);
+                        drawObstacle(row, col, state);
                         break;
                     case ITEM:
                         drawItem(row, col);
@@ -344,22 +344,33 @@ public class WorldController implements Observer {
 
     }
 
-    private void drawImage(int row, int col) {
-        drawImage(Images.actorR, col, row);
-    }
-
-    private void drawObstacle(int row, int col) {
+    private void drawObstacle(int row, int col, Field[][] state) {
         Image img = Images.obstacle;
-        //if (model.getWorld().isFieldAtBorder(row, col) && 0.8 < new Random().nextDouble()) {
-        //    img = obstacle_random // TODO add random obstacle ; like glass
-        //}
+
+        boolean left = model.getWorld().isInBoundary(row, col - 1) && state[row][col - 1].hasObstacle();
+        boolean down = model.getWorld().isInBoundary(row + 1, col) && state[row + 1][col].hasObstacle();
+        boolean right = model.getWorld().isInBoundary(row, col + 1) && state[row][col + 1].hasObstacle();
+
+        if (left && down && right) img = Images.obstacle_left_down_right;
+        else if (left && down) img = Images.obstacle_left_down;
+        else if (left && right) img = Images.obstacle_left_right;
+        else if (down && right) img = Images.obstacle_down_right;
+        else if (left) img = Images.obstacle_left;
+        else if (down) img = Images.obstacle_down;
+        else if (right) img = Images.obstacle_right;
+
         drawImage(img, col, row);
     }
 
     private void drawItem(int row, int col) {
         drawImage(Images.item, col, row);
     }
-    
+
+
+    private void drawImage(int row, int col) {
+        drawImage(Images.actorR, col, row);
+    }
+
     private void drawImage(Image img, double col, double row) {
         gc.drawImage(img, tilePos(col), tilePos(row), tileSize(), tileSize());
     }
