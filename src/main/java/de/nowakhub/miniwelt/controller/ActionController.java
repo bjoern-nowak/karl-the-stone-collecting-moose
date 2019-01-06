@@ -190,8 +190,8 @@ public class ActionController {
         }
     }
 
-    void compile(boolean silently) {
-        if (ModelCtx.get().programFile == null) return;
+    boolean compile(boolean silently) {
+        if (ModelCtx.get().programFile == null) return false;
 
         File classDir = Paths.get("out/production/miniwelt_bjnowak").toAbsolutePath().toFile();
         File sourceDir = Paths.get("src/main/java").toAbsolutePath().toFile();
@@ -223,11 +223,13 @@ public class ActionController {
                 Class<?> cls = cl.loadClass(clsName);
                 ModelCtx.setActor((Actor) cls.newInstance());
                 ModelCtx.actor().setInteraction(ModelCtx.world());
+                return true;
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(ex);
             }
 
         }
+        return false;
     }
 
     @FXML
@@ -402,12 +404,18 @@ public class ActionController {
 
     @FXML
     public void onSimStartOrContinue(ActionEvent actionEvent) {
-        ModelCtx.get().simulationRunning.set(true);
-        if (simulation == null || !simulation.isAlive()) {
-            simulation = new Simulation(ModelCtx.get());
-            simulation.start();
-        } else {
-            simulation.proceed();
+        boolean dirty = ModelCtx.get().programDirty.get();
+        boolean compiled = ModelCtx.get().programCompiled.get();
+        if ((dirty) || !compiled) onProgramCompile(actionEvent);
+
+        if (ModelCtx.get().programCompiled.get()) {
+            ModelCtx.get().simulationRunning.set(true);
+            if (simulation == null || !simulation.isAlive()) {
+                simulation = new Simulation(ModelCtx.get());
+                simulation.start();
+            } else {
+                simulation.proceed();
+            }
         }
     }
     @FXML
