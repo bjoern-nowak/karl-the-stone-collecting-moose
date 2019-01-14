@@ -30,6 +30,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
 
 
 public class ActionController {
@@ -297,7 +299,6 @@ public class ActionController {
     @FXML
     public void onWorldChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
-                actionEvent,
                 ModelCtx.world().getSizeRow() + "x" + ModelCtx.world().getSizeCol(),
                 "Change dimension of the model.world (Rows x Cols).\nRequire format: [nxn | n e IN]",
                 "Please enter dimension:"
@@ -338,7 +339,6 @@ public class ActionController {
     @FXML
     public void onActorBagChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
-                actionEvent,
                 "" + ModelCtx.world().getActorBagMax(),
                 "Change maximal size of actor bag.\nRequire format: [n | n e IN]",
                 "Please enter maximal item count:"
@@ -350,7 +350,6 @@ public class ActionController {
     @FXML
     public void onActorBagChangeContent(ActionEvent actionEvent) {
         Alerts.requestInput(
-                actionEvent,
                 "" + ModelCtx.world().getActorBag(),
                 "Change item count of actor bag.\nRequire format: [n | n e IN, n <= maximal bag size]",
                 "Please enter item count smaller then " + (ModelCtx.world().getActorBagMax()+1) + ":"
@@ -428,5 +427,32 @@ public class ActionController {
         ModelCtx.get().simulationRunning.set(false);
         simulation.terminate();
     }
+
+
+
+    @FXML
+    public void onExampleSave(ActionEvent actionEvent) {
+        Alerts.requestDoubleInput(
+                "Save example (program and world)",
+                "Split Tags with comma, like: a,b,c",
+                "Name:",
+                "Tags:"
+        ).ifPresent(input -> ExamplesDB.save(input.getKey(), Arrays.asList(input.getValue().trim().split(",")), ModelCtx.get()));
+
+    }
+    @FXML
+    public void onExampleLoad(ActionEvent actionEvent) {
+        Alerts.requestInput("",
+                "Please enter a tag to search for.",
+                "Tag:"
+        ).ifPresent(input -> {
+            Collection<String> examples = ExamplesDB.filter(input.trim());
+            Alerts.requestDecision(examples,
+                    "Load example (program and world)",
+                    "Which example to load:"
+            ).ifPresent(decision -> tabsController.addNew(decision, ExamplesDB.load(decision)));
+        });
+    }
+
 }
 

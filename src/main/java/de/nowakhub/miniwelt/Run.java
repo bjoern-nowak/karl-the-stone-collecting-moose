@@ -1,6 +1,7 @@
 package de.nowakhub.miniwelt;
 
 import de.nowakhub.miniwelt.controller.Alerts;
+import de.nowakhub.miniwelt.controller.ExamplesDB;
 import de.nowakhub.miniwelt.controller.RootController;
 import de.nowakhub.miniwelt.controller.TabsController;
 import javafx.application.Application;
@@ -38,9 +39,12 @@ public class Run extends Application {
             Parent parent = rootLoader.load();
             Scene scene = new Scene(parent);
             primaryStage.setScene(scene);
-            primaryStage.setOnCloseRequest(event ->
-                    TabsController.confirmExitIfNecessaery(event, ((RootController) rootLoader.getController()).getTabs()));
+            primaryStage.setOnCloseRequest(event -> {
+                TabsController.confirmExitIfNecessaery(event, ((RootController) rootLoader.getController()).getTabs());
+                if (event.isConsumed()) ExamplesDB.close();
+            });
             primaryStage.show();
+            ExamplesDB.open();
         } catch (Exception ex) {
             Alerts.showException(Thread.currentThread(), ex);
         }

@@ -38,6 +38,11 @@ public class TabsController {
         addTab(null, null);
     }
 
+    void addNew(String programName, Model model) {
+        Tab tab = addTab(model, null, null);
+        if (tab != null) tab.setText(programName);
+    }
+
     void saved(File oldFile, File newFile) {
         openFiles.remove(oldFile);
         openFiles.add(newFile);
@@ -69,8 +74,12 @@ public class TabsController {
     }
 
     private Tab addTab(File file, String fileContent) {
+        Model model = new Model(file, fileContent);
+        return addTab(model, file, fileContent);
+    }
+
+    private Tab addTab(Model model, File file, String fileContent) {
         try {
-            Model model = new Model(file, fileContent);
             TabController tabController = new TabController();
 
             FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/tab.fxml"));
