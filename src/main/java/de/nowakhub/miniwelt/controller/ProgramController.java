@@ -15,6 +15,6 @@ public class ProgramController {
 
         program.textProperty().bindBidirectional(model.program);
         program.textProperty().addListener(
-                (obs, oldV, newV) -> program.setDirty(!model.programSave.equals(newV)));
+                (obs, oldV, newV) -> program.setDirty(model.programSave == null || !model.programSave.equals(newV)));
     }
 }

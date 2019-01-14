@@ -186,6 +186,7 @@ public class ActionController {
     }
     @FXML
     public void onProgramCompile(ActionEvent actionEvent) {
+        // TODO compile to temp if not saved (dont force saving for compiling)
         boolean saved = saveProgram(false);
         if (saved) {
             compile(false);
