@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.controller;
+package de.nowakhub.miniwelt.controller.util;
 
 import javafx.scene.image.Image;
 

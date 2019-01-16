@@ -1,6 +1,8 @@
 package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
+import de.nowakhub.miniwelt.model.interfaces.Controllable;
+import de.nowakhub.miniwelt.model.interfaces.Interactable;
 
 import java.io.Serializable;
 import java.util.Random;

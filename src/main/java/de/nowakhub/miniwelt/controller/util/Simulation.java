@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.controller;
+package de.nowakhub.miniwelt.controller.util;
 
 import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.model.exceptions.PublicException;

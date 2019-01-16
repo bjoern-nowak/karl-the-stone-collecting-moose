@@ -1,5 +1,6 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.controller.util.Alerts;
 import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.model.ModelCtx;
 import javafx.application.Platform;

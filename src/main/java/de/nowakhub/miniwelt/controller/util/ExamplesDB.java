@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.controller;
+package de.nowakhub.miniwelt.controller.util;
 
 import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.model.World;
@@ -58,7 +58,7 @@ public class ExamplesDB {
 
     }
 
-    static boolean save(String name, Collection<String> tags, Model model) {
+    public static boolean save(String name, Collection<String> tags, Model model) {
         try {
             conn.setAutoCommit(false);
             try (PreparedStatement prepStmt1 = conn.prepareStatement("INSERT INTO " + TABLE_EXAMPLES + " VALUES ('" + name + "', ?, ?)");
@@ -96,7 +96,7 @@ public class ExamplesDB {
         return false;
     }
 
-    static Collection<String> filter(String tag) {
+    public static Collection<String> filter(String tag) {
         Collection<String> names = new ArrayList<>();
         try (Statement stmt = conn.createStatement();) {
             ResultSet result = stmt.executeQuery("SELECT et.name FROM " + TABLE_EXAMPLES_TAGS + " et WHERE et.tag LIKE '%" + tag + "%'");
@@ -109,7 +109,7 @@ public class ExamplesDB {
         return names;
     }
 
-    static Model load(String name) {
+    public static Model load(String name) {
         try (Statement stmt = conn.createStatement();) {
             ResultSet result = stmt.executeQuery("SELECT e.program, e.world FROM " + TABLE_EXAMPLES + " e WHERE e.name LIKE '" + name + "'");
 

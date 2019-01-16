@@ -1,7 +1,7 @@
 package de.nowakhub.miniwelt;
 
-import de.nowakhub.miniwelt.controller.Alerts;
-import de.nowakhub.miniwelt.controller.ExamplesDB;
+import de.nowakhub.miniwelt.controller.util.Alerts;
+import de.nowakhub.miniwelt.controller.util.ExamplesDB;
 import de.nowakhub.miniwelt.controller.RootController;
 import de.nowakhub.miniwelt.controller.TabsController;
 import javafx.application.Application;

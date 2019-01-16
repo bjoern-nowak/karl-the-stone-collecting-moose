@@ -1,5 +1,7 @@
-package de.nowakhub.miniwelt.model;
+package de.nowakhub.miniwelt.model.interfaces;
 
+import de.nowakhub.miniwelt.model.Direction;
+import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.exceptions.InvalidWorldSizeException;
 import de.nowakhub.miniwelt.model.exceptions.PositionInvalidException;
 import de.nowakhub.miniwelt.model.exceptions.RequireActorException;

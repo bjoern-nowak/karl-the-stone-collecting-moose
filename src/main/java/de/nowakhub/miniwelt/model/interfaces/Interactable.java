@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.model;
+package de.nowakhub.miniwelt.model.interfaces;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
 

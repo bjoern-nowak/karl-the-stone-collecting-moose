@@ -1,5 +1,7 @@
 package de.nowakhub.miniwelt.model;
 
+import de.nowakhub.miniwelt.model.interfaces.Observer;
+
 public final class ModelCtx {
 
     private static Observable observable= new Observable() {};

@@ -1,7 +1,10 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.controller.util.Alerts;
+import de.nowakhub.miniwelt.controller.util.Images;
 import de.nowakhub.miniwelt.model.*;
-import de.nowakhub.miniwelt.model.Observer;
+import de.nowakhub.miniwelt.model.interfaces.Invisible;
+import de.nowakhub.miniwelt.model.interfaces.Observer;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

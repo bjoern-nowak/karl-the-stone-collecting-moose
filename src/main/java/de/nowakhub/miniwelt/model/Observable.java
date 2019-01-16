@@ -1,5 +1,7 @@
 package de.nowakhub.miniwelt.model;
 
+import de.nowakhub.miniwelt.model.interfaces.Observer;
+
 import java.util.HashMap;
 import java.util.Map;
 

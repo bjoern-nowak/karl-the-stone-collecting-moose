@@ -1,5 +1,8 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.controller.util.Alerts;
+import de.nowakhub.miniwelt.controller.util.ExamplesDB;
+import de.nowakhub.miniwelt.controller.util.Simulation;
 import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.ModelCtx;
@@ -36,7 +39,7 @@ import java.util.Collection;
 
 public class ActionController {
 
-    private final String INVISIBLE = "import de.nowakhub.miniwelt.model.Invisible;";
+    private final String INVISIBLE = "import de.nowakhub.miniwelt.model.interfaces.Invisible;";
     private final String PREFIX = INVISIBLE + " public class %s extends " + Actor.class.getName() + " { public";
     private final String PREFIX_REGEX = INVISIBLE + " public class \\w+ extends " + Actor.class.getName() + " { public";
     private final String POSTFIX = "}";
