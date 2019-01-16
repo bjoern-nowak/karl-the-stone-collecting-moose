@@ -1,22 +1,19 @@
 package de.nowakhub.miniwelt.controller;
 
-import de.nowakhub.miniwelt.controller.util.Alerts;
-import de.nowakhub.miniwelt.controller.util.ExamplesDB;
-import de.nowakhub.miniwelt.controller.util.Simulation;
+import de.nowakhub.miniwelt.controller.util.*;
 import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Field;
-import de.nowakhub.miniwelt.model.ModelCtx;
 import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
+import de.nowakhub.miniwelt.model.interfaces.Observer;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -37,7 +34,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 
-public class ActionController {
+public class ActionController implements Observer {
 
     private final String INVISIBLE = "import de.nowakhub.miniwelt.model.interfaces.Invisible;";
     private final String PREFIX = INVISIBLE + " public class %s extends " + Actor.class.getName() + " { public";
@@ -49,16 +46,27 @@ public class ActionController {
     private FileChooser exportChooser;
 
     private Simulation simulation;
+    private ChangeListener<Boolean> btnSimListener;
+    private ChangeListener<Boolean> miTutorListener;
 
 
     private TabsController tabsController; // TODO move up into ModelCtx?
 
     @FXML
     public ToggleGroup mouseModeToggleGroupMenubar;
-
     @FXML
     public ToggleGroup mouseModeToggleGroupToolbar;
 
+    @FXML
+    public Menu miTutor;
+    @FXML
+    public MenuItem miTutorRequestSend;
+    @FXML
+    public MenuItem miTutorAnswerLoad;
+    @FXML
+    public MenuItem miTutorRequestLoad;
+    @FXML
+    public MenuItem miTutorAnswerSend;
 
     @FXML
     public Button btnSimStart;
@@ -69,8 +77,25 @@ public class ActionController {
     @FXML
     public Slider sliderSimSpeed;
 
+    public ActionController() {
+        miTutorListener = (obs, oldV, newV) -> {
+            miTutorRequestSend.setDisable(newV);
+            miTutorAnswerLoad.setDisable(!newV);
+            miTutorRequestLoad.setDisable(newV);
+            miTutorAnswerSend.setDisable(!newV);
+        };
+
+        btnSimListener = (obs, oldV, newV) -> {
+            btnSimStart.setDisable(newV);
+            btnSimPause.setDisable(!newV);
+            btnSimStop.setDisable(!newV);
+        };
+
+    }
 
     public void initialize() {
+        ModelCtx.addObserver("action", this);
+
         // TODO bind toggle groups
 
         if (sliderSimSpeed != null) {
@@ -78,6 +103,16 @@ public class ActionController {
         }
 
         initFileChoosers();
+        update();
+
+        if (!PropsCtx.hasServer()) miTutor.setDisable(true);
+        if (PropsCtx.isTutor()) {
+            miTutorRequestSend.setVisible(false);
+            miTutorAnswerLoad.setVisible(false);
+        } else {
+            miTutorRequestLoad.setVisible(false);
+            miTutorAnswerSend.setVisible(false);
+        }
     }
 
     private void initFileChoosers() {
@@ -103,14 +138,18 @@ public class ActionController {
 
     void postInitialize(TabsController tabsController) {
         this.tabsController = tabsController;
-        ModelCtx.get().simulationRunning.addListener((obs, oldV, newV) -> {
-            btnSimStart.setDisable(newV);
-            btnSimPause.setDisable(!newV);
-            btnSimStop.setDisable(!newV);
-        });
-        ModelCtx.get().simulationRunning.set(false);
     }
 
+    @Override
+    public void update() {
+        ModelCtx.get().simulationRunning.removeListener(btnSimListener);
+        ModelCtx.get().simulationRunning.addListener(btnSimListener);
+        btnSimListener.changed(null, null, ModelCtx.get().simulationRunning.get());
+
+        ModelCtx.get().tutorRequestSendedOrLoaded.removeListener(miTutorListener);
+        ModelCtx.get().tutorRequestSendedOrLoaded.addListener(miTutorListener);
+        miTutorListener.changed(null, null, ModelCtx.get().tutorRequestSendedOrLoaded.get());
+    }
 
     private Window getWindow() {
         return sliderSimSpeed.getScene().getWindow();
@@ -456,6 +495,29 @@ public class ActionController {
                     "Which example to load:"
             ).ifPresent(decision -> tabsController.addNew(decision, ExamplesDB.load(decision)));
         });
+    }
+
+
+
+    @FXML
+    public void onTutorRequestSend(ActionEvent actionEvent) {
+        // TODO
+        ModelCtx.get().tutorRequestSendedOrLoaded.set(true);
+    }
+    @FXML
+    public void onTutorAnswerLoad(ActionEvent actionEvent) {
+        // TODO
+        ModelCtx.get().tutorRequestSendedOrLoaded.set(false);
+    }
+    @FXML
+    public void onTutorRequestLoad(ActionEvent actionEvent) {
+        // TODO
+        ModelCtx.get().tutorRequestSendedOrLoaded.set(true);
+    }
+    @FXML
+    public void onTutorAnswerSend(ActionEvent actionEvent) {
+        // TODO
+        ModelCtx.get().tutorRequestSendedOrLoaded.set(false);
     }
 
 }

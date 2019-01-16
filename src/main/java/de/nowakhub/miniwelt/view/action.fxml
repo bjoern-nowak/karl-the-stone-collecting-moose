@@ -66,7 +66,7 @@
             <MenuItem onAction="#onWorldLoad" text="_Load" />
             <MenuItem onAction="#onWorldSave" text="S_ave" />
             <MenuItem onAction="#onWorldExport" text="E_xport" />
-            <MenuItem onAction="#onWorldPrint" text="Prin_t" />
+            <MenuItem onAction="#onWorldPrint" text="Pr_int" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem onAction="#onWorldReset" text="_Reset" />
             <MenuItem onAction="#onWorldRandom" text="Ran_dom" />
@@ -161,6 +161,29 @@
             <MenuItem mnemonicParsing="false" onAction="#onExampleLoad" text="Laden">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+        </Menu>
+
+        <Menu text="_Tutor" fx:id="miTutor">
+            <MenuItem fx:id="miTutorRequestSend" mnemonicParsing="false" onAction="#onTutorRequestSend" text="Anfrage senden">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem fx:id="miTutorAnswerLoad" mnemonicParsing="false" onAction="#onTutorAnswerLoad" text="Antwort laden">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem fx:id="miTutorRequestLoad" mnemonicParsing="false" onAction="#onTutorRequestLoad" text="Anfrage laden">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem fx:id="miTutorAnswerSend" mnemonicParsing="false" onAction="#onTutorAnswerSend" text="Antwort senden">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
         </Menu>

@@ -17,15 +17,15 @@ public class Model {
     private World world;
     private Actor actor;
     public Canvas worldCanvas;
-    public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
+    public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
+    public final BooleanProperty tutorRequestSendedOrLoaded = new SimpleBooleanProperty();
 
     public final StringProperty statusText = new SimpleStringProperty();
 
 
     public Model(File programFile, String program) {
         this.programFile = programFile;
-
         this.program.set(program);
         this.programDirty.set(false);
         this.programSave = program;
@@ -37,6 +37,9 @@ public class Model {
 
         world = new World();
         actor = new Actor(world);
+
+        this.simulationRunning.set(false);
+        this.tutorRequestSendedOrLoaded.set(false);
     }
 
     public World getWorld() {

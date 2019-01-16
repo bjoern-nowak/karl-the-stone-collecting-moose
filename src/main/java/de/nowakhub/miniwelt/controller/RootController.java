@@ -1,7 +1,7 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.model.Model;
-import de.nowakhub.miniwelt.model.ModelCtx;
+import de.nowakhub.miniwelt.controller.util.ModelCtx;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

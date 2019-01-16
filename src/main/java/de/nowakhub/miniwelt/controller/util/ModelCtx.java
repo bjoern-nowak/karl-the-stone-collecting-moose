@@ -1,5 +1,9 @@
-package de.nowakhub.miniwelt.model;
+package de.nowakhub.miniwelt.controller.util;
 
+import de.nowakhub.miniwelt.model.Actor;
+import de.nowakhub.miniwelt.model.Model;
+import de.nowakhub.miniwelt.model.Observable;
+import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.interfaces.Observer;
 
 public final class ModelCtx {

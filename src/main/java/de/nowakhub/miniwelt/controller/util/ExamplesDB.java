@@ -15,8 +15,8 @@ public class ExamplesDB {
 
     // database
     private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    private static final String DB = "jdbc:derby:miniweltDB;create=false";
-    private static final String DB_CREATE = "jdbc:derby:miniweltDB;create=true";
+    private static final String DB = "jdbc:derby:miniworldDB;create=false";
+    private static final String DB_CREATE = "jdbc:derby:miniworldDB;create=true";
 
     // tables
     private static final String TABLE_EXAMPLES = "EXAMPLES";
