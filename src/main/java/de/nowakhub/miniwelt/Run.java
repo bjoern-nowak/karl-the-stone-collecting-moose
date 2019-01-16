@@ -1,14 +1,15 @@
 package de.nowakhub.miniwelt;
 
-import de.nowakhub.miniwelt.controller.util.Alerts;
-import de.nowakhub.miniwelt.controller.util.ExamplesDB;
 import de.nowakhub.miniwelt.controller.RootController;
 import de.nowakhub.miniwelt.controller.TabsController;
+import de.nowakhub.miniwelt.controller.util.Alerts;
+import de.nowakhub.miniwelt.controller.util.ExamplesDB;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Run extends Application {
@@ -43,6 +44,7 @@ public class Run extends Application {
                 TabsController.confirmExitIfNecessaery(event, ((RootController) rootLoader.getController()).getTabs());
                 if (event.isConsumed()) ExamplesDB.close();
             });
+            primaryStage.getIcons().add(new Image(Run.class.getResourceAsStream("icon.png")));
             primaryStage.show();
             ExamplesDB.open();
         } catch (Exception ex) {
