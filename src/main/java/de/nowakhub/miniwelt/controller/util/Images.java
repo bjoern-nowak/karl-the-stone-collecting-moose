@@ -2,7 +2,7 @@ package de.nowakhub.miniwelt.controller.util;
 
 import javafx.scene.image.Image;
 
-public class Images {
+public final class Images {
 
     public static Image obstacle = new Image("/images/world/fence.png");
     public static Image obstacle_down = new Image("/images/world/fence_down.png");

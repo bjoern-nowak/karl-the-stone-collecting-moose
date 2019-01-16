@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ExamplesDB {
+public final class ExamplesDB {
 
     // database
     private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";

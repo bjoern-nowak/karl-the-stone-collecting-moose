@@ -4,7 +4,7 @@ import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.model.exceptions.PublicException;
 import javafx.application.Platform;
 
-public class Simulation extends Thread {
+public final class Simulation extends Thread {
 
     private final Model model;
     private volatile boolean paused = false;
