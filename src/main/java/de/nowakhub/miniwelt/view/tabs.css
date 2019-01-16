@@ -1,0 +1,25 @@
+
+
+.tab-pane .tab {
+    -fx-background-color: #CCC;
+
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #888;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: #AAA;
+}
+
+.tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-font-size: 12px;
+    -fx-text-fill: #666;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #FFA;
+    -fx-font-weight: bold;
+}
