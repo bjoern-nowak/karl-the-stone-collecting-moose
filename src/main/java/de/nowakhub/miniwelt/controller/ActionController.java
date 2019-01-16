@@ -58,6 +58,12 @@ public class ActionController implements Observer {
     public ToggleGroup mouseModeToggleGroupToolbar;
 
     @FXML
+    public MenuItem miSimStart;
+    @FXML
+    public MenuItem miSimPause;
+    @FXML
+    public MenuItem miSimStop;
+    @FXML
     public Menu miTutor;
     @FXML
     public MenuItem miTutorRequestSend;
@@ -89,6 +95,10 @@ public class ActionController implements Observer {
             btnSimStart.setDisable(newV);
             btnSimPause.setDisable(!newV);
             btnSimStop.setDisable(!newV);
+
+            miSimStart.setDisable(newV);
+            miSimPause.setDisable(!newV);
+            miSimStop.setDisable(!newV);
         };
 
     }

@@ -76,18 +76,36 @@
     -fx-pref-width: 800px;
 }
 
-.separator {
-    -fx-pref-height: 20px;
+.separator *.line {
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: #888;
 }
+
 
 .btn {
     -fx-pref-height: 40px;
-    -fx-pref-width: 40px;
+    -fx-pref-width: 50px;
+
     -fx-content-display: graphic-only;
+    -fx-text-fill: red;
+    -fx-font: bold 14pt "Consolas";
+    -fx-padding: 16px 0 0 0;
+
     -fx-background-size: 30 30;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 
+    -fx-background-color: #CCC;
+}
+.btn:selected {
+    -fx-background-color: #888;
+}
+.btn:hover {
+    -fx-background-color: #AAA;
+}
+.btn:disabled {
+    -fx-background-color: rgba(0,0,0,0);
 }
 
 .btn-new {
@@ -121,11 +139,8 @@
 }
 
 .btn-pocket {
-    -fx-content-display: center;
     -fx-background-image: url("../../../../images/world/item.png");
-    -fx-text-fill: red;
-    -fx-font: bold 14pt "Consolas";
-    -fx-padding: 14px 0 0 0;
+    -fx-content-display: center;
 }
 
 .btn-run {
@@ -142,4 +157,7 @@
     -fx-content-display: text-only;
     -fx-alignment: center;
     -fx-padding: 5px 0 0 10px;
+}
+.sliderSimSpeed {
+    -fx-font: bold 14pt "Consolas";
 }
