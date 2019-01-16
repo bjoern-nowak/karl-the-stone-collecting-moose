@@ -82,6 +82,9 @@ public class ActionController implements Observer {
     public Button btnSimStop;
     @FXML
     public Slider sliderSimSpeed;
+    @FXML
+    public Button btnMusicToogle;
+
 
     public ActionController() {
         miTutorListener = (obs, oldV, newV) -> {
@@ -480,9 +483,6 @@ public class ActionController implements Observer {
         ModelCtx.get().simulationRunning.set(false);
         simulation.terminate();
     }
-
-
-
     @FXML
     public void onExampleSave(ActionEvent actionEvent) {
         Alerts.requestDoubleInput(
@@ -507,8 +507,6 @@ public class ActionController implements Observer {
         });
     }
 
-
-
     @FXML
     public void onTutorRequestSend(ActionEvent actionEvent) {
         // TODO
@@ -528,6 +526,12 @@ public class ActionController implements Observer {
     public void onTutorAnswerSend(ActionEvent actionEvent) {
         // TODO
         ModelCtx.get().tutorRequestSendedOrLoaded.set(false);
+    }
+
+    @FXML
+    public void onMusicToogle(ActionEvent actionEvent) {
+        if (Sounds.toggleMusic()) btnMusicToogle.setStyle("-fx-background-image: url('/images/icons/volume_full.png')");
+        else btnMusicToogle.setStyle("-fx-background-image: url('/images/icons/volume_mute.png')");
     }
 
 }

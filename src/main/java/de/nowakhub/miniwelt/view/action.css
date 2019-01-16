@@ -15,43 +15,43 @@
 }
 
 .menubar .menu-item.miProgramNew > .label {
-    -fx-graphic: url("../../../../images/icons/new_16x16.png");
+    -fx-graphic: url("/images/icons/new_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miProgramNew > .label {
-    -fx-graphic: url("../../../../images/icons/new_16x16.png");
+    -fx-graphic: url("/images/icons/new_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miProgramOpen > .label {
-    -fx-graphic: url("../../../../images/icons/open_16x16.png");
+    -fx-graphic: url("/images/icons/open_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miProgramSave > .label {
-    -fx-graphic: url("../../../../images/icons/save_16x16.png");
+    -fx-graphic: url("/images/icons/save_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miProgramCompile > .label {
-    -fx-graphic: url("../../../../images/icons/compile_pr0_16x16.png");
+    -fx-graphic: url("/images/icons/compile_pr0_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceObstacle > .label {
-    -fx-graphic: url("../../../../images/world/fence.png");
+    -fx-graphic: url("/images/world/fence.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceActor > .label {
-    -fx-graphic: url("../../../../images/world/actor_right.png");
+    -fx-graphic: url("/images/world/actor_right.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceStart > .label {
-    -fx-graphic: url("../../../../images/world/start.png");
+    -fx-graphic: url("/images/world/start.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceItem > .label {
-    -fx-graphic: url("../../../../images/world/item.png");
+    -fx-graphic: url("/images/world/item.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceFree > .label {
-    -fx-graphic: url("../../../../images/world/grass_wild.png");
+    -fx-graphic: url("/images/world/grass_wild.png");
     -fx-padding: 0 0 0 0;
 }
 
@@ -59,15 +59,15 @@
 }
 
 .menubar .menu-item.miSimStart > .label {
-    -fx-graphic: url("../../../../images/icons/run_16x16.png");
+    -fx-graphic: url("/images/icons/run_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miSimPause > .label {
-    -fx-graphic: url("../../../../images/icons/pause_16x16.png");
+    -fx-graphic: url("/images/icons/pause_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miSimStop > .label {
-    -fx-graphic: url("../../../../images/icons/stop_16x16.png");
+    -fx-graphic: url("/images/icons/stop_16x16.png");
     -fx-padding: 0 0 0 0;
 }
 
@@ -109,48 +109,48 @@
 }
 
 .btn-new {
-    -fx-background-image: url("../../../../images/icons/new.png");
+    -fx-background-image: url("/images/icons/new.png");
 }
 .btn-open {
-    -fx-background-image: url("../../../../images/icons/open.png");
+    -fx-background-image: url("/images/icons/open.png");
 }
 .btn-save {
-    -fx-background-image: url("../../../../images/icons/save.png");
+    -fx-background-image: url("/images/icons/save.png");
 }
 
 .btn-compile {
-    -fx-background-image: url("../../../../images/icons/compile_pr0.png");
+    -fx-background-image: url("/images/icons/compile_pr0.png");
 }
 
 .btn-obstacle {
-    -fx-background-image: url("../../../../images/world/fence.png");
+    -fx-background-image: url("/images/world/fence.png");
 }
 .btn-actor {
-    -fx-background-image: url("../../../../images/world/actor_right.png");
+    -fx-background-image: url("/images/world/actor_right.png");
 }
 .btn-start {
-    -fx-background-image: url("../../../../images/world/start.png");
+    -fx-background-image: url("/images/world/start.png");
 }
 .btn-item {
-    -fx-background-image: url("../../../../images/world/item.png");
+    -fx-background-image: url("/images/world/item.png");
 }
 .btn-remove {
-    -fx-background-image: url("../../../../images/world/grass_wild.png");
+    -fx-background-image: url("/images/world/grass_wild.png");
 }
 
 .btn-pocket {
-    -fx-background-image: url("../../../../images/world/item.png");
+    -fx-background-image: url("/images/world/item.png");
     -fx-content-display: center;
 }
 
 .btn-run {
-    -fx-background-image: url("../../../../images/icons/run.png");
+    -fx-background-image: url("/images/icons/run.png");
 }
 .btn-pause {
-    -fx-background-image: url("../../../../images/icons/pause.png");
+    -fx-background-image: url("/images/icons/pause.png");
 }
 .btn-stop {
-    -fx-background-image: url("../../../../images/icons/stop.png");
+    -fx-background-image: url("/images/icons/stop.png");
 }
 
 .sliderSimSpeedLabel {
@@ -160,4 +160,8 @@
 }
 .sliderSimSpeed {
     -fx-font: bold 14pt "Consolas";
+}
+
+.btn-music {
+    -fx-background-image: url("/images/icons/volume_mute.png");
 }

@@ -1,5 +1,6 @@
 package de.nowakhub.miniwelt.controller;
 
+import de.nowakhub.miniwelt.controller.util.Sounds;
 import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
 import javafx.collections.ObservableList;
@@ -24,6 +25,8 @@ public class RootController {
     }
 
     public void initialize(){
+        Sounds.toggleMusic();
+
         status.textProperty().bindBidirectional(ModelCtx.get().statusText);
 
         actionController.postInitialize(tabsController);

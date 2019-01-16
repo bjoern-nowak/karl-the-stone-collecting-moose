@@ -329,5 +329,16 @@
                 </tooltip>
             </Slider>
         </VBox>
+
+        <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator" />
+        <Button fx:id="btnMusicToogle" mnemonicParsing="false" onAction="#onMusicToogle" text="Music Toggle">
+            <styleClass>
+                <String fx:value="btn-music" />
+                <String fx:value="btn" />
+            </styleClass>
+            <tooltip>
+                <Tooltip text="Toogle background music" />
+            </tooltip>
+        </Button>
     </ToolBar>
 </VBox>
