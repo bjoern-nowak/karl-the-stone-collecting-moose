@@ -11,7 +11,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 
@@ -27,15 +28,38 @@ public abstract class ActionWorldController extends ActionProgramController {
     private FileChooser worldChooser;
     private FileChooser exportChooser;
 
+
     @FXML
-    public ToggleGroup mouseModeToggleGroupMenubar;
+    public RadioMenuItem miMouseModePlaceObstacle;
     @FXML
-    public ToggleGroup mouseModeToggleGroupToolbar;
+    public RadioMenuItem miMouseModePlaceItem;
+    @FXML
+    public RadioMenuItem miMouseModePlaceActor;
+    @FXML
+    public RadioMenuItem miMouseModePlaceStart;
+    @FXML
+    public RadioMenuItem miMouseModePlaceFree;
+
+    @FXML
+    public ToggleButton btnMouseModePlaceObstacle;
+    @FXML
+    public ToggleButton btnMouseModePlaceItem;
+    @FXML
+    public ToggleButton btnMouseModePlaceActor;
+    @FXML
+    public ToggleButton btnMouseModePlaceStart;
+    @FXML
+    public ToggleButton btnMouseModePlaceFree;
 
 
     public void initialize() {
         super.initialize();
-        // TODO bind toggle groups
+
+        miMouseModePlaceObstacle.selectedProperty().bindBidirectional(btnMouseModePlaceObstacle.selectedProperty());
+        miMouseModePlaceItem.selectedProperty().bindBidirectional(btnMouseModePlaceItem.selectedProperty());
+        miMouseModePlaceActor.selectedProperty().bindBidirectional(btnMouseModePlaceActor.selectedProperty());
+        miMouseModePlaceStart.selectedProperty().bindBidirectional(btnMouseModePlaceStart.selectedProperty());
+        miMouseModePlaceFree.selectedProperty().bindBidirectional(btnMouseModePlaceFree.selectedProperty());
     }
 
     private void initFileChoosers() {
