@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -32,6 +33,7 @@ public final class Sounds {
         for (int i = 0; i < players.size(); i++) {
             final MediaPlayer nextPlayer = players.get((i + 1) % players.size());
             players.get(i).setOnEndOfMedia(() -> {
+                nextPlayer.seek(Duration.ZERO);
                 nextPlayer.play();
                 activePlayer = nextPlayer;
             });
@@ -46,7 +48,6 @@ public final class Sounds {
         Platform.runLater(() -> alarm.play(0.2));
     }
 
-    // TODO play background music per tab or list of music across tabs
     public static boolean toggleMusic() {
         if (activePlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
             activePlayer.pause();

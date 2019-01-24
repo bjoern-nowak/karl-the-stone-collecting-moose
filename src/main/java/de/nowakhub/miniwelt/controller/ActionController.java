@@ -50,7 +50,7 @@ public class ActionController implements Observer {
     private ChangeListener<Boolean> miTutorListener;
 
 
-    private TabsController tabsController; // TODO move up into ModelCtx?
+    private TabsController tabsController;
 
     @FXML
     public ToggleGroup mouseModeToggleGroupMenubar;
@@ -168,8 +168,6 @@ public class ActionController implements Observer {
         return sliderSimSpeed.getScene().getWindow();
     }
 
-
-    // TODO get file handle logic out of tabsController
     @FXML
     public void onProgramNew(ActionEvent actionEvent) {
         tabsController.addNew();

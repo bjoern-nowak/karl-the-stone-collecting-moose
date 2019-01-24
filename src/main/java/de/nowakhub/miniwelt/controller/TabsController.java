@@ -84,7 +84,6 @@ public class TabsController {
             TabController tabController = new TabController();
 
             FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/tab.fxml"));
-            // TODO reuse world/program controller (one controller of each for hole application)
             tabLoader.setController(tabController);
 
             Tab tab = tabLoader.load();

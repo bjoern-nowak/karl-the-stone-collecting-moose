@@ -2,10 +2,12 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.Alerts;
 import de.nowakhub.miniwelt.controller.util.Images;
-import de.nowakhub.miniwelt.model.*;
+import de.nowakhub.miniwelt.model.Actor;
+import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.Model;
+import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import de.nowakhub.miniwelt.model.interfaces.Invisible;
 import de.nowakhub.miniwelt.model.interfaces.Observer;
-import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -18,7 +20,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -215,7 +216,8 @@ public class WorldController implements Observer {
     }
 
     private void drawGrid(Field[][] state) {
-        // TODO OLD: need a fix
+        // TODO: old method : needs a fix befor using
+        /*
         for (int row = 0; row < state.length; row++) {
             for (int col = 0; col < state[row].length; col++) {
                 gc.setStroke(Color.GRAY);
@@ -223,6 +225,7 @@ public class WorldController implements Observer {
                 gc.strokeRect(tilePos(col), tilePos(row), tileSize(), tileSize());
             }
         }
+        */
     }
 
     private void drawWater(Field[][] state) {

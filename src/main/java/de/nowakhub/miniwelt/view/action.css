@@ -3,8 +3,6 @@
     -fx-pref-height: 25px;
 }
 
-/* TODO really bad menu icon styling */
-
 .menubar .menu-item > .label {
     -fx-padding: 0 0 0 20px;
 }

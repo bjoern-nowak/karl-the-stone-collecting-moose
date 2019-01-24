@@ -36,7 +36,7 @@ public final class Alerts {
     }
 
     /**
-     * Consumes event if user canceles action
+     * Consumes event if user cancels action
      */
     public static void confirmClose(Event event, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
