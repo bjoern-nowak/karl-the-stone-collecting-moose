@@ -72,7 +72,7 @@
             <MenuItem onAction="#onWorldRandom" text="Ran_dom" />
             <MenuItem onAction="#onWorldChangeSize" text="_Change size" />
             <Menu text="Set _mouse to...">
-                <RadioMenuItem onAction="#onMouseModePlaceObstacle" styleClass="miMouseModePlaceObstacle" text="Place Wall" />
+                <RadioMenuItem onAction="#onMouseModePlaceObstacle" styleClass="miMouseModePlaceObstacle" text="Place Wall" toggleGroup="$mouseModeToggleGroupMenubar" />
                 <RadioMenuItem onAction="#onMouseModePlaceItem" styleClass="miMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar" />
                 <RadioMenuItem onAction="#onMouseModePlaceActor" styleClass="miMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar" />
                 <RadioMenuItem onAction="#onMouseModePlaceStart" styleClass="miMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar" />

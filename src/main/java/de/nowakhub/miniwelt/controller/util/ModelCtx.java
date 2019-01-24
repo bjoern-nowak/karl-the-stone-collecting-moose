@@ -8,7 +8,7 @@ import de.nowakhub.miniwelt.model.interfaces.Observer;
 
 public final class ModelCtx {
 
-    private static Observable observable= new Observable() {};
+    private static Observable observable = new Observable() {};
 
     private static Model model;
 
