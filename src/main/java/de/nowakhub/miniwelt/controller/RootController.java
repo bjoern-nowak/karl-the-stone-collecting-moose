@@ -25,6 +25,7 @@ public class RootController {
     }
 
     public void initialize(){
+        // start playing background music
         Sounds.toggleMusic();
 
         status.textProperty().bindBidirectional(ModelCtx.get().statusText);
