@@ -34,6 +34,8 @@ public interface Interactable {
 
     public boolean bagEmpty();
 
+    public boolean bagFull();
+
     public boolean foundItem();
 
     public boolean atStart();

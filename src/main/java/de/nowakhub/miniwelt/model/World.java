@@ -357,6 +357,11 @@ public class World extends Observable implements Controllable, Interactable, Ser
     }
 
     @Override
+    synchronized public boolean bagFull() {
+        return actorBag == actorBagMax;
+    }
+
+    @Override
     synchronized public boolean foundItem() {
         return field[actorPos.row][actorPos.col].equals(Field.ACTOR_ON_ITEM);
     }

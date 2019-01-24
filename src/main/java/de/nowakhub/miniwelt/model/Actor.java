@@ -63,6 +63,10 @@ public class Actor {
         return interaction.bagEmpty();
     }
 
+    public boolean bagFull() {
+        return interaction.bagFull();
+    }
+
     public boolean foundItem() {
         return interaction.foundItem();
     }
