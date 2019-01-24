@@ -17,12 +17,9 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.RadioButton?>
 <VBox stylesheets="@action.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ActionController">
     <MenuBar styleClass="menubar">
-        <fx:define>
-            <ToggleGroup fx:id="mouseModeToggleGroupMenubar" />
-        </fx:define>
-
         <Menu text="_Program">
             <MenuItem mnemonicParsing="false" onAction="#onProgramNew" styleClass="miProgramNew" text="New">
                 <accelerator>
@@ -72,11 +69,12 @@
             <MenuItem onAction="#onWorldRandom" text="Ran_dom" />
             <MenuItem onAction="#onWorldChangeSize" text="_Change size" />
             <Menu text="Set _mouse to...">
-                <RadioMenuItem onAction="#onMouseModePlaceObstacle" styleClass="miMouseModePlaceObstacle" text="Place Wall" toggleGroup="$mouseModeToggleGroupMenubar" />
-                <RadioMenuItem onAction="#onMouseModePlaceItem" styleClass="miMouseModePlaceItem" text="Place Danger" toggleGroup="$mouseModeToggleGroupMenubar" />
-                <RadioMenuItem onAction="#onMouseModePlaceActor" styleClass="miMouseModePlaceActor" text="Place _Karl" toggleGroup="$mouseModeToggleGroupMenubar" />
-                <RadioMenuItem onAction="#onMouseModePlaceStart" styleClass="miMouseModePlaceStart" text="Place Startpoint" toggleGroup="$mouseModeToggleGroupMenubar" />
-                <RadioMenuItem onAction="#onMouseModePlaceFree" styleClass="miMouseModePlaceFree" text="Place Grass" toggleGroup="$mouseModeToggleGroupMenubar" />
+                <fx:define><ToggleGroup fx:id="mouseModeToggleGroupMenubar" /></fx:define>
+                <RadioMenuItem text="Place Wall" onAction="#onMouseModePlaceObstacle" fx:id="miMouseModePlaceObstacle" styleClass="miMouseModePlaceObstacle" toggleGroup="$mouseModeToggleGroupMenubar" />
+                <RadioMenuItem text="Place Danger" onAction="#onMouseModePlaceItem" fx:id="miMouseModePlaceItem" styleClass="miMouseModePlaceItem" toggleGroup="$mouseModeToggleGroupMenubar" />
+                <RadioMenuItem text="Place _Karl" onAction="#onMouseModePlaceActor" fx:id="miMouseModePlaceActor" styleClass="miMouseModePlaceActor" toggleGroup="$mouseModeToggleGroupMenubar" />
+                <RadioMenuItem text="Place Startpoint" onAction="#onMouseModePlaceStart" fx:id="miMouseModePlaceStart" styleClass="miMouseModePlaceStart" toggleGroup="$mouseModeToggleGroupMenubar" />
+                <RadioMenuItem text="Place Grass" onAction="#onMouseModePlaceFree" fx:id="miMouseModePlaceFree" styleClass="miMouseModePlaceFree" toggleGroup="$mouseModeToggleGroupMenubar" />
             </Menu>
         </Menu>
 
@@ -192,10 +190,6 @@
 
 
     <ToolBar styleClass="toolbar">
-        <fx:define>
-            <ToggleGroup fx:id="mouseModeToggleGroupToolbar" />
-        </fx:define>
-
         <Button mnemonicParsing="false" onAction="#onProgramNew" prefHeight="40.0" prefWidth="40.0" text="Neu">
             <styleClass>
                 <String fx:value="btn-new" />
@@ -235,7 +229,10 @@
 
         <Separator orientation="VERTICAL" prefHeight="25.0" />
 
-        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceObstacle" text="Wall" toggleGroup="$mouseModeToggleGroupToolbar">
+        <fx:define>
+            <ToggleGroup fx:id="mouseModeToggleGroupToolbar" />
+        </fx:define>
+        <ToggleButton text="Wall" onAction="#onMouseModePlaceObstacle" fx:id="btnMouseModePlaceObstacle" toggleGroup="$mouseModeToggleGroupToolbar" mnemonicParsing="false">
             <styleClass>
                 <String fx:value="btn-obstacle" />
                 <String fx:value="btn" />
@@ -244,7 +241,7 @@
                 <Tooltip text="Set left click to place a wall" />
             </tooltip>
         </ToggleButton>
-        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceItem" text="Danger" toggleGroup="$mouseModeToggleGroupToolbar">
+        <ToggleButton text="Danger" onAction="#onMouseModePlaceItem" fx:id="btnMouseModePlaceItem" toggleGroup="$mouseModeToggleGroupToolbar" mnemonicParsing="false">
             <styleClass>
                 <String fx:value="btn-item" />
                 <String fx:value="btn" />
@@ -253,7 +250,7 @@
                 <Tooltip text="Set left click to place a danger" />
             </tooltip>
         </ToggleButton>
-        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceActor" text="Karl" toggleGroup="$mouseModeToggleGroupToolbar">
+        <ToggleButton text="Karl" onAction="#onMouseModePlaceActor" fx:id="btnMouseModePlaceActor" toggleGroup="$mouseModeToggleGroupToolbar" mnemonicParsing="false">
             <styleClass>
                 <String fx:value="btn-actor" />
                 <String fx:value="btn" />
@@ -262,7 +259,7 @@
                 <Tooltip text="Set left click to place karl" />
             </tooltip>
         </ToggleButton>
-        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceStart" text="Startpoint" toggleGroup="$mouseModeToggleGroupToolbar">
+        <ToggleButton text="Startpoint" onAction="#onMouseModePlaceStart" fx:id="btnMouseModePlaceStart" toggleGroup="$mouseModeToggleGroupToolbar" mnemonicParsing="false">
             <styleClass>
                 <String fx:value="btn-start" />
                 <String fx:value="btn" />
@@ -271,7 +268,7 @@
                 <Tooltip text="Set left click to place a startpoint" />
             </tooltip>
         </ToggleButton>
-        <ToggleButton mnemonicParsing="false" onAction="#onMouseModePlaceFree" text="Grass" toggleGroup="$mouseModeToggleGroupToolbar">
+        <ToggleButton text="Grass" onAction="#onMouseModePlaceFree" fx:id="btnMouseModePlaceFree" toggleGroup="$mouseModeToggleGroupToolbar" mnemonicParsing="false">
             <styleClass>
                 <String fx:value="btn-remove" />
                 <String fx:value="btn" />

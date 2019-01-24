@@ -33,23 +33,23 @@
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceObstacle > .label {
-    -fx-graphic: url("/images/world/fence.png");
+    -fx-graphic: url("/images/icons/obstacle_18x18.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceActor > .label {
-    -fx-graphic: url("/images/world/actor_right.png");
+    -fx-graphic: url("/images/icons/actor_18x18.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceStart > .label {
-    -fx-graphic: url("/images/world/start.png");
+    -fx-graphic: url("/images/icons/start_18x18.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceItem > .label {
-    -fx-graphic: url("/images/world/item.png");
+    -fx-graphic: url("/images/icons/item_18x18.png");
     -fx-padding: 0 0 0 0;
 }
 .menubar .menu-item.miMouseModePlaceFree > .label {
-    -fx-graphic: url("/images/world/grass_wild.png");
+    -fx-graphic: url("/images/icons/free_18x18.png");
     -fx-padding: 0 0 0 0;
 }
 
