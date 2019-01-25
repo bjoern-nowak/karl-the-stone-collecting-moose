@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class Sounds {
+public class Sounds {
 
     private static AudioClip alarm = new AudioClip(Sounds.class.getResource("/sounds/alarm_beep_warning_01.wav").toString());
     private static final List<MediaPlayer> players = new ArrayList<>();

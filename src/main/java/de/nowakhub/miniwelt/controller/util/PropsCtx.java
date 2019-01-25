@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-public final class PropsCtx {
+public class PropsCtx {
     private final static Properties props = new Properties();
 
 
@@ -34,8 +34,8 @@ public final class PropsCtx {
     public static String getHost() {
         return props.getProperty("host");
     }
-    public static String getPort() {
-        return props.getProperty("port");
+    public static Integer getPort() {
+        return Integer.valueOf(props.getProperty("port"));
     }
 
     public static Properties get() {

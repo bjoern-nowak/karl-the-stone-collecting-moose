@@ -6,7 +6,7 @@ import de.nowakhub.miniwelt.model.Observable;
 import de.nowakhub.miniwelt.model.World;
 import de.nowakhub.miniwelt.model.interfaces.Observer;
 
-public final class ModelCtx {
+public class ModelCtx {
 
     private static Observable observable = new Observable() {};
 
