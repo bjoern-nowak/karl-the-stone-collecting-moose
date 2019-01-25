@@ -48,7 +48,6 @@ public final class Alerts {
         alert.showAndWait()
                 .filter(buttonType -> buttonType.equals(ButtonType.CANCEL))
                 .ifPresent(buttonType -> event.consume());
-        // TODO ask to save all files
     }
 
     /**

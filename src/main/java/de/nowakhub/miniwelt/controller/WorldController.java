@@ -184,15 +184,15 @@ public class WorldController implements Observer {
             } else {
                 item.setText(method.getReturnType().getName() + " " + method.getName() + "()");
                 item.setOnAction(event -> {
-                    try {
+                    model.getWorld().silently(() -> {
                         method.setAccessible(true);
                         Object result = method.invoke(model.getActor());
-                        if (result != null) { // instead of instanceOf check to enable various return types
+                        if (result != null) {
+                            // TODO handle return values better
                             Alerts.showInfo(method.getName() + "()", "" + result);
                         }
-                    } catch (Exception ex) {
-                        Alerts.showException(ex);
-                    }
+                        return null;
+                    });
                 });
             }
             actorContextMenu.getItems().add(item);
