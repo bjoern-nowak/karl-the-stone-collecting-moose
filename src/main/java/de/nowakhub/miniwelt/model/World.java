@@ -37,6 +37,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
     //    Controllable - commands
     //------------------------------------------------------------------------------------------------------------------
 
+    @Override
     public void reset() {
         resize(sizeRow, sizeCol);
         synchronized (this) {
@@ -49,6 +50,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
+    @Override
     public void random() {
         synchronized (this) {
             sizeRow = ThreadLocalRandom.current().nextInt(3, 16);
@@ -373,7 +375,7 @@ public class World extends Observable implements Controllable, Interactable, Ser
 
 
     // _________________________________________________________________________________________________________________
-    //     getter/setter for export (XML)
+    //     getter/setter for export/import (XML)
     // -----------------------------------------------------------------------------------------------------------------
 
     public static int getMinSize() {

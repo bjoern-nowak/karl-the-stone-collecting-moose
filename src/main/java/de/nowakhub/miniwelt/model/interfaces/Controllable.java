@@ -13,6 +13,10 @@ public interface Controllable {
     //    Controllable - commands
     //------------------------------------------------------------------------------------------------------------------
 
+    public void reset();
+
+    public void random();
+
     void resize(int sizeX, int sizeY) throws InvalidWorldSizeException;
 
     //__________________________________________________________________________________________________________________
