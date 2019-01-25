@@ -31,6 +31,7 @@ public abstract class ActionProgramController extends ActionBaseController {
 
     public void initialize() {
         super.initialize();
+        initFileChoosers();
     }
 
 

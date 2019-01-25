@@ -60,6 +60,8 @@ public abstract class ActionWorldController extends ActionProgramController {
         miMouseModePlaceActor.selectedProperty().bindBidirectional(btnMouseModePlaceActor.selectedProperty());
         miMouseModePlaceStart.selectedProperty().bindBidirectional(btnMouseModePlaceStart.selectedProperty());
         miMouseModePlaceFree.selectedProperty().bindBidirectional(btnMouseModePlaceFree.selectedProperty());
+
+        initFileChoosers();
     }
 
     private void initFileChoosers() {
