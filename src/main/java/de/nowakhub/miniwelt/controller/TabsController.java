@@ -28,9 +28,7 @@ public class TabsController {
 
     public void initialize() {
         // set model context on tab switch
-        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
-            ModelCtx.set(getModel(newV));
-        });
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> ModelCtx.set(getModel(newValue)));
         addTab(null, null);
     }
 
