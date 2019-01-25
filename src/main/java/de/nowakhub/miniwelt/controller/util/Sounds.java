@@ -45,7 +45,7 @@ public final class Sounds {
 
 
     public static void playWarning() {
-        Platform.runLater(() -> alarm.play(0.2));
+        Platform.runLater(() -> alarm.play());
     }
 
     public static boolean toggleMusic() {
