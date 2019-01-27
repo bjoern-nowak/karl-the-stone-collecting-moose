@@ -19,6 +19,9 @@ public class Sounds {
     private static final List<MediaPlayer> players = new ArrayList<>();
     private static MediaPlayer activePlayer;
 
+    // TODO ugly musicPlaying boolean; would use activePlayer#getStatus but there seems to be a thread-order issue
+    private static boolean musicPlaying;
+
     static {
         // get audio files of folder
         final File musicDir = Paths.get("src/main/resources/sounds/background/").toAbsolutePath().toFile();
@@ -51,10 +54,16 @@ public class Sounds {
     public static boolean toggleMusic() {
         if (activePlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
             activePlayer.pause();
-            return false;
+            musicPlaying = false;
         } else {
             activePlayer.play();
-            return true;
+            musicPlaying = true;
         }
+        return musicPlaying;
+    }
+
+
+    public static boolean isMusicPlaying() {
+        return musicPlaying;
     }
 }

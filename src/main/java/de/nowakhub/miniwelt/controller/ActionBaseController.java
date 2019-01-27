@@ -26,16 +26,24 @@ public abstract class ActionBaseController {
     void postInitialize(RootController rootController, TabsController tabsController) {
         this.rootController = rootController;
         this.tabsController = tabsController;
+
+        toggleMusicIcon(Sounds.isMusicPlaying());
     }
 
     Window getWindow() {
         return btnToggleMusic.getScene().getWindow();
     }
 
+    private void toggleMusicIcon(boolean isMusicPlaying) {
+        if (isMusicPlaying)
+            btnToggleMusic.setStyle("-fx-background-image: url('/images/icons/volume_mute.png')");
+        else
+            btnToggleMusic.setStyle("-fx-background-image: url('/images/icons/volume_full.png')");
+    }
+
     @FXML
     public void onToggleMusic(ActionEvent actionEvent) {
-        if (Sounds.toggleMusic()) btnToggleMusic.setStyle("-fx-background-image: url('/images/icons/volume_mute.png')");
-        else btnToggleMusic.setStyle("-fx-background-image: url('/images/icons/volume_full.png')");
+        toggleMusicIcon(Sounds.toggleMusic());
     }
 
     @FXML
