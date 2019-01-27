@@ -129,11 +129,18 @@ public class WorldController implements Observer {
         // sync canvas for actionController to make snapshots
         model.worldCanvas = canvas;
 
-        // subscribe to changes in the world
-        model.getWorld().addObserver("world", this);
 
-        //draw world
-        update();
+        Runnable runnable = () -> {
+            // subscribe to changes in the world
+            model.getWorld().addObserver("canvas", this);
+
+            //draw world
+            update();
+        };
+        runnable.run();
+
+        // subscribe to changes in the model
+        model.world.addListener((observable, oldValue, newValue) -> runnable.run());
     }
 
     @Override

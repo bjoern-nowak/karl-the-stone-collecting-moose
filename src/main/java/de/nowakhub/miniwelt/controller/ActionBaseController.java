@@ -27,8 +27,8 @@ public abstract class ActionBaseController {
 
     @FXML
     public void onMusicToogle(ActionEvent actionEvent) {
-        if (Sounds.toggleMusic()) btnMusicToogle.setStyle("-fx-background-image: url('/images/icons/volume_full.png')");
-        else btnMusicToogle.setStyle("-fx-background-image: url('/images/icons/volume_mute.png')");
+        if (Sounds.toggleMusic()) btnMusicToogle.setStyle("-fx-background-image: url('/images/icons/volume_mute.png')");
+        else btnMusicToogle.setStyle("-fx-background-image: url('/images/icons/volume_full.png')");
     }
 
 }

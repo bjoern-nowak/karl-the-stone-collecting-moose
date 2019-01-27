@@ -53,7 +53,7 @@ public class ExamplesDB {
             if (conn != null) conn.close();
             conn = null;
         } catch (SQLException ex) {
-            Alerts.showException(ex);
+            //Alerts.showException(ex);
         }
 
     }

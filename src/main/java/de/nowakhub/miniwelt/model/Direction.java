@@ -9,7 +9,7 @@ public enum Direction implements Serializable {
     LEFT(0, -1),
     RIGHT(0, 1);
 
-    static final long serialVersionUID = -8717671986526504937L;
+    static final long serialVersionUID = 1L;
     public int row, col;
 
     Direction(int row, int col) {

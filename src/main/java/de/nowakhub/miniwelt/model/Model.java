@@ -10,44 +10,46 @@ public class Model {
     public File programFile;
     public String programSave;
     public final StringProperty program = new SimpleStringProperty();
-    public final BooleanProperty programDirty = new SimpleBooleanProperty();
-    public final BooleanProperty programSaved = new SimpleBooleanProperty();
-    public final BooleanProperty programCompiled = new SimpleBooleanProperty();
+    public final BooleanProperty programDirty = new SimpleBooleanProperty(false);
+    public final BooleanProperty programSaved = new SimpleBooleanProperty(false);
+    public final BooleanProperty programCompiled = new SimpleBooleanProperty(false);
 
-    private World world;
-    private Actor actor;
+    public final ObjectProperty<World> world = new SimpleObjectProperty<>(new World());
+    private Actor actor = new Actor(world.get());
     public Canvas worldCanvas;
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
-    public final BooleanProperty simulationRunning = new SimpleBooleanProperty();
-    public final BooleanProperty tutorRequestSendedOrLoaded = new SimpleBooleanProperty();
+    public final BooleanProperty simulationRunning = new SimpleBooleanProperty(false);
+
+    public final IntegerProperty requestOfStudent = new SimpleIntegerProperty(-1);
 
     public final StringProperty statusText = new SimpleStringProperty();
 
 
+    // TODO rework this
     public Model(File programFile, String program) {
         this.programFile = programFile;
+
         this.program.set(program);
-        this.programDirty.set(false);
         this.programSave = program;
+
         if (programFile == null && program == null) {
             this.program.set("void main() {\n\tstepAhead();\n}");
             this.programDirty.set(true);
             this.programSave = null;
         }
-
-        world = new World();
-        actor = new Actor(world);
-
-        this.simulationRunning.set(false);
-        this.tutorRequestSendedOrLoaded.set(false);
     }
 
+
+    //__________________________________________________________________________________________________________________
+    //    convenient getter/setter
+    //------------------------------------------------------------------------------------------------------------------
+
     public World getWorld() {
-        return world;
+        return world.get();
     }
 
     public void setWorld(World world) {
-        this.world = world;
+        this.world.set(world);
         actor.setInteraction(world);
     }
 
@@ -57,6 +59,14 @@ public class Model {
 
     public void setActor(Actor actor) {
         this.actor = actor;
-        world.notifyObservers();
+        world.get().notifyObservers();
+    }
+
+    public String getProgram() {
+        return program.get();
+    }
+
+    public void setProgram(String program) {
+        this.program.set(program);
     }
 }

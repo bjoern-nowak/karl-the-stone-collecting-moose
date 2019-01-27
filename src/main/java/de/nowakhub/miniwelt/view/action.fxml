@@ -169,9 +169,14 @@
                     <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
+            <MenuItem fx:id="miTutorRequestCancel" mnemonicParsing="false" onAction="#onTutorRequestCancel" text="Anfrage zurückziehen">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
             <MenuItem fx:id="miTutorAnswerLoad" mnemonicParsing="false" onAction="#onTutorAnswerLoad" text="Antwort laden">
                 <accelerator>
-                    <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                    <KeyCodeCombination alt="UP" code="DOWN" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
             <MenuItem fx:id="miTutorRequestLoad" mnemonicParsing="false" onAction="#onTutorRequestLoad" text="Anfrage laden">
@@ -179,9 +184,14 @@
                     <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
+            <MenuItem fx:id="miTutorAnswerCancel" mnemonicParsing="false" onAction="#onTutorAnswerCancel" text="Antwort abbrechen">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
             <MenuItem fx:id="miTutorAnswerSend" mnemonicParsing="false" onAction="#onTutorAnswerSend" text="Antwort senden">
                 <accelerator>
-                    <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                    <KeyCodeCombination alt="UP" code="DOWN" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
         </Menu>

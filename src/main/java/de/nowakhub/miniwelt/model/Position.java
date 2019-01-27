@@ -3,7 +3,7 @@ package de.nowakhub.miniwelt.model;
 import java.io.Serializable;
 
 public class Position implements Serializable {
-    static final long serialVersionUID = -8717671986526504937L;
+    static final long serialVersionUID = 1L;
 
     public int row = -1;
     public int col = -1;

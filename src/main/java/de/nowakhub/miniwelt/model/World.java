@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class World extends Observable implements Controllable, Interactable, Serializable {
-    static final long serialVersionUID = -8717671986526504937L;
+    static final long serialVersionUID = 1L;
 
     // limited by
     private transient static final int MIN_SIZE = 2;

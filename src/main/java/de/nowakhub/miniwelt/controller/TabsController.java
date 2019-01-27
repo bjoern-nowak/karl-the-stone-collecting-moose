@@ -37,9 +37,10 @@ public class TabsController {
         addTab(null, null);
     }
 
-    void addNew(String programName, Model model) {
+    Tab addNew(String programName, Model model) {
         Tab tab = addTab(model, null, null);
         if (tab != null) tab.setText(programName);
+        return tab;
     }
 
     void saved(File oldFile, File newFile) {
@@ -70,6 +71,10 @@ public class TabsController {
     void close(Tab tab) {
         openFiles.remove(getModel(tab).programFile);
         tabPane.getTabs().remove(tab);
+    }
+
+    void closeActive() {
+        close(getActiveTab());
     }
 
     private Tab addTab(File file, String fileContent) {
@@ -115,7 +120,7 @@ public class TabsController {
             Alerts.confirmClose(event,
                     "Please confirm the CLOSE action.",
                     "This program tab (" + getTabText(ModelCtx.get().programFile) + ") is changed and unsaved.\n\nStill continue?");
-        }
+        } else event.consume();
     }
 
     /**
@@ -133,12 +138,16 @@ public class TabsController {
             Alerts.confirmClose(event,
                     "Please confirm the EXIT action.",
                     "Following program tabs are new or changed and unsaved:\n" + dirtyTabNames +"\n\nStill continue?");
-        }
+        } else event.consume();
     }
 
 
     ObservableList<Tab> getTabs() {
         return tabPane.getTabs();
+    }
+
+    Tab getActiveTab() {
+        return tabPane.getSelectionModel().getSelectedItem();
     }
 
     private Tab getTab(Model model) {

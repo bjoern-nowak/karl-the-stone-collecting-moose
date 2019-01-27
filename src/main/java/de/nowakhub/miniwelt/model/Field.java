@@ -13,7 +13,7 @@ public enum Field implements Serializable {
     ACTOR_ON_ITEM("AI");
 
 
-    static final long serialVersionUID = -8717671986526504937L;
+    static final long serialVersionUID = 1L;
 
     private String key;
 

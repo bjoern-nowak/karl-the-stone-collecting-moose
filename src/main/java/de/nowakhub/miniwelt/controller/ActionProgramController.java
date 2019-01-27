@@ -75,14 +75,14 @@ public abstract class ActionProgramController extends ActionBaseController {
                 programChooser.setInitialFileName(ModelCtx.get().programFile.getName());
             }
             file = programChooser.showSaveDialog(getWindow());
-            programChooser.setInitialFileName("");
+            programChooser.setInitialFileName(tabsController.getActiveTab().getText());
         }
 
         if (file != null) {
             try (FileWriter fileWriter = new FileWriter(file);
                  PrintWriter printWriter = new PrintWriter(fileWriter)) {
                 printWriter.println(String.format(PREFIX, file.getName().replace(".java", "")));
-                printWriter.println(ModelCtx.get().program.get());
+                printWriter.println(ModelCtx.program());
                 printWriter.print(POSTFIX);
             } catch (IOException ex) {
                 Alerts.showException(ex);
@@ -93,7 +93,7 @@ public abstract class ActionProgramController extends ActionBaseController {
             ModelCtx.get().programFile = file;
             ModelCtx.get().programDirty.set(false);
             ModelCtx.get().programCompiled.set(false);
-            ModelCtx.get().programSave = ModelCtx.get().program.get();
+            ModelCtx.get().programSave = ModelCtx.program();
             return true;
         }
         return false;
@@ -106,7 +106,7 @@ public abstract class ActionProgramController extends ActionBaseController {
                 if (job.showPrintDialog(getWindow())) {
                     Text title = new Text(TabsController.getTabText(ModelCtx.get().programFile));
                     title.setFont(Font.font("Consolas", 14));
-                    Text program = new Text(ModelCtx.get().program.get());
+                    Text program = new Text(ModelCtx.program());
                     program.setFont(Font.font("Consolas", 8));
                     VBox box = new VBox(title, program);
                     if (job.printPage(box))

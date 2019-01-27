@@ -2,7 +2,6 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
 import de.nowakhub.miniwelt.controller.util.Simulation;
-import de.nowakhub.miniwelt.model.interfaces.Observer;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 
 
-public abstract class ActionSimulationController extends ActionActorController implements Observer {
+public abstract class ActionSimulationController extends ActionActorController {
 
     private Simulation simulation;
     private ChangeListener<Boolean> btnSimListener;
@@ -46,12 +45,11 @@ public abstract class ActionSimulationController extends ActionActorController i
 
     public void initialize() {
         super.initialize();
-        ModelCtx.addObserver("actionSimulation", this);
+        ModelCtx.addObserver("actionSimulation", this::update);
         update();
     }
 
-    @Override
-    public void update() {
+    private void update() {
         ModelCtx.get().simulationRunning.removeListener(btnSimListener);
         ModelCtx.get().simulationRunning.addListener(btnSimListener);
         btnSimListener.changed(null, null, ModelCtx.get().simulationRunning.get());

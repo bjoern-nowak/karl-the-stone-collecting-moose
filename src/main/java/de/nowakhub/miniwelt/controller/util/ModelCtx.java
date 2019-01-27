@@ -12,7 +12,6 @@ public class ModelCtx {
 
     private static Model model;
 
-
     public static Model getModel() {
         return model;
     }
@@ -39,16 +38,36 @@ public class ModelCtx {
         return model.getWorld();
     }
 
+    public static World getWorld() {
+        return model.getWorld();
+    }
+
     public static void setWorld(World world) {
-        ModelCtx.model.setWorld(world);
+        model.setWorld(world);
     }
 
     public static Actor actor() {
         return model.getActor();
     }
 
+    public static Actor getActor() {
+        return model.getActor();
+    }
+
     public static void setActor(Actor actor) {
-        ModelCtx.model.setActor(actor);
+        model.setActor(actor);
+    }
+
+    public static String program() {
+        return model.program.get();
+    }
+
+    public static String getProgram() {
+        return model.program.get();
+    }
+
+    public static void setProgram(String program) {
+        model.program.set(program);
     }
 
 
