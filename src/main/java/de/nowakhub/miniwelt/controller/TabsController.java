@@ -1,6 +1,7 @@
 package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.Alerts;
+import de.nowakhub.miniwelt.controller.util.Message;
 import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
 import javafx.application.Platform;
@@ -86,7 +87,7 @@ public class TabsController {
         try {
             TabController tabController = new TabController();
 
-            FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/tab.fxml"));
+            FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/tab.fxml"), Message.getBundle());
             tabLoader.setController(tabController);
 
             Tab tab = tabLoader.load();

@@ -4,13 +4,21 @@ import de.nowakhub.miniwelt.controller.util.*;
 import de.nowakhub.miniwelt.model.Model;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.BorderPane;
+
+import java.io.IOException;
 
 /**
  * Controller for primary stage (root)
  */
 public class RootController {
+
+    @FXML
+    private BorderPane root;
 
     @FXML
     private Tab tab;
@@ -41,14 +49,34 @@ public class RootController {
         // bind fxml text to model property
         status.textProperty().bindBidirectional(ModelCtx.get().statusText);
 
-        // post initialize other controllers where necessary
-        actionController.postInitialize(tabsController);
+        postInitialize();
     }
 
     /**
-     * passthrough to {@link TabsController#getTabs()}
+     * post initialize other controllers where necessary
+     */
+    public void postInitialize(){
+        actionController.postInitialize(this, tabsController);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public ObservableList<Tab> getTabs() {
         return tabsController.getTabs();
+    }
+
+    /**
+     * reload partial fxml (menubar) and re-set action controller
+     */
+    void reloadActionMenu() throws IOException {
+        // load new fxml
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/action.fxml"), Message.getBundle());
+        Node actionMenu = loader.load();
+        root.setTop(actionMenu);
+
+        // get new controller initialized
+        actionController = loader.getController();
+        postInitialize();
     }
 }

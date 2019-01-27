@@ -1,10 +1,4 @@
-Boss > https://opengameart.org/content/the-boss
-
-wall
-default_tiles_x > https://opengameart.org/content/simple-tileset
-wall2 > https://opengameart.org/content/16x16-pixel-art-dungeon-wall-and-cobblestone-floor-tiles
-
-gui
+gui icons
 win8 metro > https://www.iconfinder.com/iconsets/windows8_icons
 
 

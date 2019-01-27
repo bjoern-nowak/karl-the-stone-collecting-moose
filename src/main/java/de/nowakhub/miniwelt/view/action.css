@@ -163,3 +163,6 @@
 .btn-music {
     -fx-background-image: url("/images/icons/volume_mute.png");
 }
+.btn-language {
+    -fx-background-image: url("/images/icons/language.png");
+}

@@ -20,7 +20,7 @@
 <?import javafx.scene.control.RadioButton?>
 <VBox stylesheets="@action.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nowakhub.miniwelt.controller.ActionController">
     <MenuBar styleClass="menubar">
-        <Menu text="_Program">
+        <Menu text="%menu.program">
             <MenuItem mnemonicParsing="false" onAction="#onProgramNew" styleClass="miProgramNew" text="New">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -59,7 +59,7 @@
             </MenuItem>
         </Menu>
 
-        <Menu text="_World">
+        <Menu text="%menu.world">
             <MenuItem onAction="#onWorldLoad" text="_Load" />
             <MenuItem onAction="#onWorldSave" text="S_ave" />
             <MenuItem onAction="#onWorldExport" text="E_xport" />
@@ -78,7 +78,7 @@
             </Menu>
         </Menu>
 
-        <Menu text="_Actor">
+        <Menu text="%menu.actor">
             <MenuItem mnemonicParsing="false" onAction="#onActorBagChangeSize" text="Change bag max. size">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="UP" shortcut="UP" />
@@ -132,7 +132,7 @@
             </MenuItem>
         </Menu>
 
-        <Menu text="_Simulation">
+        <Menu text="%menu.simulation">
             <MenuItem fx:id="miSimStart" mnemonicParsing="false" onAction="#onSimStartOrContinue" styleClass="miSimStart" text="Start / Continue">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="RIGHT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -150,7 +150,7 @@
             </MenuItem>
         </Menu>
 
-        <Menu text="_Examples">
+        <Menu text="%menu.examples">
             <MenuItem mnemonicParsing="false" onAction="#onExampleSave" text="Save">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
@@ -163,7 +163,7 @@
             </MenuItem>
         </Menu>
 
-        <Menu text="_Tutor" fx:id="miTutor">
+        <Menu text="%menu.tutor" fx:id="miTutor">
             <MenuItem fx:id="miTutorRequestSend" mnemonicParsing="false" onAction="#onTutorRequestSend" text="Send request">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
@@ -338,13 +338,22 @@
         </VBox>
 
         <Separator orientation="VERTICAL" prefHeight="25.0" styleClass="separator" />
-        <Button fx:id="btnMusicToogle" mnemonicParsing="false" onAction="#onMusicToogle" text="Music Toggle">
+        <Button fx:id="btnToggleMusic" mnemonicParsing="false" onAction="#onToggleMusic" text="Toggle Music">
             <styleClass>
                 <String fx:value="btn-music" />
                 <String fx:value="btn" />
             </styleClass>
             <tooltip>
                 <Tooltip text="Toogle background music" />
+            </tooltip>
+        </Button>
+        <Button fx:id="btnToggleLanguage" mnemonicParsing="false" onAction="#onToggleLanguage" text="Toggle Language">
+            <styleClass>
+                <String fx:value="btn-language" />
+                <String fx:value="btn" />
+            </styleClass>
+            <tooltip>
+                <Tooltip text="Toogle language [de|en]" />
             </tooltip>
         </Button>
     </ToolBar>

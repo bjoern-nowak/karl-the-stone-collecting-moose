@@ -36,7 +36,7 @@ public class Run extends Application {
 
         try {
             // load root fxml document
-            FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("view/root.fxml"));
+            FXMLLoader rootLoader = new FXMLLoader(getClass().getResource("view/root.fxml"), Message.getBundle());
             Parent parent = rootLoader.load();
             Scene scene = new Scene(parent);
 

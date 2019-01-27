@@ -222,6 +222,7 @@ public class WorldController implements Observer {
         //drawGrid(state);
     }
 
+    @Deprecated
     private void drawGrid(Field[][] state) {
         // TODO: old method : needs a fix befor using
         /*
