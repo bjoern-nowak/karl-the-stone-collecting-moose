@@ -150,13 +150,13 @@
             </MenuItem>
         </Menu>
 
-        <Menu text="_Beispiele">
-            <MenuItem mnemonicParsing="false" onAction="#onExampleSave" text="Speichern">
+        <Menu text="_Examples">
+            <MenuItem mnemonicParsing="false" onAction="#onExampleSave" text="Save">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#onExampleLoad" text="Laden">
+            <MenuItem mnemonicParsing="false" onAction="#onExampleLoad" text="Load">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
@@ -164,32 +164,32 @@
         </Menu>
 
         <Menu text="_Tutor" fx:id="miTutor">
-            <MenuItem fx:id="miTutorRequestSend" mnemonicParsing="false" onAction="#onTutorRequestSend" text="Anfrage senden">
+            <MenuItem fx:id="miTutorRequestSend" mnemonicParsing="false" onAction="#onTutorRequestSend" text="Send request">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
-            <MenuItem fx:id="miTutorRequestCancel" mnemonicParsing="false" onAction="#onTutorRequestCancel" text="Anfrage zurückziehen">
+            <MenuItem fx:id="miTutorRequestCancel" mnemonicParsing="false" onAction="#onTutorRequestCancel" text="Cancel request">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
-            <MenuItem fx:id="miTutorAnswerLoad" mnemonicParsing="false" onAction="#onTutorAnswerLoad" text="Antwort laden">
+            <MenuItem fx:id="miTutorAnswerLoad" mnemonicParsing="false" onAction="#onTutorAnswerLoad" text="Load answer">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="DOWN" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
-            <MenuItem fx:id="miTutorRequestLoad" mnemonicParsing="false" onAction="#onTutorRequestLoad" text="Anfrage laden">
+            <MenuItem fx:id="miTutorRequestLoad" mnemonicParsing="false" onAction="#onTutorRequestLoad" text="Load a request">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
-            <MenuItem fx:id="miTutorAnswerCancel" mnemonicParsing="false" onAction="#onTutorAnswerCancel" text="Antwort abbrechen">
+            <MenuItem fx:id="miTutorAnswerCancel" mnemonicParsing="false" onAction="#onTutorAnswerCancel" text="Cancel answer">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="LEFT" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
             </MenuItem>
-            <MenuItem fx:id="miTutorAnswerSend" mnemonicParsing="false" onAction="#onTutorAnswerSend" text="Antwort senden">
+            <MenuItem fx:id="miTutorAnswerSend" mnemonicParsing="false" onAction="#onTutorAnswerSend" text="Send answer">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="DOWN" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                 </accelerator>
