@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/out/test/BjoernNowakSimulator"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<excludeFolder url="file://$MODULE_DIR$/miniworldDB"/>
+		<excludeFolder url="file://$MODULE_DIR$/programs"/>
+		<excludeFolder url="file://$MODULE_DIR$/worlds"/>
+	</contentEntry>
+	<levels>
+		<level name="derby" value="project"/>
+	</levels>
+</component>
