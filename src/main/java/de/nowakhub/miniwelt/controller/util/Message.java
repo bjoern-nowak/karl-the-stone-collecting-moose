@@ -12,10 +12,13 @@ public class Message {
 
     private static ResourceBundle bundle;
 
-    // load resource bundle based on language prop or default to german
     static {
-        if (PropsCtx.getLocale() != null) bundle = ResourceBundle.getBundle("bundles.message", PropsCtx.getLocale());
-        else bundle =  ResourceBundle.getBundle("bundles.message", Locale.GERMAN);
+        // load resource bundle based on language prop or default to german
+        try {
+            bundle = ResourceBundle.getBundle("bundles.message", PropsCtx.getLocale());
+        } catch (Exception ex) {
+            bundle = ResourceBundle.getBundle("bundles.message", Locale.GERMAN);
+        }
     }
 
     public static ResourceBundle getBundle() {
