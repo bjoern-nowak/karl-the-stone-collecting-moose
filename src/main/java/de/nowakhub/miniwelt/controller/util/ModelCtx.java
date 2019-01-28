@@ -2,24 +2,18 @@ package de.nowakhub.miniwelt.controller.util;
 
 import de.nowakhub.miniwelt.model.Actor;
 import de.nowakhub.miniwelt.model.Model;
-import de.nowakhub.miniwelt.model.Observable;
 import de.nowakhub.miniwelt.model.World;
-import de.nowakhub.miniwelt.model.interfaces.Observer;
+import de.nowakhub.miniwelt.model.util.Observable;
+
+import java.util.concurrent.Callable;
 
 public class ModelCtx {
 
+    // need to hold a instance as static
     private static Observable observable = new Observable() {};
 
     private static Model model;
 
-    public static Model getModel() {
-        return model;
-    }
-
-    public static void setModel(Model model) {
-        ModelCtx.model = model;
-        observable.notifyObservers();
-    }
 
     //__________________________________________________________________________________________________________________
     //    convenient getter/setter
@@ -38,16 +32,34 @@ public class ModelCtx {
         return model.getWorld();
     }
 
+    public static Actor actor() {
+        return model.getActor();
+    }
+
+    public static String program() {
+        return model.program.get();
+    }
+
+
+    //__________________________________________________________________________________________________________________
+    //    getter/setter
+    //------------------------------------------------------------------------------------------------------------------
+
+    public static Model getModel() {
+        return model;
+    }
+
+    public static void setModel(Model model) {
+        ModelCtx.model = model;
+        observable.notifyObservers();
+    }
+
     public static World getWorld() {
         return model.getWorld();
     }
 
     public static void setWorld(World world) {
         model.setWorld(world);
-    }
-
-    public static Actor actor() {
-        return model.getActor();
     }
 
     public static Actor getActor() {
@@ -58,10 +70,6 @@ public class ModelCtx {
         model.setActor(actor);
     }
 
-    public static String program() {
-        return model.program.get();
-    }
-
     public static String getProgram() {
         return model.program.get();
     }
@@ -70,21 +78,35 @@ public class ModelCtx {
         model.program.set(program);
     }
 
-
     //__________________________________________________________________________________________________________________
     //    observable
     //------------------------------------------------------------------------------------------------------------------
 
+    /**
+     * @see Observable#notifyObservers()
+     */
     public static void notifyObservers() {
         observable.notifyObservers();
     }
 
-    public static void addObserver(String key, Observer observer) {
+    /**
+     * @see Observable#addObserver(String, Runnable)
+     */
+    public static void addObserver(String key, Runnable observer) {
         observable.addObserver(key, observer);
     }
 
+    /**
+     * @see Observable#deleteObserver(String)
+     */
     public static void deleteObserver(String key) {
         observable.deleteObserver(key);
     }
 
+    /**
+     * @see Observable#silently(Callable)
+     */
+    public static void silently(Callable callable) {
+        observable.silently(callable);
+    }
 }

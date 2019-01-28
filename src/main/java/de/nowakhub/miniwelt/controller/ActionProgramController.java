@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 
 public abstract class ActionProgramController extends ActionBaseController {
 
-    private final String INVISIBLE = "import de.nowakhub.miniwelt.model.interfaces.Invisible;";
+    private final String INVISIBLE = "import de.nowakhub.miniwelt.model.util.Invisible;";
     private final String PREFIX = INVISIBLE + " public class %s extends " + Actor.class.getName() + " { public";
     private final String PREFIX_REGEX = INVISIBLE + " public class \\w+ extends " + Actor.class.getName() + " { public";
     private final String POSTFIX = "}";
@@ -156,7 +156,7 @@ public abstract class ActionProgramController extends ActionBaseController {
                 String clsName = ModelCtx.get().programFile.getName().substring(0, ModelCtx.get().programFile.getName().length() - 5);
                 Class<?> cls = cl.loadClass(clsName);
                 ModelCtx.setActor((Actor) cls.newInstance());
-                ModelCtx.actor().setInteraction(ModelCtx.world());
+                ModelCtx.actor().setInteractable(ModelCtx.world());
                 return true;
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(ex);

@@ -2,8 +2,8 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.Alerts;
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
-import de.nowakhub.miniwelt.model.Field;
 import de.nowakhub.miniwelt.model.World;
+import de.nowakhub.miniwelt.model.util.Field;
 import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;

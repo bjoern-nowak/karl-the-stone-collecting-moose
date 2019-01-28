@@ -3,11 +3,10 @@ package de.nowakhub.miniwelt.controller;
 import de.nowakhub.miniwelt.controller.util.Alerts;
 import de.nowakhub.miniwelt.controller.util.Images;
 import de.nowakhub.miniwelt.model.Actor;
-import de.nowakhub.miniwelt.model.Field;
+import de.nowakhub.miniwelt.model.util.Field;
 import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.model.exceptions.InternalUnkownFieldException;
-import de.nowakhub.miniwelt.model.interfaces.Invisible;
-import de.nowakhub.miniwelt.model.interfaces.Observer;
+import de.nowakhub.miniwelt.model.util.Invisible;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -26,7 +25,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class WorldController implements Observer {
+public class WorldController {
     
     private Model model;
     private Map<String, Double> randomGrass = new HashMap<>();
@@ -47,10 +46,6 @@ public class WorldController implements Observer {
     private ContextMenu actorContextMenu;
 
     public void initialize() {
-        // wrong: there is one world controller per model/tab
-        // subscribe to change of model (tab switch)
-        //ModelCtx.addObserver("" + this.hashCode(), this::postInitialize);
-        
         gc = canvas.getGraphicsContext2D();
         addEventHandler();
 
@@ -81,7 +76,7 @@ public class WorldController implements Observer {
                 if (dragging == null) {
                     int row = tileBy(event.getY());
                     int col = tileBy(event.getX());
-                    Field field = model.getWorld().getField()[row][col];
+                    Field field = model.getWorld().getField(row, col);
                     if (model.getWorld().isFieldWithActor(row, col)) {
                         field = Field.ACTOR;
                     } else if (model.getWorld().isFieldWithStart(row, col)) {
@@ -129,22 +124,18 @@ public class WorldController implements Observer {
         // sync canvas for actionController to make snapshots
         model.worldCanvas = canvas;
 
+        // subscribe to changes in the model and world
+        model.addObserver("canvas", this::updateCanvas);
+        model.getWorld().addObserver("canvas", this::updateCanvas);
 
-        Runnable runnable = () -> {
-            // subscribe to changes in the world
-            model.getWorld().addObserver("canvas", this);
-
-            //draw world
-            update();
-        };
-        runnable.run();
-
-        // subscribe to changes in the model
-        model.world.addListener((observable, oldValue, newValue) -> runnable.run());
+        // initial draw of world
+        updateCanvas();
     }
 
-    @Override
-    public void update() {
+    /**
+     * based on current model: build new actor context menu; resize and draw canvas
+     */
+    private void updateCanvas() {
         buildActorContextMenu();
         resize();
         draw();

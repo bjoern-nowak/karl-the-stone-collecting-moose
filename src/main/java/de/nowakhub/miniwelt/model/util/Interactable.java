@@ -1,11 +1,11 @@
-package de.nowakhub.miniwelt.model.interfaces;
+package de.nowakhub.miniwelt.model.util;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
 
 public interface Interactable {
 
     //__________________________________________________________________________________________________________________
-    //    Interactable - movement commands
+    //    movement commands
     //------------------------------------------------------------------------------------------------------------------
 
     public void stepAhead() throws NoClearPathException;
@@ -13,13 +13,13 @@ public interface Interactable {
     public void turnRight();
 
     //__________________________________________________________________________________________________________________
-    //    Interactable - complexity reducing commands
+    //    complexity reducing commands
     //------------------------------------------------------------------------------------------------------------------
 
     public void backToStart();
 
     //__________________________________________________________________________________________________________________
-    //    Interactable - action commands
+    //    action commands
     //------------------------------------------------------------------------------------------------------------------
 
     public void pickUp() throws ItemNotFoundException, BagFullException;
@@ -27,7 +27,7 @@ public interface Interactable {
     public void dropDown() throws ItemDropNotAllowedException, BagEmptyException;
 
     //__________________________________________________________________________________________________________________
-    //    Interactable - test commands
+    //    test commands
     //------------------------------------------------------------------------------------------------------------------
 
     public boolean aheadClear();

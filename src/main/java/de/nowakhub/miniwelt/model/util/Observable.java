@@ -1,7 +1,6 @@
-package de.nowakhub.miniwelt.model;
+package de.nowakhub.miniwelt.model.util;
 
 import de.nowakhub.miniwelt.controller.util.Alerts;
-import de.nowakhub.miniwelt.model.interfaces.Observer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,26 +8,41 @@ import java.util.concurrent.Callable;
 
 public abstract class Observable {
 
-    private boolean silence = false;
-    private final transient Map<String, Observer> observers = new HashMap<>();
+    protected boolean silence = false;
+    protected final transient Map<String, Runnable> observers = new HashMap<>();
 
 
+    /**
+     * call all observers; if not in silence mode
+     */
     public void notifyObservers() {
         if (silence) return;
-        for (Observer observer : observers.values()) {
-            observer.update();
+        for (Runnable observer : observers.values()) {
+            observer.run();
         }
     }
 
-    public void addObserver(String key, Observer observer) {
+    /**
+     * adds a observer by key
+     * @param key under which the observer will be added
+     */
+    public void addObserver(String key, Runnable observer) {
         //if (!observers.containsKey(key))
         observers.put(key, observer);
     }
 
+    /**
+     * remove observer by key
+     * @param key under which the observer was added
+     */
     public void deleteObserver(String key) {
         observers.remove(key);
     }
 
+    /**
+     * execute the callable without notifying observers during execution, only afterwards or on errors
+     * @param callable a task which may calls {@link #notifyObservers()}, which will get suppressed
+     */
     public void silently(Callable callable) {
         Exception exception = null;
         try {

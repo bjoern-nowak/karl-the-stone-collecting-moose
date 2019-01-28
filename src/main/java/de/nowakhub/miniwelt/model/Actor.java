@@ -1,78 +1,78 @@
 package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
-import de.nowakhub.miniwelt.model.interfaces.Interactable;
-import de.nowakhub.miniwelt.model.interfaces.Invisible;
+import de.nowakhub.miniwelt.model.util.Interactable;
+import de.nowakhub.miniwelt.model.util.Invisible;
 
 public class Actor {
-
-    private Interactable interaction;
+    
+    private Interactable interactable;
 
     public Actor() {
     }
 
-    public Actor(Interactable interaction) {
-        this.interaction = interaction;
+    public Actor(Interactable interactable) {
+        this.interactable = interactable;
     }
 
     public void main() {
 
     }
 
-    //__________________________________________________________________________________________________________________
-    //    Interactable - movement commands
-    //------------------------------------------------------------------------------------------------------------------
+    // _________________________________________________________________________________________________________________
+    //     Interactable - movement commands
+    // -----------------------------------------------------------------------------------------------------------------
 
     public void stepAhead() throws NoClearPathException {
-        interaction.stepAhead();
+        interactable.stepAhead();
     }
 
     public void turnRight() {
-        interaction.turnRight();
+        interactable.turnRight();
     }
 
-    //__________________________________________________________________________________________________________________
-    //    Interactable - complexity reducing commands
-    //------------------------------------------------------------------------------------------------------------------
+    // _________________________________________________________________________________________________________________
+    //     Interactable - complexity reducing commands
+    // -----------------------------------------------------------------------------------------------------------------
 
     public void backToStart() {
-        interaction.backToStart();
+        // TODO teleport to start
     }
 
-    //__________________________________________________________________________________________________________________
-    //    Interactable - action commands
-    //------------------------------------------------------------------------------------------------------------------
+    // _________________________________________________________________________________________________________________
+    //     Interactable - action commands
+    // -----------------------------------------------------------------------------------------------------------------
 
     public void pickUp() throws ItemNotFoundException, BagFullException {
-        interaction.pickUp();
+        interactable.pickUp();
     }
 
     public void dropDown() throws ItemDropNotAllowedException, BagEmptyException {
-        interaction.dropDown();
+        interactable.dropDown();
     }
 
-    //__________________________________________________________________________________________________________________
-    //    Interactable - test commands
-    //------------------------------------------------------------------------------------------------------------------
+    // _________________________________________________________________________________________________________________
+    //     Interactable - test commands
+    // -----------------------------------------------------------------------------------------------------------------
 
     public boolean aheadClear() {
-        return interaction.aheadClear();
+        return interactable.aheadClear();
     }
 
     public boolean bagEmpty() {
-        return interaction.bagEmpty();
+        return interactable.bagEmpty();
     }
 
     public boolean bagFull() {
-        return interaction.bagFull();
+        return interactable.bagFull();
     }
 
     public boolean foundItem() {
-        return interaction.foundItem();
+        return interactable.foundItem();
     }
 
     public boolean atStart() {
-        return interaction.atStart();
+        return interactable.atStart();
     }
 
 
@@ -81,12 +81,12 @@ public class Actor {
     //------------------------------------------------------------------------------------------------------------------
 
     @Invisible
-    public Interactable getInteraction() {
-        return interaction;
+    public Interactable getInteractable() {
+        return interactable;
     }
 
     @Invisible
-    public void setInteraction(Interactable interaction) {
-        this.interaction = interaction;
+    public void setInteractable(Interactable operator) {
+        this.interactable = operator;
     }
 }

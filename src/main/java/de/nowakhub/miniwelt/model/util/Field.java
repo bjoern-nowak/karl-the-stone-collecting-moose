@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.model;
+package de.nowakhub.miniwelt.model.util;
 
 import java.io.Serializable;
 import java.util.*;

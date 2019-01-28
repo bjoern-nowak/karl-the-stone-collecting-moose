@@ -1,28 +1,27 @@
 package de.nowakhub.miniwelt.model;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
-import de.nowakhub.miniwelt.model.interfaces.Controllable;
-import de.nowakhub.miniwelt.model.interfaces.Interactable;
+import de.nowakhub.miniwelt.model.util.*;
 
 import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class World extends Observable implements Controllable, Interactable, Serializable {
+public class World extends Observable implements Interactable, Serializable {
     static final long serialVersionUID = 1L;
 
     // limited by
-    private transient static final int MIN_SIZE = 2;
-    private int sizeRow;
-    private int sizeCol;
-    private int actorBagMax = 3;
+    protected static final int MIN_SIZE = 2;
+    protected int sizeRow;
+    protected int sizeCol;
+    protected int actorBagMax = 3;
 
     // has
-    private Field[][] field; // or use linked list (drawback: consumes more memory, may be a performance issue)
-    private Position startPos = new Position();
-    private Position actorPos = new Position();
-    private Direction actorDir = Direction.UP;
-    private int actorBag = 0;
+    protected Field[][] field; // or use linked list (drawback: consumes more memory, may be a performance issue)
+    protected Position startPos = new Position();
+    protected Position actorPos = new Position();
+    protected Direction actorDir = Direction.UP;
+    protected int actorBag = 0;
 
 
     public World() {
@@ -33,16 +32,17 @@ public class World extends Observable implements Controllable, Interactable, Ser
         resize(sizeRow, sizeCol);
     }
 
+
+
     //__________________________________________________________________________________________________________________
-    //    Controllable - commands
+    //    World - commands
     //------------------------------------------------------------------------------------------------------------------
 
-    @Override
     public void reset() {
         resize(sizeRow, sizeCol);
         synchronized (this) {
-            for (int row = 0; row < getSizeRow(); row++)
-                for (int col = 0; col < getSizeCol(); col++)
+            for (int row = 0; row < sizeRow; row++)
+                for (int col = 0; col < sizeCol; col++)
                     remove(row, col);
             placeStart(2, 2);
             placeActor(2, 2);
@@ -50,15 +50,14 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
-    @Override
     public void random() {
         synchronized (this) {
             sizeRow = ThreadLocalRandom.current().nextInt(3, 16);
             sizeCol = ThreadLocalRandom.current().nextInt(3, 16);
             reset();
 
-            for (int row = 0; row < getSizeRow(); row++) {
-                for (int col = 0; col < getSizeCol(); col++) {
+            for (int row = 0; row < sizeRow; row++) {
+                for (int col = 0; col < sizeCol; col++) {
 
                     // make it more likly that obstacles spawn near others
                     double obstacleAround = 0.0;
@@ -83,7 +82,6 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
-    @Override
     public void resize(int sizeRow, int sizeCol) throws InvalidWorldSizeException {
         if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
 
@@ -111,11 +109,11 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
+
     //__________________________________________________________________________________________________________________
-    //    Controllable - placement commands
+    //    World - placement commands
     //------------------------------------------------------------------------------------------------------------------
 
-    @Override
     public void place(Field field, int row, int col) {
         switch (field) {
             case FREE:
@@ -136,7 +134,6 @@ public class World extends Observable implements Controllable, Interactable, Ser
         }
     }
 
-    @Override
     public void remove(int row, int col) {
         synchronized (this) {
             if (field[row][col].notRemovable()) return;
@@ -145,7 +142,6 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
-    @Override
     public void placeObstacle(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
         synchronized (this) {
@@ -155,7 +151,6 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
-    @Override
     public void placeItem(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
         synchronized (this) {
@@ -165,7 +160,6 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
-    @Override
     public void placeActor(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
         synchronized (this) {
@@ -184,7 +178,6 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
-    @Override
     public void placeStart(int row, int col) throws PositionInvalidException {
         checkBoundary(row, col);
         synchronized (this) {
@@ -205,87 +198,80 @@ public class World extends Observable implements Controllable, Interactable, Ser
 
 
     //__________________________________________________________________________________________________________________
-    //    Controllable - test commands
+    //    World - test commands
     //------------------------------------------------------------------------------------------------------------------
 
-    @Override
     public boolean isInBoundary(int row, int col){
         return 0 <= row && row < sizeRow && 0 <= col && col < sizeCol;
     }
 
-    @Override
     public void checkBoundary(int row, int col) throws PositionInvalidException {
         if (!isInBoundary(row, col)) throw new PositionInvalidException();
     }
 
-    @Override
     public void existActor() throws RequireActorException {
         if (!actorPos.exists()) throw new RequireActorException();
     }
 
-    @Override
     public void existsStart() throws RequireStartException {
         if (!startPos.exists()) throw new RequireStartException();
     }
 
-    @Override
     public boolean isFieldWithActor(int row, int col) {
         return field[row][col].hasActor();
     }
 
-    @Override
     public boolean isFieldWithStart(int row, int col) {
         return field[row][col].hasStart();
     }
 
-    @Override
     public boolean isFieldAtBorder(int row, int col) {
         return row == 0 || col == 0 || row == sizeRow - 1  || col == sizeCol - 1;
     }
 
-    //__________________________________________________________________________________________________________________
-    //    Controllable - getter / setter
-    //------------------------------------------------------------------------------------------------------------------
 
-    @Override
-    synchronized public Field[][] getField() {
+    // _________________________________________________________________________________________________________________
+    //     World - getter/setter
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public Field[][] getField() {
+        // TODO clone 2d array into new one; make it unmodifyable
         return field;
     }
 
-    @Override
-    synchronized public int getSizeRow() {
+    public Field getField(int row, int col) {
+        return field[row][col];
+    }
+
+    public int getSizeRow() {
         return sizeRow;
     }
 
-    @Override
-    synchronized public int getSizeCol() {
+    public int getSizeCol() {
         return sizeCol;
     }
 
-    @Override
-    synchronized public Direction getActorDir() {
+    public Direction getActorDir() {
         return actorDir;
     }
 
-    @Override
-    public int getActorBag() {
-        return actorBag;
-    }
-
-    @Override
-    public void setActorBag(int actorBag) {
-        this.actorBag = actorBag;
-    }
-
-    @Override
     public int getActorBagMax() {
         return actorBagMax;
     }
 
-    @Override
     public void setActorBagMax(int actorBagMax) {
         this.actorBagMax = actorBagMax;
     }
+
+    public int getActorBag() {
+        return actorBag;
+    }
+
+    public void setActorBag(int actorBag) {
+        this.actorBag = actorBag;
+    }
+
+
 
     // _________________________________________________________________________________________________________________
     //     Interactable - movement commands
@@ -302,20 +288,22 @@ public class World extends Observable implements Controllable, Interactable, Ser
 
     @Override
     public void turnRight() {
-        synchronized (actorDir) {
+        synchronized (this) {
             actorDir = actorDir.turnRight();
         }
         notifyObservers();
     }
+
 
     // _________________________________________________________________________________________________________________
     //     Interactable - complexity reducing commands
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
-    synchronized public void backToStart() {
+    public void backToStart() {
 
     }
+
 
     // _________________________________________________________________________________________________________________
     //     Interactable - action commands
@@ -342,45 +330,43 @@ public class World extends Observable implements Controllable, Interactable, Ser
         notifyObservers();
     }
 
+
     // _________________________________________________________________________________________________________________
     //     Interactable - test commands
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
-    synchronized public boolean aheadClear() {
+    public boolean aheadClear() {
         int nextX = actorPos.row + actorDir.row;
         int nextY = actorPos.col + actorDir.col;
         return isInBoundary(nextX, nextY) && !field[nextX][nextY].hasObstacle();
     }
 
     @Override
-    synchronized public boolean bagEmpty() {
+    public boolean bagEmpty() {
         return actorBag == 0;
     }
 
     @Override
-    synchronized public boolean bagFull() {
+    public boolean bagFull() {
         return actorBag == actorBagMax;
     }
 
     @Override
-    synchronized public boolean foundItem() {
+    public boolean foundItem() {
         return field[actorPos.row][actorPos.col].equals(Field.ACTOR_ON_ITEM);
     }
 
     @Override
-    synchronized public boolean atStart() {
+    public boolean atStart() {
         return field[actorPos.row][actorPos.col].equals(Field.ACTOR_AT_START);
     }
+
 
 
     // _________________________________________________________________________________________________________________
     //     getter/setter for export/import (XML)
     // -----------------------------------------------------------------------------------------------------------------
-
-    public static int getMinSize() {
-        return MIN_SIZE;
-    }
 
     public void setSizeRow(int sizeRow) {
         this.sizeRow = sizeRow;

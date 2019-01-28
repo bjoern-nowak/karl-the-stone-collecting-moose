@@ -9,7 +9,7 @@ public class ProgramController {
     @FXML
     private Editor program;
 
-    public void postInitialize(Model model) {
+    void postInitialize(Model model) {
         program.dirtyProperty().bindBidirectional(model.programDirty);
         program.compiledProperty().bindBidirectional(model.programCompiled);
 

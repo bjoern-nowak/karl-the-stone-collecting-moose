@@ -11,7 +11,7 @@ public class TabController {
     private WorldController worldController;
 
 
-    public void postInitialize(Model model){
+    void postInitialize(Model model){
         programController.postInitialize(model);
         worldController.postInitialize(model);
     }

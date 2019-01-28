@@ -1,4 +1,4 @@
-package de.nowakhub.miniwelt.model.interfaces;
+package de.nowakhub.miniwelt.model.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

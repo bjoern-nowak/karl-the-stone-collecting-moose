@@ -55,7 +55,7 @@ public class RootController {
     /**
      * post initialize other controllers where necessary
      */
-    public void postInitialize(){
+    void postInitialize(){
         actionController.postInitialize(this, tabsController);
     }
 
