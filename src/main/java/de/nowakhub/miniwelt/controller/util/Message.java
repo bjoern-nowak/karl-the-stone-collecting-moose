@@ -13,11 +13,18 @@ public class Message {
     private static ResourceBundle bundle;
 
     static {
-        // load resource bundle based on language prop or default to german
+        // load bundle based on props
+        loadBundle(PropsCtx.getLocale());
+    }
+
+    /**
+     * load resource bundle or default to english
+     */
+    private static void loadBundle(Locale locale) {
         try {
-            bundle = ResourceBundle.getBundle("bundles.message", PropsCtx.getLocale());
+            bundle = ResourceBundle.getBundle("bundles.message", locale);
         } catch (Exception ex) {
-            bundle = ResourceBundle.getBundle("bundles.message", Locale.GERMAN);
+            bundle = ResourceBundle.getBundle("bundles.message", Locale.ENGLISH);
         }
     }
 
@@ -32,7 +39,8 @@ public class Message {
 
     /**
      * toggle language in order: english --> german (--> property language) --> english
-     * this only gets reflected by UI if FXML is reloaded, see: {@link RootController#reloadActionMenu()}
+     * this only gets reflected by UI if FXML is reloaded.
+     * @see RootController#reloadActionMenu()
      */
     public static void toggleLanguage() {
         Locale locale = Locale.ENGLISH;
@@ -42,6 +50,6 @@ public class Message {
         else if (bundle.getLocale().equals(Locale.GERMAN) && PropsCtx.getLocale() != null)
             locale = PropsCtx.getLocale();
 
-        bundle = ResourceBundle.getBundle("bundles.message", locale);
+        loadBundle(locale);
     }
 }
