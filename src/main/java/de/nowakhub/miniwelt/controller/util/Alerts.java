@@ -1,5 +1,6 @@
 package de.nowakhub.miniwelt.controller.util;
 
+import de.nowakhub.miniwelt.model.exceptions.PublicException;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -88,7 +89,8 @@ public class Alerts {
     }
 
     public static void showException(Throwable ex) {
-        showException(null, ex);
+        if (ex instanceof PublicException) showException(null, ex);
+        else showError("Oops that should'nt happen", "Sorry but something went internally wrong");
     }
 
     // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
