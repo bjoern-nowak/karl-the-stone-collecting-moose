@@ -1,6 +1,7 @@
 package de.nowakhub.miniwelt.controller.util;
 
 import de.nowakhub.miniwelt.model.World;
+import de.nowakhub.miniwelt.view.Editor;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -80,9 +81,7 @@ public class Student {
         if (answer != null) {
             ModelCtx.setWorld(answer.getValue());
             ModelCtx.setProgram(answer.getKey());
-            ModelCtx.get().programCompiled.set(false);
-            ModelCtx.get().programDirty.set(true);
-            ModelCtx.get().programSaved.set(false);
+            ModelCtx.get().programState.set(Editor.STATE.DIRTY);
             ModelCtx.get().requestOfStudent.set(-1);
             return true;
         }

@@ -2,8 +2,9 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.Alerts;
 import de.nowakhub.miniwelt.controller.util.Message;
-import de.nowakhub.miniwelt.model.Model;
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
+import de.nowakhub.miniwelt.model.Model;
+import de.nowakhub.miniwelt.view.Editor;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -61,8 +62,10 @@ public class TabsController {
                 // java7 feature: used for reading small files
                 List<String> lines = Files.readAllLines(file.toPath());
                 Tab newTab = addTab(file, String.join("\n", lines.subList(1, lines.size() - 1)));
-                openFiles.add(file);
-                if (newTab != null) getModel(newTab).programDirty.set(false);
+                if (newTab != null) {
+                    getModel(newTab).programState.set(Editor.STATE.SAVED);
+                    openFiles.add(file);
+                }
             } catch (IOException ex) {
                 Alerts.showException(ex);
             }
@@ -117,11 +120,11 @@ public class TabsController {
      * Event gets consumed if user canceled action
      */
     private static void confirmCloseIfNecessaery(Event event) {
-        if (getModel(event).programDirty.get()) {
+        if (getModel(event).isProgramDirty()) {
             Alerts.confirmClose(event,
                     "Please confirm the CLOSE action.",
                     "This program tab (" + getTabText(ModelCtx.get().programFile) + ") is changed and unsaved.\n\nStill continue?");
-        } else event.consume();
+        };
     }
 
     /**
@@ -139,7 +142,7 @@ public class TabsController {
             Alerts.confirmClose(event,
                     "Please confirm the EXIT action.",
                     "Following program tabs are new or changed and unsaved:\n" + dirtyTabNames +"\n\nStill continue?");
-        } else event.consume();
+        };
     }
 
 
@@ -157,7 +160,7 @@ public class TabsController {
 
     private static Collection<Tab> getDirtyTabs(Collection<Tab> tabs) {
         return tabs.stream()
-                .filter(tab -> getModel(tab).programDirty.get())
+                .filter(tab -> getModel(tab).isProgramDirty())
                 .collect(Collectors.toList());
     }
 

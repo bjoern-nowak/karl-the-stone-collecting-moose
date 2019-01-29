@@ -7,7 +7,10 @@ import javafx.scene.control.TextArea;
 
 public class Editor extends TextArea {
 
+    public enum STATE {NONE, DIRTY, SAVED, COMPILED}
+
     private BooleanProperty dirty = buildBooleanProperty(PseudoClass.getPseudoClass("dirty"), "dirty");
+    private BooleanProperty saved = buildBooleanProperty(PseudoClass.getPseudoClass("saved"), "saved");
     private BooleanProperty compiled = buildBooleanProperty(PseudoClass.getPseudoClass("compiled"), "compiled");
 
     private BooleanPropertyBase buildBooleanProperty(PseudoClass pseudoClass, String name) {
@@ -39,6 +42,18 @@ public class Editor extends TextArea {
 
     public void setDirty(boolean dirty) {
         this.dirty.set(dirty);
+    }
+
+    public boolean isSaved() {
+        return saved.get();
+    }
+
+    public BooleanProperty savedProperty() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved.set(saved);
     }
 
     public boolean isCompiled() {

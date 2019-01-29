@@ -330,7 +330,7 @@
         </Button>
         <VBox>
             <Label styleClass="sliderSimSpeedLabel" text="Simulation-Speed" />
-            <Slider fx:id="sliderSimSpeed" majorTickUnit="50.0" minorTickCount="4" showTickMarks="true" snapToTicks="true" value="50.0" styleClass="sliderSimSpeed">
+            <Slider fx:id="sliderSimSpeed" styleClass="sliderSimSpeed">
                 <tooltip>
                     <Tooltip text="Adjust speed of simulation" />
                 </tooltip>

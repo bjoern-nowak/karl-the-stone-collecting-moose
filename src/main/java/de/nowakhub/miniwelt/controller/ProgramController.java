@@ -10,8 +10,22 @@ public class ProgramController {
     private Editor program;
 
     void postInitialize(Model model) {
-        program.dirtyProperty().bindBidirectional(model.programDirty);
-        program.compiledProperty().bindBidirectional(model.programCompiled);
+        model.programState.addListener((observable, oldValue, newValue) -> {
+            program.dirtyProperty().set(false);
+            program.savedProperty().set(false);
+            program.compiledProperty().set(false);
+            switch (newValue) {
+                case DIRTY:
+                    program.dirtyProperty().set(true);
+                    break;
+                case SAVED:
+                    program.savedProperty().set(true);
+                    break;
+                case COMPILED:
+                    program.compiledProperty().set(true);
+                    break;
+            }
+        });
 
         program.textProperty().bindBidirectional(model.program);
         program.textProperty().addListener(

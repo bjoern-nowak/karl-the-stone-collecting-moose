@@ -1,34 +1,43 @@
 package de.nowakhub.miniwelt.controller.util;
 
 import de.nowakhub.miniwelt.model.Model;
-import de.nowakhub.miniwelt.model.exceptions.PublicException;
+import de.nowakhub.miniwelt.model.World;
 import javafx.application.Platform;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class Simulation extends Thread {
 
     private final Model model;
-    private volatile boolean paused = false;
+    private boolean paused = false;
+
+    private byte[] startWorld;
 
     public Simulation(Model model) {
         this.model = model;
         this.setDaemon(true);
     }
 
-    public void run() {
-        try {
-            // TODO everything is bad about this, also to many "start" attemps break the world canvas or throws exceptions
-            synchronized (this) {
-                while(paused) wait();
-                model.getActor().main();
+    public synchronized void run() {
+        while (!interrupted()) {
+            try {
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                     ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                    // pre-run: save world
+                    oos.writeObject(ModelCtx.world());
+                    startWorld = baos.toByteArray();
+
+                    // run simulation
+                    model.getActor().main();
+                }
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    Alerts.showException(ex);
+                });
             }
-        } catch (InterruptedException ex) {
-            // someone really want us to stop
-        } catch (PublicException ex) {
-            Platform.runLater(() -> {
-                Alerts.showException(ex);
-            });
-        } finally {
-            model.simulationRunning.set(false);
         }
     }
 
@@ -36,12 +45,32 @@ public class Simulation extends Thread {
         paused = true;
     }
 
-    synchronized public void proceed() {
+    public synchronized void proceed() {
         paused = false;
         notify();
     }
 
     public void terminate() {
         interrupt();
+
+        // after-run: load world
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(startWorld);
+             ObjectInputStream ois = new ObjectInputStream(bais)) {
+            model.setWorld((World) ois.readObject());
+        } catch (Exception ex) {
+            Platform.runLater(() -> {
+                Alerts.showException(ex);
+            });
+        }
+    }
+
+    public void delay() {
+        try {
+            sleep(model.simulationSpeed);
+            while(paused) wait();
+        } catch (InterruptedException ex) {
+            // someone really want us to stop
+            interrupt();
+        }
     }
 }

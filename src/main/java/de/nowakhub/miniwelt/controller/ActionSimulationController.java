@@ -2,17 +2,19 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
 import de.nowakhub.miniwelt.controller.util.Simulation;
+import de.nowakhub.miniwelt.model.Model;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
 
 
 public abstract class ActionSimulationController extends ActionActorController {
 
-    private Simulation simulation;
-    private ChangeListener<Boolean> btnSimListener;
+    private ChangeListener<Boolean> btnSimRunningListener;
+    private ChangeListener<Number> sliderSimListener;
 
 
     @FXML
@@ -29,9 +31,13 @@ public abstract class ActionSimulationController extends ActionActorController {
     @FXML
     public Button btnSimStop;
 
+    @FXML
+    public Slider sliderSimSpeed;
+
 
     public ActionSimulationController() {
-        btnSimListener = (obs, oldV, newV) -> {
+        // alternate menu items and buttons depending on simulation state
+        btnSimRunningListener = (obs, oldV, newV) -> {
             btnSimStart.setDisable(newV);
             btnSimPause.setDisable(!newV);
             btnSimStop.setDisable(!newV);
@@ -41,34 +47,62 @@ public abstract class ActionSimulationController extends ActionActorController {
             miSimStop.setDisable(!newV);
         };
 
+        // calculate simulation speed on slider change
+        sliderSimListener = (observable, oldValue, newValue) -> {
+            // TODO you can do better math instead of ternary operation
+            ModelCtx.get().simulationSpeed = newValue.intValue() <= 0.0 ? 10 : 10 * newValue.intValue();
+            RootController.statusText.set("Speed set to: " + ModelCtx.get().simulationSpeed + "ms which are " + (ModelCtx.get().simulationSpeed / 1000.0) + "s");
+        };
     }
 
     public void initialize() {
         super.initialize();
+
+        // configure speed slider (not in fxml because its business logic and not layout)
+        sliderSimSpeed.setMin(0);
+        sliderSimSpeed.setMax(300);
+        sliderSimSpeed.setMajorTickUnit(50);
+        sliderSimSpeed.setMinorTickCount(50);
+        sliderSimSpeed.setShowTickMarks(true);
+        sliderSimSpeed.setSnapToTicks(true);
+
+        // listen to tab switches and update view
         ModelCtx.addObserver("actionSimulation", this::update);
         update();
     }
 
+    /**
+     * sets listener and initially fires them
+     */
     private void update() {
-        ModelCtx.get().simulationRunning.removeListener(btnSimListener);
-        ModelCtx.get().simulationRunning.addListener(btnSimListener);
-        btnSimListener.changed(null, null, ModelCtx.get().simulationRunning.get());
+        // listen on simulation state and init value
+        ModelCtx.get().simulationRunning.removeListener(btnSimRunningListener);
+        ModelCtx.get().simulationRunning.addListener(btnSimRunningListener);
+        btnSimRunningListener.changed(null, null, ModelCtx.get().simulationRunning.get());
+
+
+        // listen on slider updates and init value
+        sliderSimSpeed.valueProperty().removeListener(sliderSimListener);
+        sliderSimSpeed.valueProperty().addListener(sliderSimListener);
+        sliderSimSpeed.valueProperty().setValue(50);
     }
 
 
     @FXML
     public void onSimStartOrContinue(ActionEvent actionEvent) {
-        boolean dirty = ModelCtx.get().programDirty.get();
-        boolean compiled = ModelCtx.get().programCompiled.get();
-        if ((dirty) || !compiled) onProgramCompile(actionEvent);
+        Model model = ModelCtx.get();
 
-        if (ModelCtx.get().programCompiled.get()) {
-            ModelCtx.get().simulationRunning.set(true);
-            if (simulation == null || !simulation.isAlive()) {
-                simulation = new Simulation(ModelCtx.get());
-                simulation.start();
+        // compile if necessary
+        if (model.isProgramDirty() || !model.isProgramCompiled()) onProgramCompile(actionEvent);
+
+        // start or continue simulation
+        if (model.isProgramCompiled()) {
+            model.simulationRunning.set(true);
+            if (model.simulation == null || !model.simulation.isAlive()) {
+                model.simulation = new Simulation(model);
+                model.simulation.start();
             } else {
-                simulation.proceed();
+                model.simulation.proceed();
             }
         }
     }
@@ -76,13 +110,13 @@ public abstract class ActionSimulationController extends ActionActorController {
     @FXML
     public void onSimPause(ActionEvent actionEvent) {
         ModelCtx.get().simulationRunning.set(false);
-        simulation.pause();
+        ModelCtx.get().simulation.pause();
     }
 
     @FXML
     public void onSimStop(ActionEvent actionEvent) {
         ModelCtx.get().simulationRunning.set(false);
-        simulation.terminate();
+        ModelCtx.get().simulation.terminate();
     }
 
 }

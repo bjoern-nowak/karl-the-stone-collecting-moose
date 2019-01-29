@@ -3,6 +3,7 @@ package de.nowakhub.miniwelt.controller;
 import de.nowakhub.miniwelt.controller.util.Alerts;
 import de.nowakhub.miniwelt.controller.util.ModelCtx;
 import de.nowakhub.miniwelt.model.Actor;
+import de.nowakhub.miniwelt.view.Editor;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -91,9 +92,8 @@ public abstract class ActionProgramController extends ActionBaseController {
 
             tabsController.saved(ModelCtx.get().programFile, file);
             ModelCtx.get().programFile = file;
-            ModelCtx.get().programDirty.set(false);
-            ModelCtx.get().programCompiled.set(false);
             ModelCtx.get().programSave = ModelCtx.program();
+            ModelCtx.get().programState.set(Editor.STATE.SAVED);
             return true;
         }
         return false;
@@ -140,12 +140,12 @@ public abstract class ActionProgramController extends ActionBaseController {
         ByteArrayOutputStream errStream = new ByteArrayOutputStream();
         boolean success = javac.run(null, null, errStream, args) == 0;
         if (!success) {
-            ModelCtx.get().programCompiled.set(false);
+            ModelCtx.get().programState.set(Editor.STATE.SAVED);
             if (!silently) Alerts.showError(
                     "Compiler says no. He complains:",
                     errStream.toString());
         } else {
-            ModelCtx.get().programCompiled.set(true);
+            ModelCtx.get().programState.set(Editor.STATE.COMPILED);
             if (!silently) Alerts.showInfo(
                     "Compiler says yes.",
                     "Compile was successful.");
@@ -157,6 +157,9 @@ public abstract class ActionProgramController extends ActionBaseController {
                 Class<?> cls = cl.loadClass(clsName);
                 ModelCtx.setActor((Actor) cls.newInstance());
                 ModelCtx.actor().setInteractable(ModelCtx.world());
+
+                // reset simulation (if one is or was running: next play will use this new compiled version)
+                ModelCtx.get().simulation = null;
                 return true;
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(ex);

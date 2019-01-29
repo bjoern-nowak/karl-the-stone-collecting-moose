@@ -1,11 +1,12 @@
 package de.nowakhub.miniwelt.model;
 
+import de.nowakhub.miniwelt.controller.util.Simulation;
 import de.nowakhub.miniwelt.model.exceptions.*;
 import de.nowakhub.miniwelt.model.util.Interactable;
 import de.nowakhub.miniwelt.model.util.Invisible;
 
 public class Actor {
-    
+
     private Interactable interactable;
 
     public Actor() {
@@ -24,10 +25,12 @@ public class Actor {
     // -----------------------------------------------------------------------------------------------------------------
 
     public void stepAhead() throws NoClearPathException {
+        delay();
         interactable.stepAhead();
     }
 
     public void turnRight() {
+        delay();
         interactable.turnRight();
     }
 
@@ -36,6 +39,7 @@ public class Actor {
     // -----------------------------------------------------------------------------------------------------------------
 
     public void backToStart() {
+        delay();
         // TODO teleport to start
     }
 
@@ -44,10 +48,12 @@ public class Actor {
     // -----------------------------------------------------------------------------------------------------------------
 
     public void pickUp() throws ItemNotFoundException, BagFullException {
+        delay();
         interactable.pickUp();
     }
 
     public void dropDown() throws ItemDropNotAllowedException, BagEmptyException {
+        delay();
         interactable.dropDown();
     }
 
@@ -88,5 +94,10 @@ public class Actor {
     @Invisible
     public void setInteractable(Interactable operator) {
         this.interactable = operator;
+    }
+
+    @Invisible
+    private void delay() {
+        if (Thread.currentThread() instanceof Simulation) ((Simulation) Thread.currentThread()).delay();
     }
 }

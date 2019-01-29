@@ -2,6 +2,8 @@ package de.nowakhub.miniwelt.controller;
 
 import de.nowakhub.miniwelt.controller.util.*;
 import de.nowakhub.miniwelt.model.Model;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,8 @@ import java.io.IOException;
  * Controller for primary stage (root)
  */
 public class RootController {
+
+    public final static StringProperty statusText = new SimpleStringProperty();
 
     @FXML
     private BorderPane root;
@@ -47,7 +51,7 @@ public class RootController {
                 Student.connect();
 
         // bind fxml text to model property
-        status.textProperty().bindBidirectional(ModelCtx.get().statusText);
+        status.textProperty().bindBidirectional(statusText);
 
         postInitialize();
     }

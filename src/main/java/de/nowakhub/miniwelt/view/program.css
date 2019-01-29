@@ -5,7 +5,7 @@
 }
 
 /* program is saved (default state) */
-.program .content {
+.program:saved .content {
     -fx-background-color: #e6e6ff;
 }
 
