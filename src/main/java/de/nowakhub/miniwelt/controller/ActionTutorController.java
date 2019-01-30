@@ -10,7 +10,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 
 import java.rmi.RemoteException;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -122,10 +122,14 @@ public abstract class ActionTutorController extends ActionExampleController {
     @FXML
     public void onTutorRequestLoad(ActionEvent actionEvent) throws RemoteException {
         // get alls request and map to student ids
-        Collection<String> keys = Tutor.listRequests().stream().map(String::valueOf).collect(Collectors.toList());
+        List<String> keys = Tutor.listRequests().stream().map(String::valueOf).collect(Collectors.toList());
 
         if (keys.isEmpty()) {
             Alerts.showInfo("No requests yet", "Thats good, not?");
+            return;
+        }
+        if (keys.size() == 1) {
+            loadRequest(keys.get(0));
             return;
         }
 
@@ -133,32 +137,34 @@ public abstract class ActionTutorController extends ActionExampleController {
         Alerts.requestDecision(keys,
                 "Which student request should be loaded as a new tab?",
                 "Load Request of Student: ")
-                .ifPresent(id -> {
-                    try {
-                        // load student request as new tab
-                        Integer student = Integer.valueOf(id);
-                        Model request = Tutor.loadRequest(student);
-                        Tab tab = tabsController.addNew("Request_Student_" + student, request);
+                .ifPresent(this::loadRequest);
+    }
 
-                        // cancel request answer on tab close
-                        tab.setOnCloseRequest(event -> {
-                            Alerts.confirmClose(event,
-                                    "Please confirm the CLOSE action.",
-                                    "Closing this program tab (Request_Student_" + student + ") puts the student request back.\n\nStill continue?");
-                            if (event.isConsumed()) return; // action abort
-                            try {
-                                Tutor.cancel(student, request);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException(e);
-                            } finally {
-                                tabsController.close(tab);
-                            }
+    private void loadRequest(String studentId) {
+        try {
+            int student = Integer.valueOf(studentId);
+            Model request = Tutor.loadRequest(student);
 
-                        });
-                    } catch (RemoteException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+            Tab tab = tabsController.addNew("Request_Student_" + student, request);
+
+            // cancel request answer on tab close
+            tab.setOnCloseRequest(event -> {
+                Alerts.confirmClose(event,
+                        "Please confirm the CLOSE action.",
+                        "Closing this program tab (Request_Student_" + student + ") puts the student request back.\n\nStill continue?");
+                if (event.isConsumed()) return; // action abort
+                try {
+                    Tutor.cancel(student, request);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    tabsController.close(tab);
+                }
+
+            });
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
