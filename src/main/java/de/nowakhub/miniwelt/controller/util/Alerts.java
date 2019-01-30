@@ -37,7 +37,7 @@ public class Alerts {
     }
 
     /**
-     * Consumes event if user cancels action
+     * Request confirmation; consumes event if user cancels
      */
     public static void confirmClose(Event event, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -63,7 +63,7 @@ public class Alerts {
     }
 
     /**
-     * Request a dropbox choice
+     * Request make a choice from a dropbox
      */
     public static Optional<String> requestDecision(Collection<String> choices, String headerText, String contentText) {
         ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.iterator().next(), choices);
@@ -75,7 +75,7 @@ public class Alerts {
     }
 
     /**
-     * Show error
+     * Show dialog as error
      */
     public static void showError(String header, String content) {
         Sounds.playWarning();
@@ -88,13 +88,28 @@ public class Alerts {
         alert.showAndWait();
     }
 
+
+    /**
+     * shows a dialog about the exception, only if the exception is an instance of {@link PublicException}
+     * @param ex must be set
+     */
     public static void showException(Throwable ex) {
-        if (ex instanceof PublicException) showException(null, ex);
-        else showError("Oops that should'nt happen", "Sorry but something went internally wrong");
+        showException(null, ex);
     }
 
-    // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
+
+    /**
+     * shows a dialog about the exception, only if the exception is an instance of {@link PublicException}, except debug property is set
+     * @see <a href="https://code.makery.ch/blog/javafx-dialogs-official/">vgl. https://code.makery.ch/blog/javafx-dialogs-official/</a> (visited 30.01.2019)
+     * @param th may be null
+     * @param ex must be set
+     */
     public static void showException(Thread th, Throwable ex) {
+        if (!PropsCtx.isDebug() && !(ex instanceof PublicException)) {
+            showError("Oops that should'nt happen", "Sorry but something went internally wrong");
+            return;
+        }
+
         Sounds.playWarning();
         Alert alert = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
@@ -135,9 +150,9 @@ public class Alerts {
     }
 
 
-    // vgl. https://code.makery.ch/blog/javafx-dialogs-official/
     /**
      * Request two text input
+     * @see <a href="https://code.makery.ch/blog/javafx-dialogs-official/">vgl. https://code.makery.ch/blog/javafx-dialogs-official/</a> (visited 30.01.2019)
      */
     public static Optional<Pair<String, String>> requestDoubleInput(String headerText, String contentText, String label1, String label2) {
         // Create the custom dialog.

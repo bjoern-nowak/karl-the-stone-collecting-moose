@@ -31,6 +31,13 @@ public class PropsCtx {
     }
 
     /**
+     * @return true only if property 'debug' is present
+     */
+    public static boolean isDebug() {
+        return props.getProperty("debug") != null;
+    }
+
+    /**
      * @return true only if properties 'host' and 'port' are present
      */
     public static boolean hasServer() {
