@@ -23,6 +23,11 @@ public class Alerts {
 
     private static AudioClip alarm = new AudioClip(Alerts.class.getResource("/sounds/alarm_beep_warning_01.wav").toString());
 
+
+    public static boolean isPublicException(Throwable ex) {
+        return ex instanceof PublicException;
+    }
+
     /**
      * Show info
      */
@@ -66,6 +71,7 @@ public class Alerts {
      * Request make a choice from a dropbox
      */
     public static Optional<String> requestDecision(Collection<String> choices, String headerText, String contentText) {
+        if (choices.isEmpty()) return Optional.empty();
         ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.iterator().next(), choices);
         dialog.setTitle("Choice Dialog");
         dialog.setHeaderText(headerText);
@@ -105,21 +111,21 @@ public class Alerts {
      * @param ex must be set
      */
     public static void showException(Thread th, Throwable ex) {
-        if (!PropsCtx.isDebug() && !(ex instanceof PublicException)) {
-            showError("Oops that should'nt happen", "Sorry but something went internally wrong");
-            return;
-        }
+        if (PropsCtx.isDebug() || isPublicException(ex)) showExceptionInternal(ex);
+        else if (isPublicException(ex.getCause())) showExceptionInternal(ex.getCause());
+        else if (ex instanceof InvocationTargetException && isPublicException(((InvocationTargetException) ex).getTargetException())) showExceptionInternal(((InvocationTargetException) ex).getTargetException());
+        else if (ex.getCause() instanceof InvocationTargetException && isPublicException(((InvocationTargetException) ex.getCause()).getTargetException())) showExceptionInternal(((InvocationTargetException) ex.getCause()).getTargetException());
+        else showError("Oops that should'nt happen", "Sorry but something went internally wrong");
+    }
 
+    private static void showExceptionInternal(Throwable ex) {
         Sounds.playWarning();
         Alert alert = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Exception Dialog");
         alert.setHeaderText("Oops, something has gone wrong.");
-        String contentText = ex.toString();
-        if (ex instanceof InvocationTargetException) {
-            contentText = ((InvocationTargetException) ex).getTargetException().getMessage();
-        }
+        String contentText = ex.getMessage();
         alert.setContentText(contentText);
         Label label = new Label("The exception stacktrace was:");
 
