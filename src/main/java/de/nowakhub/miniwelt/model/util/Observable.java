@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+/**
+ * makes a class observable; can be used in silence mode ({@link #silently(Callable)})
+ */
 public abstract class Observable {
 
     protected boolean silence = false;

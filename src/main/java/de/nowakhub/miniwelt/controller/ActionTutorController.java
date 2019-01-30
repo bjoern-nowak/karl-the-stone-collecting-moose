@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Controller for menu Tutor
+ * implements all actions possible through menu of tutor
  */
 public abstract class ActionTutorController extends ActionExampleController {
 
@@ -124,6 +124,7 @@ public abstract class ActionTutorController extends ActionExampleController {
         // get alls request and map to student ids
         List<String> keys = Tutor.listRequests().stream().map(String::valueOf).collect(Collectors.toList());
 
+        // special cases
         if (keys.isEmpty()) {
             Alerts.showInfo("No requests yet", "Thats good, not?");
             return;
@@ -142,9 +143,11 @@ public abstract class ActionTutorController extends ActionExampleController {
 
     private void loadRequest(String studentId) {
         try {
+            // load request
             int student = Integer.valueOf(studentId);
             Model request = Tutor.loadRequest(student);
 
+            // add new tab for request
             Tab tab = tabsController.addNew("Request_Student_" + student, request);
 
             // cancel request answer on tab close
@@ -152,7 +155,10 @@ public abstract class ActionTutorController extends ActionExampleController {
                 Alerts.confirmClose(event,
                         "Please confirm the CLOSE action.",
                         "Closing this program tab (Request_Student_" + student + ") puts the student request back.\n\nStill continue?");
-                if (event.isConsumed()) return; // action abort
+                // abort close action if needed
+                if (event.isConsumed()) return;
+
+                // close permitted: cancel request answer
                 try {
                     Tutor.cancel(student, request);
                 } catch (RemoteException e) {

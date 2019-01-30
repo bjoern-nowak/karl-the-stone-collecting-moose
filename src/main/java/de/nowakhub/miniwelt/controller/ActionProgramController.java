@@ -21,11 +21,14 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 
 
+/**
+ * implements all actions possible through menu of program and toolbar buttons for program
+ */
 public abstract class ActionProgramController extends ActionBaseController {
 
+    // structure of a user program
     private final String INVISIBLE = "import de.nowakhub.miniwelt.model.util.Invisible;";
     private final String PREFIX = INVISIBLE + " public class %s extends " + Actor.class.getName() + " { public";
-    private final String PREFIX_REGEX = INVISIBLE + " public class \\w+ extends " + Actor.class.getName() + " { public";
     private final String POSTFIX = "}";
 
     private FileChooser programChooser;
@@ -41,6 +44,7 @@ public abstract class ActionProgramController extends ActionBaseController {
         File dir = Paths.get("programs").toFile();
         if (!dir.exists()) dir.mkdirs();
 
+        // configure file chooser
         programChooser = new FileChooser();
         programChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java", "*.java"));
         programChooser.setInitialDirectory(dir);
@@ -68,8 +72,16 @@ public abstract class ActionProgramController extends ActionBaseController {
     public void onProgramSaveAs(ActionEvent actionEvent) {
         saveProgram(true);
     }
+
+    /**
+     * saves the current program to a file
+     * @param forceUserInput if true asks user where to save, even if there is already a known file
+     * @return true on success
+     */
     private boolean saveProgram(boolean forceUserInput) {
         File file = ModelCtx.get().programFile;
+
+        // check if we need to know where to save
         if (file == null || forceUserInput) {
             if (file != null) {
                 //programChooser.setInitialDirectory(ModelCtx.get().programFile.getParentFile());
@@ -79,7 +91,9 @@ public abstract class ActionProgramController extends ActionBaseController {
             programChooser.setInitialFileName(tabsController.getActiveTab().getText());
         }
 
+        // file is now known
         if (file != null) {
+            // save program to file
             try (FileWriter fileWriter = new FileWriter(file);
                  PrintWriter printWriter = new PrintWriter(fileWriter)) {
                 printWriter.println(String.format(PREFIX, file.getName().replace(".java", "")));
@@ -93,9 +107,11 @@ public abstract class ActionProgramController extends ActionBaseController {
             // in case of "save as" rename tab text
             tabsController.saved(ModelCtx.get().programFile, file);
 
+            // update model
             ModelCtx.get().programFile = file;
             ModelCtx.get().programSave = ModelCtx.program();
             ModelCtx.get().programState.set(Editor.STATE.SAVED);
+
             return true;
         }
         return false;
@@ -106,13 +122,15 @@ public abstract class ActionProgramController extends ActionBaseController {
         Platform.runLater(() -> {
             if (job != null)
                 if (job.showPrintDialog(getWindow())) {
+                    // configure printable
                     Text title = new Text(TabsController.getTabText(ModelCtx.get().programFile));
                     title.setFont(Font.font("Consolas", 14));
                     Text program = new Text(ModelCtx.program());
                     program.setFont(Font.font("Consolas", 8));
                     VBox box = new VBox(title, program);
-                    if (job.printPage(box))
-                        job.endJob();
+
+                    // print
+                    if (job.printPage(box)) job.endJob();
                 }
 
         });
@@ -126,37 +144,44 @@ public abstract class ActionProgramController extends ActionBaseController {
         }
     }
 
+    /**
+     * compiles the program
+     * @param silently if true there wont be a dialog feedback for the user
+     * @return true on success
+     */
     boolean compile(boolean silently) {
         if (ModelCtx.get().programFile == null) return false;
 
+        // configure arguments
         File classDir = Paths.get("out/production/miniwelt_bjnowak").toAbsolutePath().toFile();
         File sourceDir = Paths.get("src/main/java").toAbsolutePath().toFile();
-
         String[] args = new String[] {
                 "-classpath", System.getProperty("java.class.path") + ";" + classDir.toString(),
                 "-sourcepath", sourceDir.toString(),
                 "-d", ModelCtx.get().programFile.getParent(),
                 ModelCtx.get().programFile.toString()
         };
+
+        // compile
         JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
         ByteArrayOutputStream errStream = new ByteArrayOutputStream();
         boolean success = javac.run(null, null, errStream, args) == 0;
-        if (!success) {
-            ModelCtx.get().programState.set(Editor.STATE.SAVED);
-            if (!silently) Alerts.showError(
-                    "Compiler says no. He complains:",
-                    errStream.toString());
-        } else {
+
+        // feedback
+        if (success) {
             ModelCtx.get().programState.set(Editor.STATE.COMPILED);
             if (!silently) Alerts.showInfo(
                     "Compiler says yes.",
                     "Compile was successful.");
 
             try {
+                // load compiled user program class
                 URL[] urls = new URL[] { ModelCtx.get().programFile.getParentFile().toURI().toURL() };
                 ClassLoader cl = new URLClassLoader(urls);
                 String clsName = ModelCtx.get().programFile.getName().substring(0, ModelCtx.get().programFile.getName().length() - 5);
                 Class<?> cls = cl.loadClass(clsName);
+
+                // replace actor with new instance
                 ModelCtx.setActor((Actor) cls.newInstance());
                 ModelCtx.actor().setInteractable(ModelCtx.world());
 
@@ -164,7 +189,11 @@ public abstract class ActionProgramController extends ActionBaseController {
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(ex);
             }
-
+        } else {
+            ModelCtx.get().programState.set(Editor.STATE.SAVED);
+            if (!silently) Alerts.showError(
+                    "Compiler says no. He complains:",
+                    errStream.toString());
         }
         return false;
     }

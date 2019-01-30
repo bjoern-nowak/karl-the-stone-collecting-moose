@@ -17,6 +17,10 @@ public enum Direction implements Serializable {
         this.col = col;
     }
 
+    /**
+     * does not change the direction
+     * @return the direction to the right
+     */
     public Direction turnRight() {
         switch (this) {
             case UP: return Direction.RIGHT;

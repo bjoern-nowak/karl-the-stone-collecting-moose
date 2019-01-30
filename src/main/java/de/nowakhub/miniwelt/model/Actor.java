@@ -5,8 +5,12 @@ import de.nowakhub.miniwelt.model.exceptions.*;
 import de.nowakhub.miniwelt.model.util.Interactable;
 import de.nowakhub.miniwelt.model.util.Invisible;
 
+/**
+ * default actor class, user programs extends from this
+ */
 public class Actor {
 
+    // the world which to interact with
     private Interactable interactable;
 
     public Actor() {
@@ -16,6 +20,9 @@ public class Actor {
         this.interactable = interactable;
     }
 
+    /**
+     * gets called by {@link Simulation#run()}
+     */
     public void main() {
 
     }
@@ -91,11 +98,15 @@ public class Actor {
         this.interactable = operator;
     }
 
+    /**
+     * if called in a {@link Simulation} thread this method delays the execution
+     * @return true, if thread is not interrupted
+     */
     @Invisible
     private boolean delay() {
         if (Thread.currentThread() instanceof Simulation)
             return ((Simulation) Thread.currentThread()).delay();
         else
-            return true;
+            return Thread.currentThread().isInterrupted();
     }
 }

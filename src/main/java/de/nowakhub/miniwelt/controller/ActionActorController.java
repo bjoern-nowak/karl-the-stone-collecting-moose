@@ -6,7 +6,9 @@ import de.nowakhub.miniwelt.model.exceptions.InvalidInputException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-
+/**
+ * implements all actions possible through menu of actor and toolbar buttons for actor
+ */
 public abstract class ActionActorController extends ActionWorldController {
 
     public void initialize() {

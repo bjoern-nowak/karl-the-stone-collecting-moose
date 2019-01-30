@@ -19,7 +19,7 @@ public class Sounds {
     private static final List<MediaPlayer> players = new ArrayList<>();
     private static MediaPlayer activePlayer;
 
-    // TODO ugly musicPlaying boolean; would use activePlayer#getStatus but there seems to be a thread-order issue
+    // TODO [refactoring] remove musicPlaying boolean; use activePlayer#getStatus; fix issue about call-orders (status updated but not reflected else where)
     private static boolean musicPlaying;
 
     static {
@@ -47,10 +47,17 @@ public class Sounds {
     }
 
 
+    /**
+     * make a beep noise
+     */
     public static void playWarning() {
         Platform.runLater(() -> alarm.play());
     }
 
+    /**
+     * start or stop background music (toggle)
+     * @return true if music is playing (after toggle)
+     */
     public static boolean toggleMusic() {
         if (activePlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
             activePlayer.pause();
@@ -61,7 +68,6 @@ public class Sounds {
         }
         return musicPlaying;
     }
-
 
     public static boolean isMusicPlaying() {
         return musicPlaying;

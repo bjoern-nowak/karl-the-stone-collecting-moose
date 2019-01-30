@@ -25,6 +25,10 @@ public class ExamplesDB {
     // jdbc Connection
     private static Connection conn = null;
 
+    /**
+     * open a connection to the database and create database/tables if necessary
+     * call {@link #close()} to close the connection
+     */
     public static void open() {
         try {
             // register driver
@@ -35,6 +39,7 @@ public class ExamplesDB {
                 if (conn == null)
                     conn = DriverManager.getConnection(DB);
             } catch (SQLException ex) {
+                // database not exists
                 if (ex.getSQLState().equals("XJ004")) {
                     conn = DriverManager.getConnection(DB_CREATE);
                     try (Statement stmt = conn.createStatement()) {
@@ -48,25 +53,33 @@ public class ExamplesDB {
         }
     }
 
+    /**
+     * close connection if available
+     */
     public static void close() {
         try {
             if (conn != null) conn.close();
             conn = null;
         } catch (SQLException ex) {
-            //Alerts.showException(ex);
+            Alerts.showException(ex);
         }
 
     }
 
+    /**
+     * saves a example model
+     * @return true if save was completed
+     */
     public static boolean save(String name, Collection<String> tags, Model model) {
         try {
             conn.setAutoCommit(false);
             try (PreparedStatement prepStmt1 = conn.prepareStatement("INSERT INTO " + TABLE_EXAMPLES + " VALUES ('" + name + "', ?, ?)");
                  PreparedStatement prepStmt2 = conn.prepareStatement("INSERT INTO " + TABLE_EXAMPLES_TAGS + " VALUES ('" + name + "', ?)");) {
 
-                // add example data
+                // prepare example program
                 prepStmt1.setString(1, model.program.get());
 
+                // prepare example world
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
                      ObjectOutputStream oos = new ObjectOutputStream(baos)) {
                     oos.writeObject(model.getWorld());
@@ -75,6 +88,8 @@ public class ExamplesDB {
                         prepStmt1.setBinaryStream(2, bais, modelAsBytes.length);
                     }
                 }
+
+                // add example
                 prepStmt1.executeUpdate();
 
                 // add examples tags
@@ -88,14 +103,18 @@ public class ExamplesDB {
             } catch (Exception ex) {
                 Alerts.showException(ex);
                 conn.rollback();
+            } finally {
+                conn.setAutoCommit(true);
             }
-            conn.setAutoCommit(true);
         } catch (Exception ex) {
             Alerts.showException(ex);
         }
         return false;
     }
 
+    /**
+     * lock up for examples saved with defined tag
+     */
     public static Collection<String> filter(String tag) {
         Collection<String> names = new ArrayList<>();
         try (Statement stmt = conn.createStatement();) {
@@ -109,6 +128,9 @@ public class ExamplesDB {
         return names;
     }
 
+    /**
+     * load example saved under defined name
+     */
     public static Model load(String name) {
         try (Statement stmt = conn.createStatement();) {
             ResultSet result = stmt.executeQuery("SELECT e.program, e.world FROM " + TABLE_EXAMPLES + " e WHERE e.name LIKE '" + name + "'");
@@ -119,8 +141,10 @@ public class ExamplesDB {
 
                 try (ByteArrayInputStream bais = new ByteArrayInputStream(worldAsBytes);
                      ObjectInputStream ois = new ObjectInputStream(bais);) {
+                    // convert bytes into world object
                     World world = (World) ois.readObject();
 
+                    // build model
                     Model model = new Model(program);
                     model.setWorld(world);
                     return model;

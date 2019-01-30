@@ -29,11 +29,13 @@ public class Tutor {
      * @see PropsCtx
      */
     public static void start() {
+        // dont block javafx application thread on retrying
         Thread thread = new Thread(() -> {
             try {
                 int retries = 0;
                 do {
                     try {
+                        // start server
                         server = new ServerImpl();
                         registry = LocateRegistry.createRegistry(PropsCtx.getPort());
                         registry.rebind("server", server);

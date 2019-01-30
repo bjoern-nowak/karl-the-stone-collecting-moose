@@ -25,9 +25,16 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * Controller for the right side of a tab (the world)
+ * Contained in a tab; works directly on a model
+ */
 public class WorldController {
-    
+
     private Model model;
+
+    // used for variations of graphics
     private Map<String, Double> randomGrass = new HashMap<>();
     private Map<String, Double> randomWater = new HashMap<>();
     private Random radomizer = new Random();
@@ -77,11 +84,14 @@ public class WorldController {
                     int row = tileBy(event.getY());
                     int col = tileBy(event.getX());
                     Field field = model.getWorld().getField(row, col);
+
+                    // dont drag stacked objects (like Actor over an item)
                     if (model.getWorld().isFieldWithActor(row, col)) {
                         field = Field.ACTOR;
                     } else if (model.getWorld().isFieldWithStart(row, col)) {
                         field = Field.START;
                     }
+
                     dragging = field;
                 } else { // if (event.getPickResult().getIntersectedNode().getClass().equals(Canvas.class)) {
                     int row = tileBy(event.getY());
@@ -92,7 +102,7 @@ public class WorldController {
         });
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> dragging = null);
 
-        // feature: actors popup menu
+        // feature: show actors context menu
         canvas.setOnContextMenuRequested(event -> {
             int row = tileBy(event.getY());
             int col = tileBy(event.getX());
@@ -103,8 +113,8 @@ public class WorldController {
             }
         });
 
-        // feature: ctrl + mouse scroll can zomm in/out canvas
-        scrollPane.addEventHandler(ScrollEvent.SCROLL, event -> {
+        // feature: ctrl + mousewheel can zoom in/out canvas
+        stackPane.addEventHandler(ScrollEvent.SCROLL, event -> {
             if (event.isControlDown()) {
                 if (0 > event.getDeltaY()) {
                     zoom -= 0.1 * zoom;
@@ -178,10 +188,13 @@ public class WorldController {
 
     private void addMethodToActorContextMenu(Method method) {
         int modifiers = method.getModifiers();
+        // filter method to include
         if (method.getAnnotation(Invisible.class) == null
                 && !Modifier.isAbstract(modifiers)
                 && !Modifier.isStatic(modifiers)
                 && !Modifier.isPrivate(modifiers)) {
+
+            // contreuct menu item text and action
             MenuItem item = new MenuItem();
             if (method.getParameterCount() > 0) {
                 String paramTypes = Arrays.stream(method.getParameterTypes())
@@ -192,8 +205,10 @@ public class WorldController {
             } else {
                 item.setText(method.getReturnType().getName() + " " + method.getName() + "()");
                 item.setOnAction(event -> {
+                    // execute action silently
                     model.getWorld().silently(() -> {
                         method.setAccessible(true);
+                        // call actor method
                         Object result = method.invoke(model.getActor());
                         if (result != null) {
                             // TODO [refactoring] handle return values better
@@ -217,9 +232,9 @@ public class WorldController {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         Field[][] state = model.getWorld().getField();
-        drawWater(state);
+        drawWaterAndCliffs(state);
         drawGround(state);
-        drawFields(state);
+        drawObjects(state);
         //drawGrid(state);
     }
 
@@ -237,21 +252,28 @@ public class WorldController {
         */
     }
 
-    private void drawWater(Field[][] state) {
-
+    /**
+     * draw the outer non-playable fields (water and cliffs)
+     */
+    private void drawWaterAndCliffs(Field[][] state) {
+        // two more fields on each side of the state makes 4
         for (int row = 0; row < state.length + 4; row++) {
             for (int col = 0; col < state[0].length + 4; col++) {
-                boolean isOuter = row == 0 || col == 0 || row == state.length + 3  || col == state[0].length + 3;
-                boolean isInner = row == 1 || col == 1 || row == state.length + 2  || col == state[0].length + 2;
+                // convenient flags
+                boolean isMostOuterRing = row == 0 || col == 0 || row == state.length + 3  || col == state[0].length + 3;
+                boolean isOuterRing = row == 1 || col == 1 || row == state.length + 2  || col == state[0].length + 2;
 
-                if (isOuter || isInner) {
+                // only work on the outer rings
+                if (isMostOuterRing || isOuterRing) {
 
+                    // persist randomness
                     String key = row + "" + col;
                     if (!randomWater.containsKey(key)) randomWater.put(key, radomizer.nextDouble());
                     Double random = randomWater.get(key);
                     Image img = null;
 
-                    if (isOuter) {
+                    // field should be water
+                    if (isMostOuterRing) {
                         if (random < 0.7) img = Images.water_clean;
                         else if (random < 0.75) img = Images.water_dirt;
                         else if (random < 0.8) img = Images.water_grass;
@@ -260,42 +282,54 @@ public class WorldController {
                         else if (random < 0.95) img = Images.water_shiny;
                         else if (random < 1.0) img = Images.water_wild;
 
+                    // field should be a cliff
                     } else {
+                        // convenient flags
                         boolean up = row == 1;
                         boolean left = col == 1;
                         boolean down = row == state.length + 2;
                         boolean right = col == state[0].length + 2;
 
+                        // field is a corner
                         if (up && left)  img = Images.corner_up_left;
                         else if (up && right)  img = Images.corner_up_right;
                         else if (down && left)  img = Images.corner_down_left;
                         else if (down && right)  img = Images.corner_down_right;
-
-                        if (random < 0.8) {
-                            if (up && !left && !right)  img = Images.border_up_clean;
-                            else if (left && !up && !down)  img = Images.border_left_clean;
-                            else if (down && !left && !right)  img = Images.border_down_clean;
-                            else if (right && !up && !down)  img = Images.border_right_clean;
-                        } else {
-                            if (up && !left && !right)  img = Images.border_up_wild;
-                            else if (left && !up && !down)  img = Images.border_left_wild;
-                            else if (down && !left && !right)  img = Images.border_down_wild;
-                            else if (right && !up && !down)  img = Images.border_right_wild;
+                        else {
+                            // field is a border
+                            if (random < 0.8) {
+                                if (up && !left && !right)  img = Images.border_up_clean;
+                                else if (left && !up && !down)  img = Images.border_left_clean;
+                                else if (down && !left && !right)  img = Images.border_down_clean;
+                                else if (right && !up && !down)  img = Images.border_right_clean;
+                            } else {
+                                if (up && !left && !right)  img = Images.border_up_wild;
+                                else if (left && !up && !down)  img = Images.border_left_wild;
+                                else if (down && !left && !right)  img = Images.border_down_wild;
+                                else if (right && !up && !down)  img = Images.border_right_wild;
+                            }
                         }
                     }
 
+                    // finally draw it
                     gc.drawImage(img, tilePos(col) - (tileSize() * 2), tilePos(row) - (tileSize() * 2), tileSize(), tileSize());
                 }
             }
         }
     }
 
+    /**
+     * draw ground of playable fields
+     */
     private void drawGround(Field[][] state) {
         for (int row = 0; row < state.length; row++) {
             for (int col = 0; col < state[row].length; col++) {
-                Image img = Images.grass_clean;
+                // persist randomness
                 String key = row + "" + col;
                 if (!randomGrass.containsKey(key)) randomGrass.put(key, radomizer.nextDouble());
+
+                // draw grass
+                Image img = Images.grass_clean;
                 if (randomGrass.get(key) < 0.2) img = Images.grass_wild;
                 else if (randomGrass.get(key) < 0.25) img = Images.grass_dirty;
                 drawImage(img, col, row);
@@ -303,7 +337,10 @@ public class WorldController {
         }
     }
 
-    private void drawFields(Field[][] state) throws InternalUnkownFieldException {
+    /**
+     * draw objects of playfield like actor and fences
+     */
+    private void drawObjects(Field[][] state) throws InternalUnkownFieldException {
         for (int row = 0; row < state.length; row++) {
             for (int col = 0; col < state[row].length; col++) {
                 switch (state[row][col]) {
@@ -341,6 +378,9 @@ public class WorldController {
         drawImage(Images.start, col, row);
     }
 
+    /**
+     * draw actor; in correct direction; and a little bit bigger then others
+     */
     private void drawActor(int row, int col) {
         Image img;
         switch(model.getWorld().getActorDir()) {
@@ -360,13 +400,18 @@ public class WorldController {
         gc.drawImage(img, tilePos(col) - (tileSize() / 2), tilePos(row) - (tileSize() / 1.8), tileSize() * 1.8, tileSize() * 1.8);
     }
 
+    /**
+     * draw fence; connect neighbor fences
+     */
     private void drawObstacle(int row, int col, Field[][] state) {
         Image img = Images.obstacle;
 
+        // convenient flags
         boolean left = model.getWorld().isInBoundary(row, col - 1) && state[row][col - 1].hasObstacle();
         boolean down = model.getWorld().isInBoundary(row + 1, col) && state[row + 1][col].hasObstacle();
         boolean right = model.getWorld().isInBoundary(row, col + 1) && state[row][col + 1].hasObstacle();
 
+        // connect neighbor fences
         if (left && down && right) img = Images.obstacle_left_down_right;
         else if (left && down) img = Images.obstacle_left_down;
         else if (left && right) img = Images.obstacle_left_right;
@@ -375,6 +420,7 @@ public class WorldController {
         else if (down) img = Images.obstacle_down;
         else if (right) img = Images.obstacle_right;
 
+        // draw fence
         drawImage(img, col, row);
     }
 
@@ -394,9 +440,17 @@ public class WorldController {
     private double tileSize() {
         return zoom * TILE_SIZE;
     }
+
+    /**
+     * define position for drawing; add extra space due to outer rings
+     */
     private double tilePos(double multiplikator) {
         return tileSize() * (multiplikator + 2);
     }
+
+    /**
+     * get position of drawing; subtract extra space due to outer rings
+     */
     private int tileBy(double i) {
         return (int) (i / tileSize()) - 2;
     }

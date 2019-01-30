@@ -49,6 +49,7 @@ public abstract class ActionBaseController {
     @FXML
     public void onToggleLanguage(ActionEvent actionEvent) throws IOException {
         Message.toggleLanguage();
+
         // reload fxml for new locale to take in place
         rootController.reloadActionMenu();
     }

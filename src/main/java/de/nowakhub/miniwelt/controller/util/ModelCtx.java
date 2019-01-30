@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 
 public class ModelCtx {
 
-    // need to hold a instance as static
+    // need to hold a instance as static (cannot extend)
     private static Observable observable = new Observable() {};
 
     private static Model model;

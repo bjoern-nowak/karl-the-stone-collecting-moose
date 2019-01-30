@@ -192,7 +192,7 @@ public class Alerts {
         grid.add(new Label(label2), 0, 1);
         grid.add(value2, 1, 1);
 
-        // Enable/Disable login button depending on whether a username was entered.
+        // Enable/Disable submit button depending on whether a field is empty.
         Node submitBtn = dialog.getDialogPane().lookupButton(submit);
         submitBtn.setDisable(true);
         value1.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -207,7 +207,7 @@ public class Alerts {
         // Request focus
         Platform.runLater(value1::requestFocus);
 
-        // Convert the result to a username-password-pair when the login button is clicked.
+        // Convert the result to a string-string-pair on submit
         dialog.setResultConverter(btn -> {
             if (btn == submit) {
                 return new Pair<>(value1.getText(), value2.getText());

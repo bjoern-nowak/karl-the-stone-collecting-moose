@@ -40,23 +40,28 @@ public class World extends Observable implements Interactable, Serializable {
 
     public void reset() {
         synchronized (this) {
+            // set new size
             resize(sizeRow, sizeCol);
 
+            // clear fields
             for (int row = 0; row < sizeRow; row++)
                 for (int col = 0; col < sizeCol; col++)
                     remove(row, col);
-            placeStart(2, 2);
-            placeActor(2, 2);
+            // place start and actor
+            placeStart(1, 1);
+            placeActor(1, 1);
         }
         notifyObservers();
     }
 
     public void random() {
         synchronized (this) {
+            // set random size
             sizeRow = ThreadLocalRandom.current().nextInt(3, 16);
             sizeCol = ThreadLocalRandom.current().nextInt(3, 16);
             reset();
 
+            // fill fields randomly
             for (int row = 0; row < sizeRow; row++) {
                 for (int col = 0; col < sizeCol; col++) {
 
@@ -67,6 +72,7 @@ public class World extends Observable implements Interactable, Serializable {
                     if (isInBoundary(row - 1, col) && field[row - 1][col].hasObstacle()) obstacleAround += 0.15;
                     if (isInBoundary(row + 1, col) && field[row + 1][col].hasObstacle()) obstacleAround += 0.15;
 
+                    // decide if obstacle or item should be placed
                     double random = new Random().nextDouble();
                     //if (isFieldAtBorder(row, col)) {
                     //    placeObstacle(row, col);
@@ -87,14 +93,15 @@ public class World extends Observable implements Interactable, Serializable {
         synchronized (this) {
             if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
 
+            // update attributes to new size and copy old field
             this.sizeRow = sizeRow;
             this.sizeCol = sizeCol;
-
             Field[][] oldGrid = field;
             field = new Field[sizeRow][sizeCol];
             actorPos = new Position();
             startPos = new Position();
 
+            // copy fields from the old to the new if applicable
             for (int row = 0; row < field.length; row++) {
                 for (int col = 0; col < field[row].length; col++) {
                     if (oldGrid != null && row < oldGrid.length && col < oldGrid[row].length) {
@@ -102,6 +109,7 @@ public class World extends Observable implements Interactable, Serializable {
                         if (field[row][col].hasActor()) actorPos.set(row, col);
                         if (field[row][col].hasStart()) startPos.set(row, col);
                     } else {
+                        // if new field is bigger; fill with free fields
                         field[row][col] = Field.FREE;
                     }
                 }

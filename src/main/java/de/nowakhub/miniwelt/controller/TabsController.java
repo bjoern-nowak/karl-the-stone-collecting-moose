@@ -21,7 +21,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/**
+ * Controller for tab handle logic
+ */
 public class TabsController {
     private List<File> openFiles = new ArrayList<>();
 
@@ -37,24 +39,37 @@ public class TabsController {
     }
 
 
+    /**
+     * add a default tab with a default model
+     */
     Tab addNew() {
         return addTab();
     }
 
+    /**
+     * add a new tab with a specific model and name that tab
+     */
     Tab addNew(String programName, Model model) {
         Tab tab = addTab(null, model);
         if (tab != null) tab.setText(programName);
         return tab;
     }
 
+    /**
+     * update opened files and tab text (file may been moved or renamed)
+     */
     void saved(File oldFile, File newFile) {
         openFiles.remove(oldFile);
         openFiles.add(newFile);
         getTab(ModelCtx.get()).setText(getTabText(newFile));
     }
 
+    /**
+     * add a new tab by loading a file
+     */
     void open(File file) {
         if (openFiles.contains(file)) {
+            // file already opened, find and focus that tab
             tabPane.getTabs().stream()
                     .filter(tab -> file.equals(getModel(tab).programFile))
                     .findFirst()
@@ -63,7 +78,11 @@ public class TabsController {
             try {
                 // java7 feature: used for reading small files
                 List<String> lines = Files.readAllLines(file.toPath());
+
+                // add new tab
                 Tab newTab = addTab(file, String.join("\n", lines.subList(1, lines.size() - 1)));
+
+                // on success update states
                 if (newTab != null) {
                     getModel(newTab).programState.set(Editor.STATE.SAVED);
                     openFiles.add(file);
@@ -93,11 +112,12 @@ public class TabsController {
 
     private Tab addTab(File file, Model model) {
         try {
+            // every tab has its own instance
             TabController tabController = new TabController();
-
             FXMLLoader tabLoader = new FXMLLoader(getClass().getResource("/de/nowakhub/miniwelt/view/tab.fxml"), Message.getBundle());
             tabLoader.setController(tabController);
 
+            // configure tab
             Tab tab = tabLoader.load();
             tab.setUserData(model);
             tab.setText(getTabText(file));
@@ -109,8 +129,11 @@ public class TabsController {
                 if (tabPane.getTabs().isEmpty()) Platform.exit();
             });
 
+            // add and select new tab
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
+
+            // pass model through
             tabController.postInitialize(model);
 
             return tab;

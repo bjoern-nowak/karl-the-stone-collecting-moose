@@ -11,6 +11,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 
 
+/**
+ * implements all actions possible through menu of simulation and toolbar buttons/slider for simulation
+ */
 public abstract class ActionSimulationController extends ActionActorController {
 
     private ChangeListener<Boolean> btnSimRunningListener;
@@ -102,6 +105,7 @@ public abstract class ActionSimulationController extends ActionActorController {
             model.getWorld().existActor();
             model.getWorld().existsStart();
 
+            // start or continue
             model.simulationRunning.set(true);
             if (model.simulation == null || !model.simulation.isAlive()) {
                 model.simulation = new Simulation(model);

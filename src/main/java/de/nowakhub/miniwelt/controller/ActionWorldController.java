@@ -23,6 +23,9 @@ import java.io.*;
 import java.nio.file.Paths;
 
 
+/**
+ * implements all actions possible through menu of world and toolbar buttons for world
+ */
 public abstract class ActionWorldController extends ActionProgramController {
 
     private FileChooser worldChooser;
@@ -55,6 +58,7 @@ public abstract class ActionWorldController extends ActionProgramController {
     public void initialize() {
         super.initialize();
 
+        // bind corresponding menu items with toolbar buttons
         miMouseModePlaceObstacle.selectedProperty().bindBidirectional(btnMouseModePlaceObstacle.selectedProperty());
         miMouseModePlaceItem.selectedProperty().bindBidirectional(btnMouseModePlaceItem.selectedProperty());
         miMouseModePlaceActor.selectedProperty().bindBidirectional(btnMouseModePlaceActor.selectedProperty());
@@ -69,11 +73,11 @@ public abstract class ActionWorldController extends ActionProgramController {
         File dir = Paths.get("worlds").toFile();
         if (!dir.exists()) dir.mkdirs();
 
+        // configure file choosers
         worldChooser = new FileChooser();
         worldChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Java Serialized", "*.ser"));
         worldChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
         worldChooser.setInitialDirectory(dir);
-
         exportChooser = new FileChooser();
         exportChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
         exportChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG", "*.jpg"));
@@ -96,9 +100,16 @@ public abstract class ActionWorldController extends ActionProgramController {
     public void onWorldLoad(ActionEvent actionEvent) {
         File file = worldChooser.showOpenDialog(getWindow());
         if (file != null) {
-            try (FileInputStream stream = new FileInputStream(file); ObjectInputStream ser = new ObjectInputStream(stream); XMLDecoder xml = new XMLDecoder(stream)) {
-                if (file.getName().toLowerCase().endsWith(".ser")) ModelCtx.setWorld((World) ser.readObject());
-                else if (file.getName().toLowerCase().endsWith(".xml")) ModelCtx.setWorld((World) xml.readObject());
+            try (FileInputStream stream = new FileInputStream(file);
+                 ObjectInputStream ser = new ObjectInputStream(stream);
+                 XMLDecoder xml = new XMLDecoder(stream)) {
+
+                // check file type and load appropriate
+                if (file.getName().toLowerCase().endsWith(".ser"))
+                    ModelCtx.setWorld((World) ser.readObject());
+                else if (file.getName().toLowerCase().endsWith(".xml"))
+                    ModelCtx.setWorld((World) xml.readObject());
+
             } catch (Exception ex) {
                 Alerts.showException(ex);
             }
@@ -109,9 +120,16 @@ public abstract class ActionWorldController extends ActionProgramController {
     public void onWorldSave(ActionEvent actionEvent) {
         File file = worldChooser.showSaveDialog(getWindow());
         if (file != null) {
-            try (FileOutputStream stream = new FileOutputStream(file); ObjectOutputStream ser = new ObjectOutputStream(stream); XMLEncoder xml = new XMLEncoder(stream)) {
-                if (file.getName().toLowerCase().endsWith(".ser")) ser.writeObject(ModelCtx.world());
-                else if (file.getName().toLowerCase().endsWith(".xml")) xml.writeObject(ModelCtx.world());
+            try (FileOutputStream stream = new FileOutputStream(file);
+                 ObjectOutputStream ser = new ObjectOutputStream(stream);
+                 XMLEncoder xml = new XMLEncoder(stream)) {
+
+                // check file type and save appropriate
+                if (file.getName().toLowerCase().endsWith(".ser"))
+                    ser.writeObject(ModelCtx.world());
+                else if (file.getName().toLowerCase().endsWith(".xml"))
+                    xml.writeObject(ModelCtx.world());
+
             } catch (Exception ex) {
                 Alerts.showException(ex);
             }
@@ -122,9 +140,14 @@ public abstract class ActionWorldController extends ActionProgramController {
     public void onWorldExport(ActionEvent actionEvent) throws IOException {
         File file = exportChooser.showSaveDialog(getWindow());
         if (file != null) {
+            // get special object for this case (printable canvas instance)
             Canvas worldCanvas = ModelCtx.get().worldCanvas;
+
+            // get picture and name it
             WritableImage worldSnapshot = worldCanvas.snapshot(null, new WritableImage((int) worldCanvas.getWidth(), (int) worldCanvas.getHeight()));
             String format = file.getName().toLowerCase().substring(file.getName().length() - 3);
+
+            // print
             ImageIO.write(SwingFXUtils.fromFXImage(worldSnapshot, null), format, file);
         }
     }

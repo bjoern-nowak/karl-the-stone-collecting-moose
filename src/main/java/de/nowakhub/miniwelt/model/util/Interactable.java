@@ -2,6 +2,9 @@ package de.nowakhub.miniwelt.model.util;
 
 import de.nowakhub.miniwelt.model.exceptions.*;
 
+/**
+ * Commands used {@link de.nowakhub.miniwelt.model.Actor} to interact with a {@link de.nowakhub.miniwelt.model.World}
+ */
 public interface Interactable {
 
     //__________________________________________________________________________________________________________________

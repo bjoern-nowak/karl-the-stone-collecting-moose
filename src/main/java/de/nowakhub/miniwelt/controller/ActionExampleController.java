@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 
+/**
+ * implements all actions possible through menu of examples
+ */
 public abstract class ActionExampleController extends ActionSimulationController {
 
     public void initialize() {

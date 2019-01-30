@@ -9,6 +9,9 @@ import javafx.scene.canvas.Canvas;
 
 import java.io.File;
 
+/**
+ * A observable Model of a tab (containing the world, actor and more)
+ */
 public class Model extends Observable {
 
     private World world = new World();

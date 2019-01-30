@@ -83,7 +83,6 @@ public class Simulation extends Thread {
             while(paused) wait();
             return true;
         } catch (InterruptedException ex) {
-            // someone really want us to stop
             super.interrupt();
             return false;
         }
