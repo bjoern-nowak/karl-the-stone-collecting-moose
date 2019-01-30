@@ -50,8 +50,9 @@ public class RootController {
             else
                 Student.connect();
 
-        // bind fxml text to model property
+        // bind fxml status text to model property and set init value
         status.textProperty().bindBidirectional(statusText);
+        status.setText("Welcome and have fun learning, Karl is ready.");
 
         postInitialize();
     }
