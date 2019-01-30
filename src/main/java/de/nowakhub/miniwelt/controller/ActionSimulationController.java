@@ -69,6 +69,7 @@ public abstract class ActionSimulationController extends ActionActorController {
         // listen to tab switches and update view
         ModelCtx.addObserver("actionSimulation", this::update);
         update();
+        sliderSimSpeed.valueProperty().setValue(50);
     }
 
     /**
@@ -80,11 +81,10 @@ public abstract class ActionSimulationController extends ActionActorController {
         ModelCtx.get().simulationRunning.addListener(btnSimRunningListener);
         btnSimRunningListener.changed(null, null, ModelCtx.get().simulationRunning.get());
 
-
         // listen on slider updates and init value
         sliderSimSpeed.valueProperty().removeListener(sliderSimListener);
         sliderSimSpeed.valueProperty().addListener(sliderSimListener);
-        sliderSimSpeed.valueProperty().setValue(50);
+        sliderSimListener.changed(null, null, sliderSimSpeed.getValue());
     }
 
 
