@@ -107,6 +107,6 @@ public class Actor {
         if (Thread.currentThread() instanceof Simulation)
             return ((Simulation) Thread.currentThread()).delay();
         else
-            return Thread.currentThread().isInterrupted();
+            return !Thread.currentThread().isInterrupted();
     }
 }

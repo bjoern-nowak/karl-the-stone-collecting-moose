@@ -156,7 +156,7 @@ public class WorldController {
      * based on current model: build new actor context menu; resize and draw canvas
      */
     private void updateCanvas() {
-        buildActorContextMenu();
+        buildActorContextMenu(); // TODO [error] maybe throws ConcurrentModificationException
         resize();
         draw();
     }
