@@ -83,9 +83,9 @@ public class World extends Observable implements Interactable, Serializable {
     }
 
     public void resize(int sizeRow, int sizeCol) throws InvalidWorldSizeException {
-        if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
-
         synchronized (this) {
+            if (MIN_SIZE > sizeRow || MIN_SIZE > sizeCol) throw new InvalidWorldSizeException();
+
             this.sizeRow = sizeRow;
             this.sizeCol = sizeCol;
 
@@ -210,11 +210,11 @@ public class World extends Observable implements Interactable, Serializable {
     }
 
     public void existActor() throws RequireActorException {
-        if (!actorPos.exists()) throw new RequireActorException();
+        if (!actorPos.exists() && !isInBoundary(actorPos.row, actorPos.col)) throw new RequireActorException();
     }
 
     public void existsStart() throws RequireStartException {
-        if (!startPos.exists()) throw new RequireStartException();
+        if (!startPos.exists() && !isInBoundary(startPos.row, startPos.col)) throw new RequireStartException();
     }
 
     public boolean isFieldWithActor(int row, int col) {

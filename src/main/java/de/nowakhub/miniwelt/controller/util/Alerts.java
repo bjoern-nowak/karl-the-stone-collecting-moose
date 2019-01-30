@@ -111,11 +111,16 @@ public class Alerts {
      * @param ex must be set
      */
     public static void showException(Thread th, Throwable ex) {
-        if (PropsCtx.isDebug() || isPublicException(ex)) showExceptionInternal(ex);
-        else if (isPublicException(ex.getCause())) showExceptionInternal(ex.getCause());
-        else if (ex instanceof InvocationTargetException && isPublicException(((InvocationTargetException) ex).getTargetException())) showExceptionInternal(((InvocationTargetException) ex).getTargetException());
-        else if (ex.getCause() instanceof InvocationTargetException && isPublicException(((InvocationTargetException) ex.getCause()).getTargetException())) showExceptionInternal(((InvocationTargetException) ex.getCause()).getTargetException());
-        else showError("Oops that should'nt happen", "Sorry but something went internally wrong");
+        if (PropsCtx.isDebug() || isPublicException(ex))
+            showExceptionInternal(ex);
+        else if (isPublicException(ex.getCause()))
+            showExceptionInternal(ex.getCause());
+        else if (ex instanceof InvocationTargetException && isPublicException(((InvocationTargetException) ex).getTargetException()))
+            showExceptionInternal(((InvocationTargetException) ex).getTargetException());
+        else if (ex.getCause() instanceof InvocationTargetException && isPublicException(((InvocationTargetException) ex.getCause()).getTargetException()))
+            showExceptionInternal(((InvocationTargetException) ex.getCause()).getTargetException());
+        else
+            showError("Oops that should'nt happen", "Sorry but something went internally wrong");
     }
 
     private static void showExceptionInternal(Throwable ex) {

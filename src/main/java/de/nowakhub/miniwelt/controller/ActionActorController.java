@@ -40,21 +40,25 @@ public abstract class ActionActorController extends ActionWorldController {
 
     @FXML
     public void onActorStepAhead(ActionEvent actionEvent) {
+        ModelCtx.world().existActor();
         ModelCtx.actor().stepAhead();
     }
 
     @FXML
     public void onActorTurnRight(ActionEvent actionEvent) {
+        ModelCtx.world().existActor();
         ModelCtx.actor().turnRight();
     }
 
     @FXML
     public void onActorBackToStart(ActionEvent actionEvent) {
+        ModelCtx.world().existsStart();
         ModelCtx.actor().backToStart();
     }
 
     @FXML
     public void onActorAheadClear(ActionEvent actionEvent) {
+        ModelCtx.world().existActor();
         Alerts.showInfo(
                 "Actor test command result",
                 "Result of aheadClear(): " + ModelCtx.actor().aheadClear());
@@ -69,6 +73,7 @@ public abstract class ActionActorController extends ActionWorldController {
 
     @FXML
     public void onActorFoundItem(ActionEvent actionEvent) {
+        ModelCtx.world().existActor();
         Alerts.showInfo(
                 "Actor test command result",
                 "Result of foundItem(): " + ModelCtx.actor().foundItem());
@@ -76,11 +81,13 @@ public abstract class ActionActorController extends ActionWorldController {
 
     @FXML
     public void onActorPickUp(ActionEvent actionEvent) {
+        ModelCtx.world().existActor();
         ModelCtx.actor().pickUp();
     }
 
     @FXML
     public void onActorDropDown(ActionEvent actionEvent) {
+        ModelCtx.world().existActor();
         ModelCtx.actor().dropDown();
     }
 

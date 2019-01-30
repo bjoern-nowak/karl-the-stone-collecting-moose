@@ -144,11 +144,11 @@ public abstract class ActionWorldController extends ActionProgramController {
     public void onWorldChangeSize(ActionEvent actionEvent) {
         Alerts.requestInput(
                 ModelCtx.world().getSizeRow() + "x" + ModelCtx.world().getSizeCol(),
-                "Change dimension of the model.world (Rows x Cols).\nRequire format: [nxn | n e IN]",
+                "Change dimension of the world (Rows x Cols).\nRequire format: [nxn | n e IN]",
                 "Please enter dimension:"
         ).ifPresent(input -> {
             String[] dimension = input.split("x");
-            if (!input.matches("\\d+x\\d+") || dimension.length != 2) throw new InvalidInputException("Invalid format for model.world dimension");
+            if (!input.matches("\\d+x\\d+") || dimension.length != 2) throw new InvalidInputException("Invalid format for world dimension");
             ModelCtx.world().resize(Integer.valueOf(dimension[0]), Integer.valueOf(dimension[1]));
         });
     }

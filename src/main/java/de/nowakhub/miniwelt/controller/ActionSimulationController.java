@@ -97,6 +97,11 @@ public abstract class ActionSimulationController extends ActionActorController {
 
         // start or continue simulation
         if (model.isProgramCompiled()) {
+
+            // only run if actor and start are on field
+            model.getWorld().existActor();
+            model.getWorld().existsStart();
+
             model.simulationRunning.set(true);
             if (model.simulation == null || !model.simulation.isAlive()) {
                 model.simulation = new Simulation(model);
