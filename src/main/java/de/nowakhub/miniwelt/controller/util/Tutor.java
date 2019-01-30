@@ -3,7 +3,6 @@ package de.nowakhub.miniwelt.controller.util;
 import de.nowakhub.miniwelt.model.Model;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 
-import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -64,9 +63,12 @@ public class Tutor {
      */
     public static void stop() {
         try {
-            if (registry != null) UnicastRemoteObject.unexportObject(registry, true);
-        } catch (NoSuchObjectException ex) {
-            //Alerts.showException(ex);
+            if (registry != null) {
+                UnicastRemoteObject.unexportObject(registry, true);
+                UnicastRemoteObject.unexportObject(server, true);
+            }
+        } catch (Exception ex) {
+            Alerts.showException(ex);
         }
     }
 
