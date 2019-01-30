@@ -158,8 +158,6 @@ public abstract class ActionProgramController extends ActionBaseController {
                 ModelCtx.setActor((Actor) cls.newInstance());
                 ModelCtx.actor().setInteractable(ModelCtx.world());
 
-                // reset simulation (if one is or was running: next play will use this new compiled version)
-                ModelCtx.get().simulation = null;
                 return true;
             } catch (Exception ex) {
                 if (!silently) Alerts.showException(ex);
