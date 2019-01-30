@@ -116,7 +116,7 @@ public abstract class ActionSimulationController extends ActionActorController {
     @FXML
     public void onSimStop(ActionEvent actionEvent) {
         ModelCtx.get().simulationRunning.set(false);
-        ModelCtx.get().simulation.terminate();
+        ModelCtx.get().simulation.interrupt();
     }
 
 }

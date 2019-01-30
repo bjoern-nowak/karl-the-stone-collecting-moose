@@ -124,11 +124,21 @@ public class WorldController {
         // sync canvas for actionController to make snapshots
         model.worldCanvas = canvas;
 
-        // subscribe to changes in the model and world
-        model.addObserver("canvas", this::updateCanvas);
-        model.getWorld().addObserver("canvas", this::updateCanvas);
+        // subscribe to changes in the model
+        model.addObserver("canvas", this::updateModel);
 
         // initial draw of world
+        updateModel();
+    }
+
+    /**
+     * add listener to (maybe new) world and call {@link #updateCanvas()}
+     */
+    private void updateModel() {
+        // subscribe to changes in the world
+        model.getWorld().addObserver("canvas", this::updateCanvas);
+
+        // draw of world
         updateCanvas();
     }
 

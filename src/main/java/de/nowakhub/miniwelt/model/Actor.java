@@ -25,13 +25,11 @@ public class Actor {
     // -----------------------------------------------------------------------------------------------------------------
 
     public void stepAhead() throws NoClearPathException {
-        delay();
-        interactable.stepAhead();
+        if (delay()) interactable.stepAhead();
     }
 
     public void turnRight() {
-        delay();
-        interactable.turnRight();
+        if (delay()) interactable.turnRight();
     }
 
     // _________________________________________________________________________________________________________________
@@ -48,13 +46,11 @@ public class Actor {
     // -----------------------------------------------------------------------------------------------------------------
 
     public void pickUp() throws ItemNotFoundException, BagFullException {
-        delay();
-        interactable.pickUp();
+        if (delay()) interactable.pickUp();
     }
 
     public void dropDown() throws ItemDropNotAllowedException, BagEmptyException {
-        delay();
-        interactable.dropDown();
+        if (delay()) interactable.dropDown();
     }
 
     // _________________________________________________________________________________________________________________
@@ -97,7 +93,10 @@ public class Actor {
     }
 
     @Invisible
-    private void delay() {
-        if (Thread.currentThread() instanceof Simulation) ((Simulation) Thread.currentThread()).delay();
+    private boolean delay() {
+        if (Thread.currentThread() instanceof Simulation)
+            return ((Simulation) Thread.currentThread()).delay();
+        else
+            return true;
     }
 }

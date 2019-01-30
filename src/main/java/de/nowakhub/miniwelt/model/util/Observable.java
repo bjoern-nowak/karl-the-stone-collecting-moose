@@ -23,7 +23,7 @@ public abstract class Observable {
     }
 
     /**
-     * adds a observer by key
+     * adds a observer by key; override if already present like {@link Map#put}
      * @param key under which the observer will be added
      */
     public void addObserver(String key, Runnable observer) {
