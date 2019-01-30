@@ -49,7 +49,7 @@ public abstract class ActionSimulationController extends ActionActorController {
 
         // calculate simulation speed on slider change
         sliderSimListener = (observable, oldValue, newValue) -> {
-            // TODO you can do better math instead of ternary operation
+            // TODO [refacotring] with better math there is no need for a ternary operation
             ModelCtx.get().simulationSpeed = newValue.intValue() <= 0.0 ? 10 : 10 * newValue.intValue();
             RootController.statusText.set("Speed set to: " + ModelCtx.get().simulationSpeed + "ms which are " + (ModelCtx.get().simulationSpeed / 1000.0) + "s");
         };

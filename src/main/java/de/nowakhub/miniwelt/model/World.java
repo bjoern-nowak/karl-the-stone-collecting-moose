@@ -39,8 +39,9 @@ public class World extends Observable implements Interactable, Serializable {
     //------------------------------------------------------------------------------------------------------------------
 
     public void reset() {
-        resize(sizeRow, sizeCol);
         synchronized (this) {
+            resize(sizeRow, sizeCol);
+
             for (int row = 0; row < sizeRow; row++)
                 for (int col = 0; col < sizeCol; col++)
                     remove(row, col);
@@ -143,8 +144,8 @@ public class World extends Observable implements Interactable, Serializable {
     }
 
     public void placeObstacle(int row, int col) throws PositionInvalidException {
-        checkBoundary(row, col);
         synchronized (this) {
+            checkBoundary(row, col);
             if (field[row][col].hasObstacle() || field[row][col].notRemovable()) return;
             field[row][col] = field[row][col].set(Field.OBSTACLE);
         }
@@ -152,8 +153,8 @@ public class World extends Observable implements Interactable, Serializable {
     }
 
     public void placeItem(int row, int col) throws PositionInvalidException {
-        checkBoundary(row, col);
         synchronized (this) {
+            checkBoundary(row, col);
             if (field[row][col].hasItem() || field[row][col].hasStart()) return;
             field[row][col] = field[row][col].set(Field.ITEM);
         }
@@ -161,8 +162,8 @@ public class World extends Observable implements Interactable, Serializable {
     }
 
     public void placeActor(int row, int col) throws PositionInvalidException {
-        checkBoundary(row, col);
         synchronized (this) {
+            checkBoundary(row, col);
             if (field[row][col].hasActor()) return;
 
             // remove old position with exists
@@ -179,8 +180,8 @@ public class World extends Observable implements Interactable, Serializable {
     }
 
     public void placeStart(int row, int col) throws PositionInvalidException {
-        checkBoundary(row, col);
         synchronized (this) {
+            checkBoundary(row, col);
             if (field[row][col].hasStart()) return;
 
             // remove old position with exists
@@ -235,7 +236,7 @@ public class World extends Observable implements Interactable, Serializable {
     // -----------------------------------------------------------------------------------------------------------------
 
     public Field[][] getField() {
-        // TODO clone 2d array into new one; make it unmodifyable
+        // TODO [refactoring] clone 2d array into new one; make it unmodifyable
         return field;
     }
 
@@ -301,7 +302,7 @@ public class World extends Observable implements Interactable, Serializable {
 
     @Override
     public void backToStart() {
-
+        // TODO [feature] implement actor method: backToStart (teleport to start)
     }
 
 
@@ -368,15 +369,15 @@ public class World extends Observable implements Interactable, Serializable {
     //     getter/setter for export/import (XML)
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void setSizeRow(int sizeRow) {
+    public synchronized void setSizeRow(int sizeRow) {
         this.sizeRow = sizeRow;
     }
 
-    public void setSizeCol(int sizeCol) {
+    public synchronized void setSizeCol(int sizeCol) {
         this.sizeCol = sizeCol;
     }
 
-    public void setField(Field[][] field) {
+    public synchronized void setField(Field[][] field) {
         this.field = field;
     }
 
@@ -384,7 +385,7 @@ public class World extends Observable implements Interactable, Serializable {
         return startPos;
     }
 
-    public void setStartPos(Position startPos) {
+    public synchronized void setStartPos(Position startPos) {
         this.startPos = startPos;
     }
 
@@ -392,11 +393,11 @@ public class World extends Observable implements Interactable, Serializable {
         return actorPos;
     }
 
-    public void setActorPos(Position actorPos) {
+    public synchronized void setActorPos(Position actorPos) {
         this.actorPos = actorPos;
     }
 
-    public void setActorDir(Direction actorDir) {
+    public synchronized void setActorDir(Direction actorDir) {
         this.actorDir = actorDir;
     }
 }

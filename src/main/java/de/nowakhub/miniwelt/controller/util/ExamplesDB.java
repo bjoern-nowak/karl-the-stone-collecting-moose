@@ -121,7 +121,7 @@ public class ExamplesDB {
                      ObjectInputStream ois = new ObjectInputStream(bais);) {
                     World world = (World) ois.readObject();
 
-                    Model model = new Model(null, program);
+                    Model model = new Model(program);
                     model.setWorld(world);
                     return model;
                 }

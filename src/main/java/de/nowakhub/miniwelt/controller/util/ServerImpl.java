@@ -61,7 +61,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server {
         if (request == null) return null;
         requests.remove(student);
 
-        Model model = new Model(null, request.getKey());
+        Model model = new Model(request.getKey());
         model.setWorld(request.getValue());
         model.requestOfStudent.set(student);
 

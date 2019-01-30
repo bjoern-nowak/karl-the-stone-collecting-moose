@@ -7,6 +7,8 @@ import javafx.scene.control.TextArea;
 
 public class Editor extends TextArea {
 
+    // TODO [feature]: add auto-completion and syntax-highlighting
+
     public enum STATE {NONE, DIRTY, SAVED, COMPILED}
 
     private BooleanProperty dirty = buildBooleanProperty(PseudoClass.getPseudoClass("dirty"), "dirty");

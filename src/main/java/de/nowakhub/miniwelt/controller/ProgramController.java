@@ -11,24 +11,28 @@ public class ProgramController {
 
     void postInitialize(Model model) {
         model.programState.addListener((observable, oldValue, newValue) -> {
-            program.dirtyProperty().set(false);
-            program.savedProperty().set(false);
-            program.compiledProperty().set(false);
+            program.setDirty(false);
+            program.setSaved(false);
+            program.setCompiled(false);
             switch (newValue) {
                 case DIRTY:
-                    program.dirtyProperty().set(true);
+                    program.setDirty(true);
                     break;
                 case SAVED:
-                    program.savedProperty().set(true);
+                    program.setSaved(true);
                     break;
                 case COMPILED:
-                    program.compiledProperty().set(true);
+                    program.setCompiled(true);
                     break;
             }
         });
 
         program.textProperty().bindBidirectional(model.program);
-        program.textProperty().addListener(
-                (obs, oldV, newV) -> program.setDirty(model.programSave == null || !model.programSave.equals(newV)));
+        program.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (model.programSave == null || !model.programSave.equals(newValue))
+                model.programState.set(Editor.STATE.DIRTY);
+            else
+                model.programState.set(Editor.STATE.SAVED);
+        });
     }
 }

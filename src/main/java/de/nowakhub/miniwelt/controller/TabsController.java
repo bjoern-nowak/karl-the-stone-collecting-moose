@@ -31,16 +31,18 @@ public class TabsController {
     public void initialize() {
         // set model context on tab switch
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> ModelCtx.set(getModel(newValue)));
-        addTab(null, null);
+
+        // add default tab
+        addTab();
     }
 
 
-    void addNew() {
-        addTab(null, null);
+    Tab addNew() {
+        return addTab();
     }
 
     Tab addNew(String programName, Model model) {
-        Tab tab = addTab(model, null, null);
+        Tab tab = addTab(null, model);
         if (tab != null) tab.setText(programName);
         return tab;
     }
@@ -81,12 +83,15 @@ public class TabsController {
         close(getActiveTab());
     }
 
-    private Tab addTab(File file, String fileContent) {
-        Model model = new Model(file, fileContent);
-        return addTab(model, file, fileContent);
+    private Tab addTab() {
+        return addTab(null, new Model());
     }
 
-    private Tab addTab(Model model, File file, String fileContent) {
+    private Tab addTab(File file, String program) {
+        return addTab(file, new Model(file, program));
+    }
+
+    private Tab addTab(File file, Model model) {
         try {
             TabController tabController = new TabController();
 

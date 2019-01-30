@@ -13,7 +13,7 @@ public class Model extends Observable {
 
     private World world = new World();
     private Actor actor = new Actor(world);
-    public final StringProperty program = new SimpleStringProperty();
+    public final StringProperty program = new SimpleStringProperty("void main() {\n\tstepAhead();\n}");
 
     public File programFile;
     public String programSave;
@@ -28,18 +28,18 @@ public class Model extends Observable {
     public final ObjectProperty<Field> mouseMode = new SimpleObjectProperty<>();
 
 
-    // TODO rework this
-    public Model(File programFile, String program) {
-        this.programFile = programFile;
+    public Model() {
+    }
 
+    public Model(String program) {
+        this.program.set(program);
+    }
+
+    public Model(File programFile, String program) {
         this.program.set(program);
         this.programSave = program;
-
-        if (programFile == null && program == null) {
-            this.program.set("void main() {\n\tstepAhead();\n}");
-            this.programState.set(Editor.STATE.DIRTY);
-            this.programSave = null;
-        }
+        this.programFile = programFile;
+        this.programState.set(Editor.STATE.SAVED);
     }
 
 
@@ -51,7 +51,7 @@ public class Model extends Observable {
         return world;
     }
 
-    public void setWorld(World world) {
+    public synchronized void setWorld(World world) {
         this.world = world;
         actor.setInteractable(world);
         notifyObservers();

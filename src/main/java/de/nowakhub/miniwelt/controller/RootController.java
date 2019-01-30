@@ -36,7 +36,7 @@ public class RootController {
 
     public RootController() {
         // will be overridden as soon as default tab has been added
-        ModelCtx.set(new Model(null, null));
+        ModelCtx.set(new Model());
     }
 
     public void initialize(){

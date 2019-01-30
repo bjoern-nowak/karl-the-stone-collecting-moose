@@ -90,7 +90,9 @@ public abstract class ActionProgramController extends ActionBaseController {
                 return false;
             }
 
+            // in case of "save as" rename tab text
             tabsController.saved(ModelCtx.get().programFile, file);
+
             ModelCtx.get().programFile = file;
             ModelCtx.get().programSave = ModelCtx.program();
             ModelCtx.get().programState.set(Editor.STATE.SAVED);
@@ -117,7 +119,7 @@ public abstract class ActionProgramController extends ActionBaseController {
     }
     @FXML
     public void onProgramCompile(ActionEvent actionEvent) {
-        // TODO compile to temp if not saved (dont force saving for compiling)
+        // TODO [feature] dont force explicit saving by user for compiling (compile to a temp folder if not saved)
         boolean saved = saveProgram(false);
         if (saved) {
             compile(false);

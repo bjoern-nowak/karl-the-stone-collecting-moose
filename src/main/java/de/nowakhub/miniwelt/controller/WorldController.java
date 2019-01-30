@@ -196,7 +196,7 @@ public class WorldController {
                         method.setAccessible(true);
                         Object result = method.invoke(model.getActor());
                         if (result != null) {
-                            // TODO handle return values better
+                            // TODO [refactoring] handle return values better
                             Alerts.showInfo(method.getName() + "()", "" + result);
                         }
                         return null;
@@ -225,7 +225,7 @@ public class WorldController {
 
     @Deprecated
     private void drawGrid(Field[][] state) {
-        // TODO: old method : needs a fix befor using
+        // TODO [refactoring/feature] method to show grid lines is deprecated
         /*
         for (int row = 0; row < state.length; row++) {
             for (int col = 0; col < state[row].length; col++) {
