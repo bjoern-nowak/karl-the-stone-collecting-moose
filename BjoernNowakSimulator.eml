@@ -9,5 +9,7 @@
 	</contentEntry>
 	<levels>
 		<level name="derby" value="project"/>
+		<level name="javafx-sdk-17" value="project"/>
+		<level name="db-derby-10" value="project"/>
 	</levels>
 </component>

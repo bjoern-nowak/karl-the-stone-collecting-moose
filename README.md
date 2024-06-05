@@ -1,3 +1,21 @@
+## Background ##
+
+This is a homage to the "Java Hamster" (https://www.java-hamster-modell.de/).
+It was written 10/2018 to 01/2019 as part of the exam within a university internship (https://uol.de/medieninformatik/lehrveranstaltungen/java-praktikum) which was also lead by the author/creator of the "Java Hamster".
+
+![Preview picture of the game](./preview.png)
+
+## Start requirements ##
+
+You need to download and add following dependencies/libraries/jars: 
+* JavaFX with SWT-Interoperability: like v17 from https://gluonhq.com/products/javafx/
+* Apache DB Derby: like v10.15 from https://db.apache.org/derby/derby_downloads.html
+
+Then use/run the Launcher class/file.
+
+## Historical notes ##
+
+
 ### implemented features which were not asked for (not sorted) ###
 - [Tabs] every program/world has its on tab
 - [Dragging any object] Not only the actor and start can be moved by dragging, also dragging any other object like fences copies them (override previous if necessary)
